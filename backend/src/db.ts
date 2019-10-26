@@ -29,4 +29,47 @@ export class DBS{
             console.log('GET result ->' + res);
         });
     }
+
+    // Create Room
+    createRoom(roomid:any, roominfo:any){
+        try{
+            this.client.set(roomid, roominfo, redis.print);
+        }
+        catch(err){
+            throw err;
+        }
+    }
+
+    // Delete Room
+    deleteRoom(roomid:any){
+        try{
+            this.client.del(roomid);
+        }
+        catch(err){
+            return err;
+        }
+    }
+
+     // get Room
+    getRoom(roomid:any){
+        this.client.get(roomid, function (err, res) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            console.log('GET result ->' + res);
+            return res;
+        });
+    }
+
+    // get Room
+    getAllRooms(){
+        this.client.keys('*', function (err, keys) {
+            if(err){
+                console.log(err);
+                throw err;
+            }
+            return keys;
+        });        
+    }
 }
