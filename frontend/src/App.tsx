@@ -1,12 +1,15 @@
 import React from 'react';
-import YouTube from 'react-youtube';
-import Rooms from './pages/rooms';
+import { Link } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
 import './App.css';
 
 const App: React.FC = () => {
   return (
     <div className="App">
       <h1>Sync Along</h1>
+      <Button component={Link} to="/rooms" color="primary">Create</Button>
+      <Button component={Link} to="/rooms" color="primary">Join</Button>
+      <Button component={Link} to="/rooms" color="primary">Discover</Button>
     </div>
   );
 }
