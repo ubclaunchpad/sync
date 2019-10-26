@@ -3,7 +3,7 @@ require('dotenv').config();
 // Express Params
 const express = require("express");
 const app = express();
-const PORT = 3000;
+const PORT = 5000;
 
 var d = new Date();
 console.log("Starting server at " + d.toLocaleString());
