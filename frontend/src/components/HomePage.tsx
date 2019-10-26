@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import './App.css';
+import '../styles/HomePage.css';
 
-const App: React.FC = () => {
+const HomePage: React.FC = () => {
   return (
     <div className="App">
       <h1>Sync Along</h1>
@@ -14,4 +14,4 @@ const App: React.FC = () => {
   );
 }
 
-export default App;
+export default HomePage;

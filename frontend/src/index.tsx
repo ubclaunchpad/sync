@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
-import Rooms from './pages/rooms';
-import App from './App';
+import RoomsPage from './components/RoomsPage';
+import HomePage from './components/HomePage';
 import * as serviceWorker from './serviceWorker';
 
 const routing = (
@@ -17,8 +17,8 @@ const routing = (
           <Link to="/rooms">Rooms</Link>
         </li>
       </ul>
-      <Route exact path="/" component={App} />
-      <Route path="/rooms" component={Rooms} />
+      <Route exact path="/" component={HomePage} />
+      <Route path="/rooms" component={RoomsPage} />
     </div>
   </Router>
 )
