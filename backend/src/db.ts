@@ -1,5 +1,5 @@
 import redis from 'redis';
-// import { RedisClient } from "redis";
+
 export class DBS{
     port: number;
     host: string;
