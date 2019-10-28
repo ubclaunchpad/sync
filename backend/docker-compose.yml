@@ -1,0 +1,12 @@
+version: '3'
+services:
+  myapp:
+    build: .  
+    ports:
+     - "8080:8080"
+    links:
+     - redis:redis
+    hostname: localhost
+  redis:
+    image: "redis:alpine"
+    hostname: localhost
