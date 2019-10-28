@@ -6,7 +6,8 @@ export class DBS{
     client: redis.RedisClient;
     constructor(){
         this.port = 6379;
-        this.host = "127.0.0.1";
+        // this.host = "127.0.0.1";
+        this.host = "redis";
         this.client = redis.createClient(this.port, this.host);
 
         this.client.on('connect', () => {
