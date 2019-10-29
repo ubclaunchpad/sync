@@ -10,11 +10,11 @@ router.get('/', (req, res) => {
   res.send('Hello world');
 })
 
-router.get('/findRooms/:roomid', (req, res) => {
+router.get('/rooms/:roomid', (req, res) => {
   redisDB.getRoom(req.params.roomid);
 })
 
-router.post('/createRoom', (req, res) => {
+router.post('/rooms', (req, res) => {
   redisDB.createRoom(req.params.roomid, req.params.roominfo);
 })
 

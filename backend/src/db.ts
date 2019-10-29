@@ -1,12 +1,17 @@
 import redis from 'redis';
 
+interface Room{
+    roomid: string,
+    owner: string,
+    capacity: number
+}
+
 export class DBS{
     port: number;
     host: string;
     client: redis.RedisClient;
     constructor(){
         this.port = 6379;
-        // this.host = "127.0.0.1";
         this.host = "redis";
         this.client = redis.createClient(this.port, this.host);
 
@@ -32,7 +37,7 @@ export class DBS{
     }
 
     // Create Room
-    createRoom(roomid:any, roominfo:any){
+    createRoom(roomid:string, roominfo:any){
         try{
             this.client.set(roomid, roominfo, redis.print);
         }
@@ -42,7 +47,7 @@ export class DBS{
     }
 
     // Delete Room
-    deleteRoom(roomid:any){
+    deleteRoom(roomid:string){
         try{
             this.client.del(roomid);
         }
@@ -52,7 +57,7 @@ export class DBS{
     }
 
      // get Room
-    getRoom(roomid:any){
+    getRoom(roomid:string){
         this.client.get(roomid, function (err, res) {
             if (err) {
                 console.log(err);
@@ -63,7 +68,7 @@ export class DBS{
         });
     }
 
-    // get Room
+    // get All Rooms
     getAllRooms(){
         this.client.keys('*', function (err, keys) {
             if(err){
