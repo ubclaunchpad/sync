@@ -1,6 +1,5 @@
 import http from 'http';
 import express  from 'express';
-import bodyParser from 'body-parser';
 import socketIo from 'socket.io';
 import router from './routes';
 import  { ServerEvent }  from './constants';
