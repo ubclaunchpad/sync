@@ -35,11 +35,10 @@ export class DBS{
             console.log('GET result ->' + res);
         });
     }
-
     // Create Room
-    createRoom(roomid:string, roominfo:any){
+    createRoom(roomid:string, roominfo:Room){
         try{
-            this.client.set(roomid, roominfo, redis.print);
+            this.client.set(roomid, JSON.stringify(roominfo), redis.print);
         }
         catch(err){
             throw err;
@@ -64,7 +63,7 @@ export class DBS{
                 throw err;
             }
             console.log('GET result ->' + res);
-            return res;
+            return JSON.parse(res);
         });
     }
 
