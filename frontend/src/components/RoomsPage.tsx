@@ -16,35 +16,25 @@ class Rooms extends Component {
     });
   }
 
-  pauseVideo = (player :any) => {
-    console.log('pause video function is being called');
-    player.pauseVideo();
-  }
-
-  playVideo = (player: any) => {
-    console.log('playVideo called');
-    player.playVideo();
-  }
-
   //When pause button is pressed, emit an event to socketio server
-  _onPause = (event: { target: any, data: number }) => {
+  handleOnPause = (event: { target: any, data: number }) => {
     const socket=this.state.socket;
     socket.emit(ClientEvent.PAUSE, {data: "Pause!"});
   }
 
   //When play button is pressed, emit an event to socketio server
-  _onPlay = (event: { target: any, data: number }) => {
+  handleOnPlay = (event: { target: any, data: number }) => {
      const socket = this.state.socket;
      socket.emit(ClientEvent.PLAY, {data: "Play!"});
   }
 
   //When video player state changes, call this function
-  _onStateChange = (event: { target: any }) => {
+  handleOnStateChange = (event: { target: any }) => {
     console.log('_onStateChange called');
   }
 
   //When the video player is ready, add listeners for play, pause etc
-  _onReady = (event: { target: any; }) => {
+  handleOnReady = (event: { target: any; }) => {
     const socket=this.state.socket;
     const player = event.target;
 
@@ -65,10 +55,10 @@ class Rooms extends Component {
       <h1>Rooms</h1>
       <YouTube 
         videoId={'HXcSGuYUkDg'}
-        onReady={this._onReady}
-        onPlay={this._onPlay}
-        onStateChange={this._onStateChange} 
-        onPause={this._onPause}
+        onReady={this.handleOnReady}
+        onPlay={this.handleOnPlay}
+        onStateChange={this.handleOnStateChange} 
+        onPause={this.handleOnPause}
       />
     </div>);
   }
