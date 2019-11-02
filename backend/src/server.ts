@@ -30,11 +30,11 @@ io.on(ServerEvent.CONNECT, (socket) => {
 
   //TODO: When a client presses play, send a play command to all clients
   socket.on(ServerEvent.PLAY, () => {
-    io.emit(ServerEvent.PLAY_ALL, 'Play');
+    socket.broadcast.emit(ServerEvent.PLAY, {data: 'Play from server'});
   });
 
   //TODO: When a client pauses, send a pause command to all clients
   socket.on(ServerEvent.PAUSE, () => {
-    io.emit(ServerEvent.PAUSE_ALL, 'Pause');
+    socket.broadcast.emit(ServerEvent.PAUSE, {data: 'Pause from server'});
   });
 });
