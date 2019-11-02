@@ -1,7 +1,6 @@
 import redis from 'redis';
 
 interface Room{
-    roomid: string,
     owner: string,
     capacity: number
 }
@@ -23,9 +22,7 @@ export class DBS{
         });
     }
 
-    // Set up Queries here
     testConnect(){
-        // Example
         this.client.set('my test key', "Success!", redis.print);
         this.client.get('my test key', function (err, res) {
             if (err) {
@@ -35,8 +32,9 @@ export class DBS{
             console.log('GET result ->' + res);
         });
     }
-    // Create Room
+
     createRoom(roomid:string, roominfo:Room){
+        console.log("Room info", roominfo);
         try{
             this.client.set(roomid, JSON.stringify(roominfo), redis.print);
         }
@@ -45,7 +43,6 @@ export class DBS{
         }
     }
 
-    // Delete Room
     deleteRoom(roomid:string){
         try{
             this.client.del(roomid);
@@ -55,19 +52,20 @@ export class DBS{
         }
     }
 
-     // get Room
     getRoom(roomid:string){
-        this.client.get(roomid, function (err, res) {
-            if (err) {
-                console.log(err);
-                throw err;
-            }
-            console.log('GET result ->' + res);
-            return JSON.parse(res);
+        return new Promise((resolve, reject) => {
+            console.log("Querying " + roomid);
+            this.client.get(roomid, function (err, res) {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
+                console.log('GET result ->' + res);
+                resolve(res);
+            });
         });
     }
 
-    // get All Rooms
     getAllRooms(){
         this.client.keys('*', function (err, keys) {
             if(err){
