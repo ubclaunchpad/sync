@@ -67,12 +67,15 @@ export class DBS{
     }
 
     getAllRooms(){
-        this.client.keys('*', function (err, keys) {
-            if(err){
-                console.log(err);
-                throw err;
-            }
-            return keys;
-        });        
+        return new Promise((resolve, reject) => {
+            this.client.keys('*', function (err, keys) {
+                if(err){
+                    console.log(err);
+                    reject(err);
+                }
+                resolve(keys);
+            });      
+        });
+  
     }
 }
