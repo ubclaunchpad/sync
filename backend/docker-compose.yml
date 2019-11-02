@@ -4,9 +4,9 @@ services:
     build: .  
     ports:
      - "8080:8080"
-    links:
-     - redis:redis
+    network_mode: "host"
     hostname: localhost
   redis:
     image: "redis:alpine"
+    network_mode: "host"
     hostname: localhost
