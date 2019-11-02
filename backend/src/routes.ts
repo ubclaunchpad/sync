@@ -24,11 +24,17 @@ router.get('/rooms', (req, res) => {
 })
 
 router.post('/rooms', (req, res) => {
-  var roomid = uuidv1();
-  // console.log(req);
-  console.log(req.body);
-  redisDB.createRoom(roomid, req.body);
-  res.send("Created room id " + roomid);
+  redisDB.getAllRooms().then((data: any) => {
+    var roomid = uuidv1();
+    var existingKeys = new Set(data);
+    while(existingKeys.has(roomid)){
+      roomid = uuidv1();
+    }
+    redisDB.createRoom(roomid, req.body);
+    res.send("Created room id " + roomid);
+  }, (err) => {
+    res.send(err);
+  })
 })
 
 export default router;
