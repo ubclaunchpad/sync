@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React  from 'react';
 import YouTube from 'react-youtube';
 import { ClientEvent } from '../api/constants';
 import io from "socket.io-client";
@@ -10,6 +10,7 @@ class Room extends React.Component<{location: any}> {
     socket : io.connect(ClientEvent.SERVER_URL),
     validRoomId: false,
     loaded: false,
+    roomId: '',
   }
 
   async componentDidMount(){
@@ -20,6 +21,7 @@ class Room extends React.Component<{location: any}> {
       this.setState({
         loaded: true,
         validRoomId: true,
+        roomId: params['roomid'],
       })
     }
     else {
@@ -62,16 +64,17 @@ class Room extends React.Component<{location: any}> {
 
   render() {
     let videoPlayer = this.state.loaded && this.state.validRoomId ? 
-    <React.Fragment>
-    <h1>Room {}</h1>
-    <YouTube 
-    videoId={'HXcSGuYUkDg'}
-    onReady={this.handleOnReady}
-    onPlay={this.handleOnPlay}
-    onStateChange={this.handleOnStateChange} 
-    onPause={this.handleOnPause}
-    />
-    </React.Fragment> : null;
+      <React.Fragment>
+        <h1>Room {this.state.roomId}</h1>
+        <YouTube 
+        videoId={'HXcSGuYUkDg'}
+        onReady={this.handleOnReady}
+        onPlay={this.handleOnPlay}
+        onStateChange={this.handleOnStateChange} 
+        onPause={this.handleOnPause}
+        />
+      </React.Fragment> : 
+        null;
 
     let invalidRoomId = this.state.loaded && !this.state.validRoomId ? 
     <h1>Invalid room id :(</h1> : null;
