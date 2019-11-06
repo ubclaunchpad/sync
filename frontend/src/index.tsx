@@ -5,6 +5,7 @@ import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
 import RoomsPage from './components/RoomsPage';
 import HomePage from './components/HomePage';
 import JoinPage from './components/JoinPage';
+import Room from './components/Room'
 import * as serviceWorker from './serviceWorker';
 
 const routing = (
@@ -24,6 +25,7 @@ const routing = (
       <Route exact path="/" component={HomePage} />
       <Route path="/rooms" component={RoomsPage} />
       <Route path="/join" component={JoinPage} />
+      <Route path="/room" component={Room} />
     </div>
   </Router>
 )
