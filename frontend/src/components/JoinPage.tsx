@@ -1,14 +1,12 @@
-import React, {Component} from 'react';
+import React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
-class Join extends Component {
+class Join extends React.Component{
   state = {
     roomId: '',
     redirect: false,
   }
-
-  componentDidMount(){}
 
   setRedirect = () => {
     this.setState({
@@ -18,20 +16,24 @@ class Join extends Component {
 
   renderRedirect = () => {
     const { roomId, redirect } = this.state;
-    const route = '/rooms' + '?roomid=' + roomId;
     if (redirect) {
-      return <Redirect to={route} />
+      return <Redirect to={{
+        pathname: '/room',
+        search: "?roomid=" + roomId,
+        state: { valid: true }
+      }} />
     }
   }
 
-  getRoomId = (roomId : string) => {
-    axios
-      .get("http://localhost:8080/rooms?roomid=" + roomId)
-      .then(data => data.data ? this.setRedirect() : alert('Enter a valid room id'))
-      .catch(err => {
-        console.log(err);
-        return null;
-      })
+  getRoomId = async (roomId: string) => {
+    let res = await axios.get("http://localhost:8080/rooms?roomid=" + roomId);
+    if (res && res.data){
+      console.log('roomId exists');
+      this.setRedirect();
+    }
+    else {
+      alert('Room does not exist :(');
+    }
   };
 
   handleSubmit = () => {
