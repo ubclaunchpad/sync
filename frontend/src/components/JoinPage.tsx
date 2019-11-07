@@ -20,7 +20,6 @@ class Join extends React.Component{
       return <Redirect to={{
         pathname: '/room',
         search: "?roomid=" + roomId,
-        state: { valid: true }
       }} />
     }
   }
