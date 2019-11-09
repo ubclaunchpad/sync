@@ -10,8 +10,6 @@ class HomePage extends React.Component{
     redirect : false
   }
 
-// const HomePage: React.FC = () => {
-  // const [roomid, redirect] = useState({roomid : null, redirect : false});
   renderRedirect = () => {
     if(this.state.redirect){
       return <Redirect to={{
@@ -23,7 +21,6 @@ class HomePage extends React.Component{
 
   createRoom = async () => {
     var res = await axios.post('http://localhost:8080/rooms', {})
-    // renderRedirect(res.data);
     this.setState({roomid : res.data, redirect: true});
   }
   render() {
@@ -31,7 +28,6 @@ class HomePage extends React.Component{
       <div className="App">
         <h1>Sync Along</h1>
         {this.renderRedirect()}
-        {/* <Button component={Link} to="/rooms" color="primary">Create</Button> */}
         <Button onClick ={this.createRoom} color="primary">Create</Button>
         <Button component={Link} to="/join" color="primary">Join</Button>
         <Button component={Link} to="/rooms" color="primary">Discover</Button>
