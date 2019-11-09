@@ -10,7 +10,6 @@ interface State {
 }
 
 class HomePage extends React.Component<{}, State> {
-  self = this;
   state = {
     roomid : "", 
     redirect : false
