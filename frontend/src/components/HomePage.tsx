@@ -4,14 +4,21 @@ import Button from '@material-ui/core/Button';
 import '../styles/HomePage.css';
 import axios from 'axios';
 
-class HomePage extends React.Component{
+interface State {
+  roomid: string,
+  redirect: boolean
+}
+
+class HomePage extends React.Component<{}, State> {
+  self = this;
   state = {
-    roomid : null, 
+    roomid : "", 
     redirect : false
   }
 
   renderRedirect = () => {
     if(this.state.redirect){
+      this.setState({redirect: false});
       return <Redirect to={{
         pathname: '/room',
         search: "?roomid=" + this.state.roomid,
@@ -19,11 +26,11 @@ class HomePage extends React.Component{
     }
   }
 
-  createRoom = async () => {
+  createRoom = async() => {
     const res = await axios.post('http://localhost:8080/rooms', {})
     this.setState({roomid : res.data, redirect: true});
   }
-  render() {
+  render = () => {
     return (
       <div className="App">
         <h1>Sync Along</h1>
