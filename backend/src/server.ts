@@ -8,6 +8,12 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 const server = http.createServer(app);
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); 
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.use('/', router);
 
 server.listen(PORT, () => {
