@@ -31,7 +31,7 @@ router.post('/rooms', (req, res) => {
       roomid = uuidv1();
     }
     redisDB.createRoom(roomid, req.body);
-    res.send("Created room id " + roomid);
+    res.send(roomid);
   }, (err) => {
     res.send(err);
   })
