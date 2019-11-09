@@ -20,7 +20,7 @@ class HomePage extends React.Component{
   }
 
   createRoom = async () => {
-    var res = await axios.post('http://localhost:8080/rooms', {})
+    const res = await axios.post('http://localhost:8080/rooms', {})
     this.setState({roomid : res.data, redirect: true});
   }
   render() {
