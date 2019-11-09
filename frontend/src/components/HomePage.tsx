@@ -8,7 +8,7 @@ const HomePage: React.FC = () => {
     <div className="App">
       <h1>Sync Along</h1>
       <Button component={Link} to="/rooms" color="primary">Create</Button>
-      <Button component={Link} to="/rooms" color="primary">Join</Button>
+      <Button component={Link} to="/join" color="primary">Join</Button>
       <Button component={Link} to="/rooms" color="primary">Discover</Button>
     </div>
   );
