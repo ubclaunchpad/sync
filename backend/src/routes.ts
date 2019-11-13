@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 
 router.get('/rooms', (req, res) => {
   console.log(req.query["roomid"]);
-  var id = req.query["roomid"]
+  const id = req.query["roomid"]
   redisDB.getRoom(id).then((data) => {
     res.send(data);
   }, (err) => {
@@ -25,13 +25,13 @@ router.get('/rooms', (req, res) => {
 
 router.post('/rooms', (req, res) => {
   redisDB.getAllRooms().then((data: any) => {
-    var roomid = uuidv1();
-    var existingKeys = new Set(data);
+    let roomid = uuidv1();
+    const existingKeys = new Set(data);
     while(existingKeys.has(roomid)){
       roomid = uuidv1();
     }
     redisDB.createRoom(roomid, req.body);
-    res.send("Created room id " + roomid);
+    res.send(roomid);
   }, (err) => {
     res.send(err);
   })
