@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import YouTube from 'react-youtube';
 import { ClientEvent } from '../api/constants';
 import io from "socket.io-client";
@@ -14,6 +14,11 @@ class Room extends React.Component<{location: any}> {
   }
 
   async componentDidMount(){
+    const socket = this.state.socket;
+    socket.on('connect', () => {
+      console.log('Lets sign up for a room');
+       socket.emit('room', roomId);
+     });
     let params = queryString.parse(this.props.location.search);
     let roomId = params['roomid'];
     let res = await axios.get("http://localhost:8080/rooms?roomid=" + roomId);
@@ -33,12 +38,14 @@ class Room extends React.Component<{location: any}> {
 
   handleOnPause = (event: { target: any, data: number }) => {
     const socket=this.state.socket;
-    socket.emit(ClientEvent.PAUSE, {data: "Pause!"});
+    const roomId = this.state.roomId;
+    socket.emit(ClientEvent.PAUSE + roomId, {data: "Pause!"});
   }
 
   handleOnPlay = (event: { target: any, data: number }) => {
      const socket = this.state.socket;
-     socket.emit(ClientEvent.PLAY, {data: "Play!"});
+     const roomId = this.state.roomId;
+     socket.emit(ClientEvent.PLAY + roomId, {data: "Play!"});
   }
 
   handleOnStateChange = (event: { target: any }) => {
@@ -47,15 +54,19 @@ class Room extends React.Component<{location: any}> {
 
   //When the video player is ready, add listeners for play, pause etc
   handleOnReady = (event: { target: any; }) => {
+    console.log('handleOnReady is ready');
     const socket=this.state.socket;
     const player = event.target;
+    const roomId = this.state.roomId;
 
-    socket.on(ClientEvent.PLAY, (dataFromServer: any) => {
-      console.log(dataFromServer);
+    const playCommand = ClientEvent.PLAY + roomId;
+    console.log('playCommand: ' + playCommand);
+    socket.on(ClientEvent.PLAY + roomId, (dataFromServer: any) => {
+      console.log('Play is being sent from server');
       player.playVideo();
     });
 
-    socket.on(ClientEvent.PAUSE, (dataFromServer: any) => {
+    socket.on(ClientEvent.PAUSE + roomId, (dataFromServer: any) => {
       console.log(dataFromServer);
       player.pauseVideo();
     });
