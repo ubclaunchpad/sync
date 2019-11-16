@@ -24,8 +24,6 @@ const io = socketIo(server);
 io.on(ServerEvent.CONNECT, (socket) => {
   console.log('User connected');
 
-  socket.emit('connect');
-
   socket.on(ServerEvent.JOIN_ROOM, (roomId) => {
     socket.join(roomId, () => {
       io.to(roomId).emit(ServerEvent.MESSAGE, {msg: "A new user has joined the room!"});
@@ -37,12 +35,5 @@ io.on(ServerEvent.CONNECT, (socket) => {
     socket.on(ServerEvent.PAUSE + roomId, () => {
       io.to(roomId).emit(ServerEvent.PAUSE + roomId, {msg: 'Pause!'});
     });
-  });
-  
-  socket.emit(ServerEvent.EVENT_FROM_SERVER_TEST, {data: "Welcome to the socketio server"});
-
-  socket.on(ServerEvent.EVENT_TO_SERVER_TEST, (dataFromClient) => {
-    console.log('Event from client received'+ dataFromClient);
-    io.emit(ServerEvent.EVENT_TO_ALL_TEST, 'io.emit to all test');
   });
 });
