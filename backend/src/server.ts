@@ -23,21 +23,17 @@ server.listen(PORT, () => {
 const io = socketIo(server);
 io.on(ServerEvent.CONNECT, (socket) => {
   console.log('User connected');
-  
-  socket.emit(ServerEvent.EVENT_FROM_SERVER_TEST, {data: "Welcome to the socketio server"});
 
-  socket.on(ServerEvent.EVENT_TO_SERVER_TEST, (dataFromClient) => {
-    console.log('Event from client received'+ dataFromClient);
-    io.emit(ServerEvent.EVENT_TO_ALL_TEST, 'io.emit to all test');
-  });
+  socket.on(ServerEvent.JOIN_ROOM, (roomId) => {
+    socket.join(roomId, () => {
+      io.to(roomId).emit(ServerEvent.MESSAGE, {msg: "A new user has joined the room!"});
+    });
+    socket.on(ServerEvent.PLAY + roomId, ()=> {
+      io.to(roomId).emit(ServerEvent.PLAY + roomId, {msg: 'Play!'});
+    })
 
-  //TODO: When a client presses play, send a play command to all clients
-  socket.on(ServerEvent.PLAY, () => {
-    socket.broadcast.emit(ServerEvent.PLAY, {data: 'Play from server'});
-  });
-
-  //TODO: When a client pauses, send a pause command to all clients
-  socket.on(ServerEvent.PAUSE, () => {
-    socket.broadcast.emit(ServerEvent.PAUSE, {data: 'Pause from server'});
+    socket.on(ServerEvent.PAUSE + roomId, () => {
+      io.to(roomId).emit(ServerEvent.PAUSE + roomId, {msg: 'Pause!'});
+    });
   });
 });
