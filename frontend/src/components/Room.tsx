@@ -19,7 +19,7 @@ class Room extends React.Component<{location: any}> {
 
   async componentDidMount(){
     const socket = this.state.socket;
-    socket.on('connect', () => {
+    socket.on(ClientEvent.CONNECT, () => {
        socket.emit(ClientEvent.JOIN_ROOM, roomId);
      });
     let params = queryString.parse(this.props.location.search);
