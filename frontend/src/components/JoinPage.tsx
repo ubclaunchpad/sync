@@ -1,8 +1,40 @@
 import React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import TextField from '@material-ui/core/TextField';
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
-class Join extends React.Component{
+const styles = createStyles({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  textField: {
+    marginLeft: '0',
+    marginRight: '0',
+    width: '500px',
+  },
+  button: {
+    background: '#001953',
+// border: 1px solid rgba(255, 255, 255, 0.31);
+    boxSizing: 'border-box',
+    borderRadius: '5px',
+    color: 'white',
+    "&:hover": {
+      backgroundColor: "#001953"
+    },
+    marginTop: '100px',
+    height: '60px',
+    width: '260px',
+    
+  },
+  input: {
+    display: 'none',
+  },
+}) 
+
+class Join extends React.Component<{classes: any}>{
   state = {
     roomId: '',
     redirect: false,
@@ -45,14 +77,28 @@ class Join extends React.Component{
   }
 
   render() {
+    const { classes } = this.props;
+    const { roomId } = this.state;
+    console.log('roomId: ' + roomId);
     return (
-    <div>
+    <div style={{textAlign: "center"}}>
       {this.renderRedirect()}
       <h1>Join Page</h1>
-        Room id: <input onChange={this.handleOnChange} type="text" name="roomid"></input>
-        <button onClick={this.handleSubmit} >Submit</button>
+        {/* Room id: <input onChange={this.handleOnChange} type="text" name="roomid"></input> */}
+        <div style={{marginTop: "50px"}}>
+        <TextField
+          onChange={this.handleOnChange}
+          id="outlined-basic"
+          className={classes.textField}
+          label="Room Id"
+          margin="normal"
+          variant="outlined"
+        />
+      </div>
+        {/* <button onClick={this.handleSubmit} >Submit</button> */}
+        <Button onClick={this.handleSubmit} variant="outlined" className={classes.button}>Submit</Button>
     </div>);
   }
 }
 
-export default Join;
+export default withStyles(styles)(Join);

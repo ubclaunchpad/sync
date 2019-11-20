@@ -1,3 +1,31 @@
 .App {
   text-align: center;
+  background-color: black;
+  color: white;
 }
+
+.navContainer {
+  height: 175px;
+}
+
+.navLeft {
+  height:100px;
+  width: 400px;
+  position: absolute;
+  width: 236px;
+  height: 42px;
+  left: 143px;
+  top: 52px;
+  font-family: Proxima Nova;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 40px;
+  line-height: 44px;
+  text-align: center;
+}
+
+.iconHeight {
+  height: 31px;
+  background-color: white;
+}
+
