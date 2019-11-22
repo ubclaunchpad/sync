@@ -11,6 +11,7 @@ import * as serviceWorker from './serviceWorker';
 const routing = (
   <Router>
     <div>
+      {/* Leave this uncommented out code for now, in case we want some form of these later */}
       {/* <ul>
         <li>
           <Link to="/">Home</Link>
