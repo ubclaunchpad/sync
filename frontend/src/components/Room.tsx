@@ -4,6 +4,8 @@ import { ClientEvent } from '../api/constants';
 import io from "socket.io-client";
 import queryString from 'query-string';
 import axios from 'axios';
+import Lottie from 'react-lottie'
+import loadingIndicator from '../lotties/loading.json';
 
 interface DataFromServer {
   msg: string,
@@ -15,8 +17,10 @@ class Room extends React.Component<{location: any}> {
     validRoomId: false,
     loaded: false,
     roomId: '',
+    loading: true,
   }
 
+  
   async componentDidMount(){
     const socket = this.state.socket;
     socket.on(ClientEvent.CONNECT, () => {
@@ -26,15 +30,19 @@ class Room extends React.Component<{location: any}> {
     let roomId = params['roomid'];
     let res = await axios.get("http://localhost:8080/rooms?roomid=" + roomId);
     if (res && res.data){
-      this.setState({
-        loaded: true,
-        validRoomId: true,
-        roomId: params['roomid'],
-      })
+      setTimeout(() => {//Set delay to show cool spinner LOL!
+        this.setState({
+          loaded: true,
+          loading: false,
+          validRoomId: true,
+          roomId: params['roomid'],
+        })
+      }, 2000);
     }
     else {
       this.setState({
         loaded: true,
+        loading: false,
       })
     }
   }
@@ -77,9 +85,17 @@ class Room extends React.Component<{location: any}> {
   }
 
   render() {
+    const defaultOptions = {
+      loop: true,
+      autoplay: true, 
+      animationData: loadingIndicator,
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid slice'
+      }
+    };
     let videoPlayer = this.state.loaded && this.state.validRoomId 
     ? <React.Fragment>
-        <h1>Room {this.state.roomId}</h1>
+        <h1 style={{color: "white"}}>Room {this.state.roomId}</h1>
         <YouTube 
           videoId={'HXcSGuYUkDg'}
           onReady={this.handleOnReady}
@@ -94,10 +110,16 @@ class Room extends React.Component<{location: any}> {
     ? <h1>Invalid room id :(</h1> 
     : null;
 
+    let showLoadingIndicator = !this.state.loaded ? 
+    <Lottie options={defaultOptions}
+    height={400}
+    width={400} />: null ; 
+
     return (
     <div>
       {videoPlayer}
       {invalidRoomId}
+      {showLoadingIndicator}
     </div>
     );
   }

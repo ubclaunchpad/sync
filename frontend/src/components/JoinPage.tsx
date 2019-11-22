@@ -17,7 +17,6 @@ const styles = createStyles({
   },
   button: {
     background: '#001953',
-// border: 1px solid rgba(255, 255, 255, 0.31);
     boxSizing: 'border-box',
     borderRadius: '5px',
     color: 'white',
@@ -27,7 +26,6 @@ const styles = createStyles({
     marginTop: '100px',
     height: '60px',
     width: '260px',
-    
   },
   input: {
     display: 'none',
@@ -81,23 +79,22 @@ class Join extends React.Component<{classes: any}>{
     const { roomId } = this.state;
     console.log('roomId: ' + roomId);
     return (
-    <div style={{textAlign: "center"}}>
-      {this.renderRedirect()}
-      <h1>Join Page</h1>
-        {/* Room id: <input onChange={this.handleOnChange} type="text" name="roomid"></input> */}
-        <div style={{marginTop: "50px"}}>
-        <TextField
-          onChange={this.handleOnChange}
-          id="outlined-basic"
-          className={classes.textField}
-          label="Room Id"
-          margin="normal"
-          variant="outlined"
-        />
-      </div>
-        {/* <button onClick={this.handleSubmit} >Submit</button> */}
-        <Button onClick={this.handleSubmit} variant="outlined" className={classes.button}>Submit</Button>
-    </div>);
+      <div style={{textAlign: "center"}}>
+        {this.renderRedirect()}
+        <h1>Join Room</h1>
+          <div style={{marginTop: "50px"}}>
+            <TextField
+              onChange={this.handleOnChange}
+              id="outlined-basic"
+              className={classes.textField}
+              label="Room Id"
+              margin="normal"
+              variant="outlined"
+            />
+          </div>
+          <Button onClick={this.handleSubmit} variant="outlined" className={classes.button}>Submit</Button>
+        </div>
+    );
   }
 }
 
