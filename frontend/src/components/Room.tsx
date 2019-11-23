@@ -108,7 +108,7 @@ class Room extends React.Component<{location: any}> {
     : null;
 
     let invalidRoomId = this.state.loaded && !this.state.validRoomId 
-    ? <h1>Invalid room id :(</h1> 
+    ? <h1 style={{color: "white"}}>Invalid room id :(</h1> 
     : null;
 
     let showLoadingIndicator = !this.state.loaded ? 
