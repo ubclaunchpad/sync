@@ -6,6 +6,7 @@ import queryString from 'query-string';
 import axios from 'axios';
 import Lottie from 'react-lottie'
 import loadingIndicator from '../lotties/loading.json';
+import '../styles/Room.css';
 
 interface DataFromServer {
   msg: string,
@@ -116,7 +117,7 @@ class Room extends React.Component<{location: any}> {
     width={400} />: null ; 
 
     return (
-    <div>
+    <div className="container">
       {videoPlayer}
       {invalidRoomId}
       {showLoadingIndicator}
