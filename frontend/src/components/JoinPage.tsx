@@ -36,6 +36,8 @@ class Join extends React.Component<{classes: any}>{
   state = {
     roomId: '',
     redirect: false,
+    roomName: '',
+    url: '',
   }
 
   setRedirect = () => {
@@ -50,6 +52,10 @@ class Join extends React.Component<{classes: any}>{
       return <Redirect to={{
         pathname: '/room',
         search: "?roomid=" + roomId,
+        state: { 
+          url: this.state.url,
+          roomName: this.state.roomName,
+         },
       }} />
     }
   }
@@ -57,6 +63,12 @@ class Join extends React.Component<{classes: any}>{
   getRoomId = async (roomId: string) => {
     let res = await axios.get("http://localhost:8080/rooms?roomid=" + roomId);
     if (res && res.data){
+      const url = res.data['url'];
+      const roomName = res.data['roomName'];
+      this.setState({
+        url,
+        roomName,
+      });
       console.log('roomId exists');
       this.setRedirect();
     }
