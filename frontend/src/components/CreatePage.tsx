@@ -61,7 +61,10 @@ class Create extends React.Component<{classes: any}>{
   }
 
   createRoom = async () => {
-    const res = await axios.post('http://localhost:8080/rooms', {});
+    const res = await axios.post('http://localhost:8080/rooms', {
+      url: this.state.url, 
+      roomName: this.state.roomName
+    });
     this.setState({roomId : res.data});
     this.setRedirect();
   }
