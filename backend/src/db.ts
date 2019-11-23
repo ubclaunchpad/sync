@@ -1,8 +1,8 @@
 import redis from 'redis';
 
 interface Room{
-    owner: string,
-    capacity: number
+    url: string,
+    roomName: string,
 }
 
 export class DBS{
