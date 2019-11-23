@@ -11,7 +11,8 @@ import * as serviceWorker from './serviceWorker';
 const routing = (
   <Router>
     <div>
-      <ul>
+      {/* Leave this uncommented out code for now, in case we want some form of these later */}
+      {/* <ul>
         <li>
           <Link to="/">Home</Link>
         </li>
@@ -21,7 +22,7 @@ const routing = (
         <li>
           <Link to="/join">Join</Link>
         </li>
-      </ul>
+      </ul> */}
       <Route exact path="/" component={HomePage} />
       <Route path="/rooms" component={RoomsPage} />
       <Route path="/join" component={JoinPage} />
