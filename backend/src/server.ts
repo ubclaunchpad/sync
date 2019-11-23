@@ -4,12 +4,12 @@ import socketIo from 'socket.io';
 import router from './routes';
 import  { ServerEvent }  from './constants';
 
-const PORT = process.env.PORT || 8080; 
+const PORT = process.env.PORT || 8080;
 const app = express();
 const server = http.createServer(app);
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); 
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
@@ -26,14 +26,15 @@ io.on(ServerEvent.CONNECT, (socket) => {
 
   socket.on(ServerEvent.JOIN_ROOM, (roomId) => {
     socket.join(roomId, () => {
-      io.to(roomId).emit(ServerEvent.MESSAGE, {msg: "A new user has joined the room!"});
+      socket.to(roomId).emit(ServerEvent.MESSAGE, {msg: "A new user has joined the room!"});
     });
-    socket.on(ServerEvent.PLAY + roomId, ()=> {
-      io.to(roomId).emit(ServerEvent.PLAY + roomId, {msg: 'Play!'});
+
+    socket.on(ServerEvent.PLAY, (data) => {
+      socket.to(roomId).emit(ServerEvent.PLAY, {msg: 'Play!', time: data.time});
     })
 
-    socket.on(ServerEvent.PAUSE + roomId, () => {
-      io.to(roomId).emit(ServerEvent.PAUSE + roomId, {msg: 'Pause!'});
+    socket.on(ServerEvent.PAUSE, () => {
+      socket.to(roomId).emit(ServerEvent.PAUSE, {msg: 'Pause!'});
     });
   });
 });

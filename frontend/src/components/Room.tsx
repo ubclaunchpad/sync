@@ -10,6 +10,7 @@ import '../styles/Room.css';
 
 interface DataFromServer {
   msg: string,
+  time?: number
 }
 
 class Room extends React.Component<{location: any}> {
@@ -20,10 +21,10 @@ class Room extends React.Component<{location: any}> {
     roomId: '',
     roomName: null,
     videoId: '',
-    loading: true,
+    loading: true
   }
 
-  
+
   async componentDidMount(){
     const socket = this.state.socket;
     socket.on(ClientEvent.CONNECT, () => {
@@ -56,18 +57,17 @@ class Room extends React.Component<{location: any}> {
   }
 
   handleOnPause = (event: { target: any, data: number }) => {
-    const socket=this.state.socket;
-    const roomId = this.state.roomId;
-    socket.emit(ClientEvent.PAUSE + roomId, {data: "Pause!"});
+    const socket = this.state.socket;
+    socket.emit(ClientEvent.PAUSE, {data: "Pause!", });
   }
 
   handleOnPlay = (event: { target: any, data: number }) => {
-     const socket = this.state.socket;
-     const roomId = this.state.roomId;
-     socket.emit(ClientEvent.PLAY + roomId, {data: "Play!"});
+    const socket = this.state.socket;
+    const player = event.target;
+    socket.emit(ClientEvent.PLAY, {data: "Play!", time: player.getCurrentTime()});
   }
 
-  handleOnStateChange = (event: { target: any }) => {
+  handleOnStateChange = (event: { target: any, data: number }) => {
     console.log('State has changed');
   }
 
@@ -77,12 +77,15 @@ class Room extends React.Component<{location: any}> {
     const player = event.target;
     const roomId = this.state.roomId;
 
-    socket.on(ClientEvent.PLAY + roomId, (dataFromServer: DataFromServer) => {
+    socket.on(ClientEvent.PLAY, (dataFromServer: DataFromServer) => {
       console.log(dataFromServer.msg);
+      if (dataFromServer.time && Math.abs(dataFromServer.time - player.getCurrentTime()) > 0.5) {
+        player.seekTo(dataFromServer.time);
+      }
       player.playVideo();
     });
 
-    socket.on(ClientEvent.PAUSE + roomId, (dataFromServer: DataFromServer) => {
+    socket.on(ClientEvent.PAUSE, (dataFromServer: DataFromServer) => {
       console.log(dataFromServer.msg);
       player.pauseVideo();
     });
@@ -95,33 +98,33 @@ class Room extends React.Component<{location: any}> {
   render() {
     const defaultOptions = {
       loop: true,
-      autoplay: true, 
+      autoplay: true,
       animationData: loadingIndicator,
       rendererSettings: {
         preserveAspectRatio: 'xMidYMid slice'
       }
     };
-    let videoPlayer = this.state.loaded && this.state.validRoomId 
+    let videoPlayer = this.state.loaded && this.state.validRoomId
     ? <React.Fragment>
         <h1 style={{color: "white"}}>{this.state.roomName || ("Room" + this.state.roomId)}</h1>
-        <YouTube 
+        <YouTube
           videoId={this.state.videoId}
           onReady={this.handleOnReady}
           onPlay={this.handleOnPlay}
-          onStateChange={this.handleOnStateChange} 
+          onStateChange={this.handleOnStateChange}
           onPause={this.handleOnPause}
         />
-      </React.Fragment> 
+      </React.Fragment>
     : null;
 
-    let invalidRoomId = this.state.loaded && !this.state.validRoomId 
-    ? <h1 style={{color: "white"}}>Invalid room id :(</h1> 
+    let invalidRoomId = this.state.loaded && !this.state.validRoomId
+    ? <h1 style={{color: "white"}}>Invalid room id :(</h1>
     : null;
 
-    let showLoadingIndicator = !this.state.loaded ? 
+    let showLoadingIndicator = !this.state.loaded ?
     <Lottie options={defaultOptions}
     height={400}
-    width={400} />: null ; 
+    width={400} />: null ;
 
     return (
     <div className="container">
