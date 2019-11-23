@@ -11,7 +11,7 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import JoinPage from './JoinPage';
-import logo from '../images/logo.png';
+import newLogo from '../images/newLogo.png';
 
 interface State {
   roomid: string,
@@ -88,7 +88,7 @@ class HomePage extends React.Component<{classes: any}, State> {
         <div className="blueishOverlay" >
           <div className="navContainer">
             <div className="navLeft">
-              <img className="iconHeight" src={logo}></img>
+              <img className="logo" src={newLogo}></img>
             </div>
           </div>
           {this.renderRedirect()}
