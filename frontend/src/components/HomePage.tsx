@@ -21,14 +21,15 @@ interface State {
 
 const styles = {
   root: {
-    background: '#000D2E',
+    // background: '#000D2E',
+    background: '#000000',
     height: '292px',
     width: '212px',
     marginRight: '50px',
     marginLeft: '50px',
     border: '2px solid #051633',
     borderRadius: '10px',
-    opacity: '1', 
+    opacity: '1 !important', 
   },
   textPrimary: {
     color: 'white',
