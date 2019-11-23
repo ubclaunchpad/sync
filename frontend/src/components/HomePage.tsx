@@ -10,12 +10,14 @@ import { withStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import CreatePage from './CreatePage';
 import JoinPage from './JoinPage';
 import newLogo from '../images/newLogo.png';
 
 interface State {
   roomid: string,
   redirect: boolean,
+  openCreateModal: boolean,
   openJoinModal: boolean,
 }
 
@@ -53,19 +55,30 @@ class HomePage extends React.Component<{classes: any}, State> {
   state = {
     roomid : "", 
     redirect : false,
+    openCreateModal: false,
     openJoinModal: false,
   }
 
-  handleOpenJoinModal = () => {
-    this.setState({
-      openJoinModal: true,
-    })
+  handleOpenModal = (modal: number) => {
+    switch(modal) {
+      case 0:
+        this.setState({ openCreateModal: true });
+        break;
+      case 1:
+        this.setState({ openJoinModal: true });
+        break;
+    }
   }
 
-  handleCloseJoinModal = () => {
-    this.setState({
-      openJoinModal: false,
-    })
+  handleCloseModal = (modal: number) => {
+    switch(modal) {
+      case 0:
+        this.setState({ openCreateModal: false });
+        break;
+      case 1:
+        this.setState({ openJoinModal: false });
+        break;
+    }
   }
 
   renderRedirect = () => {
@@ -78,10 +91,6 @@ class HomePage extends React.Component<{classes: any}, State> {
     }
   }
 
-  createRoom = async() => {
-    const res = await axios.post('http://localhost:8080/rooms', {})
-    this.setState({roomid : res.data, redirect: true});
-  }
   render = () => {
     const { classes } = this.props;
     return (
@@ -93,16 +102,42 @@ class HomePage extends React.Component<{classes: any}, State> {
             </div>
           </div>
           {this.renderRedirect()}
-          <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} onClick={this.createRoom} color="primary"><div><img src={createSvg}></img><div>Create</div></div></Button>
-          <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} onClick={this.handleOpenJoinModal} color="primary"><div><img src={joinSvg}></img><div>Join</div></div></Button>
-          <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} component={Link} to="/rooms" color="primary"><div><img src={discoverSvg}></img><div>Discover</div></div></Button>
+          <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} onClick={() => this.handleOpenModal(0)} color="primary">
+            <div><img src={createSvg}></img><div>Create</div></div>
+          </Button>
+          <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} onClick={() => this.handleOpenModal(1)} color="primary">
+            <div><img src={joinSvg}></img><div>Join</div></div>
+          </Button>
+          <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} component={Link} to="/rooms" color="primary">
+            <div><img src={discoverSvg}></img><div>Discover</div></div>
+          </Button>
+          <Modal
+            disableAutoFocus={true}
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={this.state.openCreateModal}
+            onClose={() => this.handleCloseModal(0)}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+          <Fade in={this.state.openCreateModal}>
+            <div className={classes.paper}>
+              <CreatePage/>
+            </div>
+          </Fade>
+          </Modal>
+          
           <Modal
             disableAutoFocus={true}
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
             className={classes.modal}
             open={this.state.openJoinModal}
-            onClose={this.handleCloseJoinModal}
+            onClose={() => this.handleCloseModal(1)}
             closeAfterTransition
             BackdropComponent={Backdrop}
             BackdropProps={{
