@@ -35,6 +35,8 @@ const styles = createStyles({
 class Create extends React.Component<{classes: any}>{
   state = {
     roomId: '',
+    roomName: '',
+    url: '',
     redirect: false,
   }
 
@@ -50,28 +52,30 @@ class Create extends React.Component<{classes: any}>{
       return <Redirect to={{
         pathname: '/room',
         search: "?roomid=" + roomId,
+        state: { 
+          url: this.state.url,
+          roomName: this.state.roomName,
+         },
       }} />
     }
   }
 
-  getRoomId = async (roomId: string) => {
-    let res = await axios.get("http://localhost:8080/rooms?roomid=" + roomId);
-    if (res && res.data){
-      console.log('roomId exists');
-      this.setRedirect();
-    }
-    else {
-      alert('Room does not exist :(');
-    }
-  };
-
-  handleSubmit = () => {
-    const { roomId } = this.state;
-    this.getRoomId(roomId);
+  createRoom = async () => {
+    const res = await axios.post('http://localhost:8080/rooms', {});
+    this.setState({roomId : res.data});
+    this.setRedirect();
   }
 
-  handleOnChange = (e: any) => {
-    this.setState({roomId: e.target.value });
+  handleSubmit = () => {
+    this.createRoom();
+  }
+
+  handleOnChangeRoomName = (e: any) => {
+    this.setState({roomName: e.target.value });
+  }
+
+  handleOnChangeUrl = (e: any) => {
+    this.setState({url: e.target.value });
   }
 
   render() {
@@ -84,7 +88,7 @@ class Create extends React.Component<{classes: any}>{
         <h1>Create Room</h1>
           <div style={{marginTop: "20px"}}>
             <TextField
-              onChange={this.handleOnChange}
+              onChange={this.handleOnChangeRoomName}
               id="outlined-basic"
               className={classes.textField}
               label="Room Name"
@@ -92,7 +96,7 @@ class Create extends React.Component<{classes: any}>{
               variant="outlined"
             />
             <TextField
-              onChange={this.handleOnChange}
+              onChange={this.handleOnChangeUrl}
               id="outlined-basic"
               className={classes.textField}
               label="Video URL"
