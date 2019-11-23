@@ -18,6 +18,8 @@ class Room extends React.Component<{location: any}> {
     validRoomId: false,
     loaded: false,
     roomId: '',
+    roomName: null,
+    videoId: '',
     loading: true,
   }
 
@@ -28,6 +30,9 @@ class Room extends React.Component<{location: any}> {
        socket.emit(ClientEvent.JOIN_ROOM, roomId);
      });
     let params = queryString.parse(this.props.location.search);
+    const youtubeUrl = queryString.parse(this.props.location.state.url);
+    const roomName = this.props.location.state.roomName;
+    const youtubeId = youtubeUrl['https://www.youtube.com/watch?v'];
     let roomId = params['roomid'];
     let res = await axios.get("http://localhost:8080/rooms?roomid=" + roomId);
     if (res && res.data){
@@ -37,6 +42,8 @@ class Room extends React.Component<{location: any}> {
           loading: false,
           validRoomId: true,
           roomId: params['roomid'],
+          roomName: roomName,
+          videoId: youtubeId,
         })
       }, 2000);
     }
@@ -96,9 +103,9 @@ class Room extends React.Component<{location: any}> {
     };
     let videoPlayer = this.state.loaded && this.state.validRoomId 
     ? <React.Fragment>
-        <h1 style={{color: "white"}}>Room {this.state.roomId}</h1>
+        <h1 style={{color: "white"}}>{this.state.roomName || ("Room" + this.state.roomId)}</h1>
         <YouTube 
-          videoId={'HXcSGuYUkDg'}
+          videoId={this.state.videoId}
           onReady={this.handleOnReady}
           onPlay={this.handleOnPlay}
           onStateChange={this.handleOnStateChange} 

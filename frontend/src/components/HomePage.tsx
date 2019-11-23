@@ -90,11 +90,6 @@ class HomePage extends React.Component<{classes: any}, State> {
     }
   }
 
-  createRoom = async() => {
-    const res = await axios.post('http://localhost:8080/rooms', {})
-    this.setState({roomid : res.data, redirect: true});
-  }
-
   render = () => {
     const { classes } = this.props;
     return (
