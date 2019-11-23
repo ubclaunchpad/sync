@@ -3,7 +3,8 @@
   background-color: #002344;
   color: white;
   height: 100vh;
-  background-image: url(spiderman.gif);
+  /* background-image: url(spiderman.gif); */
+  background-image: url(cinema.gif);
   background-repeat: no-repeat;
   background-size: 100vw 100vh;
 }
