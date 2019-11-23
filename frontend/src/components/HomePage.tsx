@@ -3,16 +3,69 @@ import { Link , Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import '../styles/HomePage.css';
 import axios from 'axios';
+import createSvg from '../images/icon_create.svg';
+import discoverSvg from '../images/icon_discover.svg';
+import joinSvg from '../images/icon_join.svg';
+import { withStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+import JoinPage from './JoinPage';
+import newLogo from '../images/newLogo.png';
 
 interface State {
   roomid: string,
-  redirect: boolean
+  redirect: boolean,
+  openJoinModal: boolean,
 }
 
-class HomePage extends React.Component<{}, State> {
+const styles = {
+  root: {
+    // background: '#000D2E',
+    background: '#000000',
+    height: '292px',
+    width: '212px',
+    marginRight: '50px',
+    marginLeft: '50px',
+    border: '2px solid #051633',
+    borderRadius: '10px',
+    opacity: '1 !important', 
+  },
+  textPrimary: {
+    color: 'white',
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: "white",
+    border: '1px solid #000',
+    width: '905px',
+    height: '400px',
+    borderRadius: '20px',
+    outline: 'none',
+  },
+};
+
+class HomePage extends React.Component<{classes: any}, State> {
   state = {
     roomid : "", 
-    redirect : false
+    redirect : false,
+    openJoinModal: false,
+  }
+
+  handleOpenJoinModal = () => {
+    this.setState({
+      openJoinModal: true,
+    })
+  }
+
+  handleCloseJoinModal = () => {
+    this.setState({
+      openJoinModal: false,
+    })
   }
 
   renderRedirect = () => {
@@ -30,16 +83,44 @@ class HomePage extends React.Component<{}, State> {
     this.setState({roomid : res.data, redirect: true});
   }
   render = () => {
+    const { classes } = this.props;
     return (
       <div className="App">
-        <h1>Sync Along</h1>
-        {this.renderRedirect()}
-        <Button onClick ={this.createRoom} color="primary">Create</Button>
-        <Button component={Link} to="/join" color="primary">Join</Button>
-        <Button component={Link} to="/rooms" color="primary">Discover</Button>
+        <div className="blueishOverlay" >
+          <div className="navContainer">
+            <div className="navLeft">
+              <img className="logo" src={newLogo}></img>
+            </div>
+          </div>
+          {this.renderRedirect()}
+          <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} onClick={this.createRoom} color="primary"><div><img src={createSvg}></img><div>Create</div></div></Button>
+          <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} onClick={this.handleOpenJoinModal} color="primary"><div><img src={joinSvg}></img><div>Join</div></div></Button>
+          <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} component={Link} to="/rooms" color="primary"><div><img src={discoverSvg}></img><div>Discover</div></div></Button>
+          <Modal
+            disableAutoFocus={true}
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={this.state.openJoinModal}
+            onClose={this.handleCloseJoinModal}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+          <Fade in={this.state.openJoinModal}>
+            <div className={classes.paper}>
+              <JoinPage/>
+            </div>
+          </Fade>
+          </Modal>
       </div>
+    </div>
     );
   }
 }
 
-export default HomePage;
+
+
+export default withStyles(styles)(HomePage);
