@@ -1,40 +1,46 @@
 import http from 'http';
 import express  from 'express';
+import bodyParser from "body-parser";
 import socketIo from 'socket.io';
-import router from './routes';
 import  { ServerEvent }  from './constants';
+import Database from './database';
+import API from './api';
+import { Event } from "./sockets/event";
+import joinRoom from "./sockets/handler";
+import logger from "./logger";
 
-const PORT = process.env.PORT || 8080;
-const app = express();
-const server = http.createServer(app);
+export default class Server {
+  private app: express.Application;
+  private port: number;
+  private httpServer: http.Server;
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+  constructor(port?: number) {
+    this.port = port || 8080;
+    this.app = express();
+    this.httpServer = http.createServer(app);
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.app.use("/", new API(new Database()).router);
+  }
 
-app.use('/', router);
-
-server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
-
-const io = socketIo(server);
-io.on(ServerEvent.CONNECT, (socket) => {
-  console.log('User connected');
-
-  socket.on(ServerEvent.JOIN_ROOM, (roomId) => {
-    socket.join(roomId, () => {
-      socket.to(roomId).emit(ServerEvent.MESSAGE, {msg: "A new user has joined the room!"});
+  public listen(): void {
+    this.httpServer.listen(this.port, () => {
+      logger.info(`Http server listening on port ${this.port}`);
     });
+  }
 
-    socket.on(ServerEvent.PLAY, (data) => {
-      socket.to(roomId).emit(ServerEvent.PLAY, {msg: 'Play!', time: data.time});
-    })
+  private setupSockets(): void {
+    const io = socketIo(this.httpServer);
+    io.on(Event.CONNECT, (socket) => {
+      logger.debug(`Socket ${socket.id} connected.`);
 
-    socket.on(ServerEvent.PAUSE, () => {
-      socket.to(roomId).emit(ServerEvent.PAUSE, {msg: 'Pause!'});
+      socket.on(Event.JOIN_ROOM, (roomId) => {
+        joinRoom(io, socket, roomId);
+      });
+
+      socket.on(Event.DISCONNECT, (socket) => {
+        logger.debug(`Socket ${socket.id} disconnected.`);
+      })
     });
-  });
-});
+  }
+}
