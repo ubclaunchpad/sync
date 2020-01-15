@@ -6,7 +6,7 @@ import Database from './database';
 import API from './api';
 import { Event } from "../sockets/event";
 import joinRoom from "../sockets/handler";
-import logger from "../logger";
+import logger from "../config/logger";
 
 export default class Server {
   private app: express.Application;
