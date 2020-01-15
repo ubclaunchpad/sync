@@ -15,7 +15,7 @@ export default class API {
   private initRoutes(): void {
     this.router.get("/status", this.getStatus.bind(this));
     this.router.get("/rooms/:id", this.getRoom.bind(this));
-    this.router.delete("/rooms/:id", this.deleteRoom.bind(this))
+    this.router.delete("/rooms/:id", this.deleteRoom.bind(this));
     this.router.post("/rooms", this.createRoom.bind(this));
   }
 
@@ -36,7 +36,7 @@ export default class API {
     }
   }
 
-  private async deleteRoom(req: Request, res: Response): Promise<void>  {
+  private async deleteRoom(req: Request, res: Response): Promise<void> {
     try {
       await this.db.deleteRoom(req.params.id);
       res.sendStatus(200);
@@ -45,14 +45,14 @@ export default class API {
     }
   }
 
-  private async createRoom(req: Request, res: Response): Promise<void>  {
+  private async createRoom(req: Request, res: Response): Promise<void> {
     try {
       const ids = await this.db.getRoomIds();
       let roomId = uniqid();
       while (ids.includes(roomId)) {
         roomId = uniqid();
       }
-      const data = await this.db.createRoom(roomId, req.body);
+      await this.db.createRoom(roomId, req.body);
       res.sendStatus(200);
     } catch (err) {
       res.status(500).send("Error: Couldn't create room.");
