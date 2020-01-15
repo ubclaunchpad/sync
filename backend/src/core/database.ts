@@ -2,8 +2,8 @@ import redis from "redis";
 import logger from "../config/logger";
 
 interface Room {
-  name: string,
-  url: string
+  name: string;
+  url: string;
 }
 
 export default class Database {
@@ -65,7 +65,7 @@ export default class Database {
   public async getRoomIds(): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       logger.info(`Get room ids`);
-      this.client.keys("room:*", function (err, res) {
+      this.client.keys("room:*", function(err, res) {
         if (err) {
           logger.error(`Couldn't get room ids: ${err}`);
           reject(err);
@@ -89,5 +89,4 @@ export default class Database {
       logger.error(`Redis Server Error: ${err}`);
     });
   }
-
 }

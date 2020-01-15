@@ -1,9 +1,9 @@
-import http from 'http';
-import express  from 'express';
+import http from "http";
+import express from "express";
 import bodyParser from "body-parser";
-import socketIo from 'socket.io';
-import Database from './database';
-import API from './api';
+import socketIo from "socket.io";
+import Database from "./database";
+import API from "./api";
 import { Event } from "../sockets/event";
 import joinRoom from "../sockets/handler";
 import logger from "../config/logger";
@@ -31,16 +31,16 @@ export default class Server {
 
   private setupSockets(): void {
     const io = socketIo(this.httpServer);
-    io.on(Event.CONNECT, (socket) => {
+    io.on(Event.CONNECT, socket => {
       logger.debug(`Socket ${socket.id} connected.`);
 
-      socket.on(Event.JOIN_ROOM, (roomId) => {
+      socket.on(Event.JOIN_ROOM, roomId => {
         joinRoom(io, socket, roomId);
       });
 
-      socket.on(Event.DISCONNECT, (socket) => {
+      socket.on(Event.DISCONNECT, socket => {
         logger.debug(`Socket ${socket.id} disconnected.`);
-      })
+      });
     });
   }
 }
