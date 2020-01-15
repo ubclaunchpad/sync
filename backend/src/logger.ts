@@ -1,7 +1,7 @@
 import pino from "pino";
 
 const logger = pino({
-  level: "info",
+  level: process.env.LOG_LEVEL || "info",
   base: null,
   prettyPrint: true,
   timestamp: () => {
