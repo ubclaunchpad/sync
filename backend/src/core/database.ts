@@ -1,5 +1,5 @@
 import redis from "redis";
-import logger from "./logger";
+import logger from "../logger";
 
 interface Room {
   name: string,
