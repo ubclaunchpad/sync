@@ -2,12 +2,11 @@ import http from 'http';
 import express  from 'express';
 import bodyParser from "body-parser";
 import socketIo from 'socket.io';
-import  { ServerEvent }  from './constants';
 import Database from './database';
 import API from './api';
-import { Event } from "./sockets/event";
-import joinRoom from "./sockets/handler";
-import logger from "./logger";
+import { Event } from "../sockets/event";
+import joinRoom from "../sockets/handler";
+import logger from "../logger";
 
 export default class Server {
   private app: express.Application;
@@ -17,10 +16,11 @@ export default class Server {
   constructor(port?: number) {
     this.port = port || 8080;
     this.app = express();
-    this.httpServer = http.createServer(app);
+    this.httpServer = http.createServer(this.app);
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use("/", new API(new Database()).router);
+    this.setupSockets();
   }
 
   public listen(): void {
