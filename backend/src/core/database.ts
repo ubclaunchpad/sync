@@ -40,6 +40,10 @@ export default class Database {
           logger.error(`Couldn't get room: ${err}`);
           reject(err);
         }
+        if (!res) {
+          logger.error(`Room ${id} not found`);
+          reject(`404: Room ${id} not found`);
+        }
         resolve(JSON.parse(res));
       });
     });
