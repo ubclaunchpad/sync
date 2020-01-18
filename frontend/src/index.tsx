@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './styles/index.css';
 import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
 import RoomsPage from './components/RoomsPage';
 import HomePage from './components/HomePage';
