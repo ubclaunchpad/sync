@@ -53,7 +53,7 @@ export default class API {
         roomId = uniqid();
       }
       await this.db.createRoom(roomId, req.body);
-      res.sendStatus(200);
+      res.send(roomId);
     } catch (err) {
       res.status(500).send("Error: Couldn't create room.");
     }

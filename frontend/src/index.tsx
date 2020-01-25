@@ -1,39 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
-import RoomsPage from './components/RoomsPage';
-import HomePage from './components/HomePage';
-import JoinPage from './components/JoinPage';
-import Room from './components/Room'
-import * as serviceWorker from './serviceWorker';
+import { Route, BrowserRouter as Router } from 'react-router-dom';
+import Room from './components/Room';
+import Home from "./components/Home";
+import Browse from "./components/Browse";
+import './styles/index.css';
 
-const routing = (
+const App = (
   <Router>
     <div>
-      {/* Leave this uncommented out code for now, in case we want some form of these later */}
-      {/* <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/rooms">Rooms</Link>
-        </li>
-        <li>
-          <Link to="/join">Join</Link>
-        </li>
-      </ul> */}
-      <Route exact path="/" component={HomePage} />
-      <Route path="/rooms" component={RoomsPage} />
-      <Route path="/join" component={JoinPage} />
-      <Route path="/room" component={Room} />
+      <Route exact path="/" component={Home} />
+      <Route exact path="/rooms/:id" component={Room} />
+      <Route exact path="/rooms" component={Browse} />
     </div>
   </Router>
-)
+);
 
-ReactDOM.render(routing, document.getElementById('root'))
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.register();
+ReactDOM.render(App, document.getElementById('root'))
