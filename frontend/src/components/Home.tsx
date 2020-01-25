@@ -6,7 +6,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import logo from "../images/logo.png";
 import createIcon from '../images/icon-create.svg';
-import discoverIcon from '../images/icon-discover.svg';
+import browseIcon from '../images/icon-browse.svg';
 import joinIcon from '../images/icon-join.svg';
 import "../styles/Home.css";
 import { withStyles } from "@material-ui/core";
@@ -46,13 +46,13 @@ class Home extends React.Component<Props, State> {
           </div>
 
           <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} onClick={() => this.setState({modal: ModalType.CREATE})} color="primary">
-            <div><img src={createIcon}></img><div>Create</div></div>
+            <div><img src={createIcon}></img><div>Create Room</div></div>
           </Button>
           <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} onClick={() => this.setState({modal: ModalType.JOIN})} color="primary">
-            <div><img src={joinIcon}></img><div>Join</div></div>
+            <div><img src={joinIcon}></img><div>Join Room</div></div>
           </Button>
           <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} component={Link} to="/rooms" color="primary">
-            <div><img src={discoverIcon}></img><div>Discover</div></div>
+            <div><img src={browseIcon}></img><div>Browse Rooms</div></div>
           </Button>
 
           {/* <Modal
