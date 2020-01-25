@@ -1,70 +1,46 @@
 import React from 'react';
-import YouTube from 'react-youtube';
-import { ClientEvent } from '../api/constants';
 import io from "socket.io-client";
-import queryString from 'query-string';
 import axios from 'axios';
-import Lottie from 'react-lottie'
-import loadingIndicator from '../lotties/loading.json';
+import Lottie from 'react-lottie';
+import YouTube from 'react-youtube';
+import { Event } from "../sockets/event";
 import '../styles/Room.css';
+import loadingIndicator from '../lotties/loading.json';
 
-interface DataFromServer {
-  msg: string,
-  time?: number
+interface Props {
+  match: any;
 }
 
-class Room extends React.Component<{location: any}> {
-  state = {
-    socket : io.connect(ClientEvent.SERVER_URL),
-    validRoomId: false,
-    loaded: false,
-    roomId: '',
-    roomName: null,
-    videoId: '',
-    loading: true
-  }
+interface State {
+  isValid: boolean;
+  isLoaded: boolean;
+  name: string;
+  currVideoId: string;
+}
 
+class Room extends React.Component<Props, State> {
+  private socket: SocketIOClient.Socket;
 
-  async componentDidMount(){
-    const socket = this.state.socket;
-    socket.on(ClientEvent.CONNECT, () => {
-       socket.emit(ClientEvent.JOIN_ROOM, roomId);
-     });
-    let params = queryString.parse(this.props.location.search);
-    const youtubeUrl = queryString.parse(this.props.location.state.url);
-    const roomName = this.props.location.state.roomName;
-    const youtubeId = youtubeUrl['https://www.youtube.com/watch?v'];
-    let roomId = params['roomid'];
-    let res = await axios.get("http://localhost:8080/rooms?roomid=" + roomId);
-    if (res && res.data){
-      setTimeout(() => {//Set delay to show cool spinner LOL!
-        this.setState({
-          loaded: true,
-          loading: false,
-          validRoomId: true,
-          roomId: params['roomid'],
-          roomName: roomName,
-          videoId: youtubeId,
-        })
-      }, 2000);
-    }
-    else {
-      this.setState({
-        loaded: true,
-        loading: false,
-      })
-    }
+  constructor(props: Props) {
+    super(props);
+    this.socket = io.connect("http://localhost:8080/");
+    this.state = {
+      isValid: false,
+      isLoaded: false,
+      name: "",
+      currVideoId: ""
+    };
+
   }
 
   handleOnPause = (event: { target: any, data: number }) => {
-    const socket = this.state.socket;
-    socket.emit(ClientEvent.PAUSE, {data: "Pause!", });
+    const player = event.target;
+    this.socket.emit(Event.PAUSE_VIDEO, player.getCurrentTime());
   }
 
   handleOnPlay = (event: { target: any, data: number }) => {
-    const socket = this.state.socket;
     const player = event.target;
-    socket.emit(ClientEvent.PLAY, {data: "Play!", time: player.getCurrentTime()});
+    this.socket.emit(Event.PLAY_VIDEO, player.getCurrentTime());
   }
 
   handleOnStateChange = (event: { target: any, data: number }) => {
@@ -73,26 +49,46 @@ class Room extends React.Component<{location: any}> {
 
   //When the video player is ready, add listeners for play, pause etc
   handleOnReady = (event: { target: any; }) => {
-    const socket=this.state.socket;
     const player = event.target;
-    const roomId = this.state.roomId;
+    const { id } = this.props.match.params;
 
-    socket.on(ClientEvent.PLAY, (dataFromServer: DataFromServer) => {
+    this.socket.on(Event.PLAY_VIDEO, (dataFromServer: any) => {
       console.log(dataFromServer.msg);
       if (dataFromServer.time && Math.abs(dataFromServer.time - player.getCurrentTime()) > 0.5) {
-        player.seekTo(dataFromServer.time);
+        player.seekTo(dataFromServer);
       }
       player.playVideo();
     });
 
-    socket.on(ClientEvent.PAUSE, (dataFromServer: DataFromServer) => {
-      console.log(dataFromServer.msg);
+    this.socket.on(Event.PAUSE_VIDEO, (dataFromServer: any) => {
+      console.log(dataFromServer);
       player.pauseVideo();
     });
 
-    socket.on(ClientEvent.MESSAGE, (dataFromServer: DataFromServer) => {
-      console.log( dataFromServer.msg);
-    })
+    this.socket.on(Event.MESSAGE, (dataFromServer: any) => {
+      console.log( dataFromServer);
+    });
+  }
+
+  async componentDidMount() {
+    const { id } = this.props.match.params;
+    this.socket.on(Event.CONNECT, () => {
+      this.socket.emit(Event.JOIN_ROOM, id);
+    });
+    const res = await axios.get("http://localhost:8080/rooms/" + id);
+    if (res && res.status === 200) {
+      this.setState({
+        currVideoId: res.data.url.replace("https://www.youtube.com/watch?v=", ""),
+        isLoaded: true,
+        isValid: true,
+        name: res.data.name
+      });
+    } else {
+      this.setState({
+        isLoaded: true,
+        isValid: false,
+      });
+    }
   }
 
   render() {
@@ -104,11 +100,12 @@ class Room extends React.Component<{location: any}> {
         preserveAspectRatio: 'xMidYMid slice'
       }
     };
-    let videoPlayer = this.state.loaded && this.state.validRoomId
+    const { id } = this.props.match.params;
+    const videoPlayer = this.state.isLoaded && this.state.isValid
     ? <React.Fragment>
-        <h1 style={{color: "white"}}>{this.state.roomName || ("Room" + this.state.roomId)}</h1>
+        <h1 style={{color: "white"}}>{this.state.name || ("Room" + id)}</h1>
         <YouTube
-          videoId={this.state.videoId}
+          videoId={this.state.currVideoId}
           onReady={this.handleOnReady}
           onPlay={this.handleOnPlay}
           onStateChange={this.handleOnStateChange}
@@ -117,11 +114,11 @@ class Room extends React.Component<{location: any}> {
       </React.Fragment>
     : null;
 
-    let invalidRoomId = this.state.loaded && !this.state.validRoomId
+    let invalidRoomId = this.state.isLoaded && !this.state.isValid
     ? <h1 style={{color: "white"}}>Invalid room id :(</h1>
     : null;
 
-    let showLoadingIndicator = !this.state.loaded ?
+    let showLoadingIndicator = !this.state.isLoaded ?
     <Lottie options={defaultOptions}
     height={400}
     width={400} />: null ;
@@ -134,6 +131,7 @@ class Room extends React.Component<{location: any}> {
     </div>
     );
   }
+
 }
 
 export default Room;
