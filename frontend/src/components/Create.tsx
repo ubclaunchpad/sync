@@ -29,6 +29,7 @@ class Create extends React.Component<Props, State> {
     this.handleNameFieldChange = this.handleNameFieldChange.bind(this);
     this.handleUrlFieldChange = this.handleUrlFieldChange.bind(this);
     this.handleCreateRoom = this.handleCreateRoom.bind(this);
+    this.redirectIfRoomCreated = this.redirectIfRoomCreated.bind(this);
   }
 
   handleNameFieldChange(e: any) {
