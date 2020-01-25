@@ -1,7 +1,15 @@
 {
-    "editor.tabSize": 2,
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/build": true,
-      },
+  "editor.tabSize": 2,
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.formatOnSave": true,
+  "eslint.enable": true,
+  "eslint.alwaysShowStatus": true,
+  "eslint.workingDirectories": [ "backend" ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/build": true,
+  },
 }
