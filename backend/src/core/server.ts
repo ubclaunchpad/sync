@@ -17,6 +17,11 @@ export default class Server {
     this.port = port || 8080;
     this.app = express();
     this.httpServer = http.createServer(this.app);
+    this.app.use((req, res, next) => {
+      res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      next();
+    });
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use("/", new API(new Database()).router);
