@@ -1,15 +1,17 @@
 import React from "react";
 import { Link } from 'react-router-dom';
+import Create from "./Create";
+import Join from "./Join";
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import { withStyles } from "@material-ui/core";
 import logo from "../images/logo.png";
 import createIcon from '../images/icon-create.svg';
 import browseIcon from '../images/icon-browse.svg';
 import joinIcon from '../images/icon-join.svg';
 import "../styles/Home.css";
-import { withStyles } from "@material-ui/core";
 
 enum ModalType {
   NONE = 0,
@@ -55,11 +57,11 @@ class Home extends React.Component<Props, State> {
             <div><img src={browseIcon}></img><div>Browse Rooms</div></div>
           </Button>
 
-          {/* <Modal
+          <Modal
             disableAutoFocus={true}
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
-            className={styles.modal}
+            className={classes.modal}
             open={this.state.modal === ModalType.CREATE}
             onClose={() => this.setState({modal: ModalType.NONE})}
             closeAfterTransition
@@ -69,8 +71,8 @@ class Home extends React.Component<Props, State> {
             }}
           >
             <Fade in={this.state.modal === ModalType.CREATE}>
-              <div className={styles.paper}>
-                <CreatePage />
+              <div className={classes.paper}>
+                <Create />
               </div>
             </Fade>
           </Modal>
@@ -79,7 +81,7 @@ class Home extends React.Component<Props, State> {
             disableAutoFocus={true}
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
-            className={styles.modal}
+            className={classes.modal}
             open={this.state.modal === ModalType.JOIN}
             onClose={() => this.setState({modal: ModalType.NONE})}
             closeAfterTransition
@@ -89,11 +91,11 @@ class Home extends React.Component<Props, State> {
             }}
           >
             <Fade in={this.state.modal === ModalType.JOIN}>
-              <div className={styles.paper}>
-                <JoinPage />
+              <div className={classes.paper}>
+                <Join />
               </div>
             </Fade>
-          </Modal> */}
+          </Modal>
 
         </div>
       </div>
