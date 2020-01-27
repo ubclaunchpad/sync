@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+
 cd backend
 echo "Backend: installing..."
 npm install
