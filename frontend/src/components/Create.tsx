@@ -1,23 +1,22 @@
-import React from 'react';
-import axios from 'axios';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import { withStyles, createStyles } from '@material-ui/core/styles';
-import { Redirect } from 'react-router-dom';
+import React from "react";
+import axios from "axios";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import { withStyles, createStyles } from "@material-ui/core/styles";
+import { Redirect } from "react-router-dom";
 
 interface Props {
-  classes: any
+  classes: any;
 }
 
 interface State {
-  id: string,
-  name: string,
-  url: string,
-  redirect: boolean
+  id: string;
+  name: string;
+  url: string;
+  redirect: boolean;
 }
 
 class Create extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -41,7 +40,7 @@ class Create extends React.Component<Props, State> {
   }
 
   async handleCreateRoom() {
-    const res = await axios.post('http://localhost:8080/rooms', {
+    const res = await axios.post("http://localhost:8080/rooms", {
       url: this.state.url,
       name: this.state.name
     });
@@ -50,9 +49,13 @@ class Create extends React.Component<Props, State> {
 
   redirectIfRoomCreated() {
     if (this.state.redirect) {
-      return <Redirect to={{
-        pathname: "/rooms/" + this.state.id
-      }} />
+      return (
+        <Redirect
+          to={{
+            pathname: "/rooms/" + this.state.id
+          }}
+        />
+      );
     }
   }
 
@@ -80,7 +83,14 @@ class Create extends React.Component<Props, State> {
             variant="outlined"
           />
         </div>
-        <Button onClick={this.handleCreateRoom} variant="outlined" className={classes.button} style={{ marginTop: "35px" }}>Create</Button>
+        <Button
+          onClick={this.handleCreateRoom}
+          variant="outlined"
+          className={classes.button}
+          style={{ marginTop: "35px" }}
+        >
+          Create
+        </Button>
       </div>
     );
   }
@@ -88,29 +98,29 @@ class Create extends React.Component<Props, State> {
 
 const materialUiStyles = createStyles({
   container: {
-    display: 'flex',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexWrap: "wrap"
   },
   textField: {
-    marginLeft: '0',
-    marginRight: '0',
-    width: '500px',
+    marginLeft: "0",
+    marginRight: "0",
+    width: "500px"
   },
   button: {
-    background: '#001953',
-    boxSizing: 'border-box',
-    borderRadius: '5px',
-    color: 'white',
+    background: "#001953",
+    boxSizing: "border-box",
+    borderRadius: "5px",
+    color: "white",
     "&:hover": {
       backgroundColor: "#001953"
     },
-    marginTop: '100px',
-    height: '60px',
-    width: '260px',
+    marginTop: "100px",
+    height: "60px",
+    width: "260px"
   },
   input: {
-    display: 'none',
-  },
+    display: "none"
+  }
 });
 
 export default withStyles(materialUiStyles)(Create);

@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 import io from "socket.io-client";
-import axios from 'axios';
-import Lottie from 'react-lottie';
-import YouTube from 'react-youtube';
+import axios from "axios";
+import Lottie from "react-lottie";
+import YouTube from "react-youtube";
 import { Event } from "../sockets/event";
-import '../styles/Room.css';
-import loadingIndicator from '../lotties/loading.json';
+import "../styles/Room.css";
+import loadingIndicator from "../lotties/loading.json";
 
 interface Props {
   match: any;
@@ -36,21 +36,21 @@ class Room extends React.Component<Props, State> {
     this.handleOnReady = this.handleOnReady.bind(this);
   }
 
-  handleOnPause(event: { target: any, data: number }) {
+  handleOnPause(event: { target: any; data: number }) {
     const player = event.target;
     this.socket.emit(Event.PAUSE_VIDEO, player.getCurrentTime());
   }
 
-  handleOnPlay(event: { target: any, data: number }) {
+  handleOnPlay(event: { target: any; data: number }) {
     const player = event.target;
     this.socket.emit(Event.PLAY_VIDEO, player.getCurrentTime());
   }
 
-  handleOnStateChange(event: { target: any, data: number }) {
-    console.log('State has changed');
+  handleOnStateChange(event: { target: any; data: number }) {
+    console.log("State has changed");
   }
 
-  handleOnReady(event: { target: any; }) {
+  handleOnReady(event: { target: any }) {
     const player = event.target;
 
     this.socket.on(Event.PLAY_VIDEO, (time: number) => {
@@ -81,7 +81,7 @@ class Room extends React.Component<Props, State> {
     } else {
       this.setState({
         isLoaded: true,
-        isValid: false,
+        isValid: false
       });
     }
   }
@@ -92,42 +92,39 @@ class Room extends React.Component<Props, State> {
       autoplay: true,
       animationData: loadingIndicator,
       rendererSettings: {
-        preserveAspectRatio: 'xMidYMid slice'
+        preserveAspectRatio: "xMidYMid slice"
       }
     };
     const { id } = this.props.match.params;
-    const videoPlayer = this.state.isLoaded && this.state.isValid
-    ? <React.Fragment>
-        <h1 style={{color: "white"}}>{this.state.name || ("Room" + id)}</h1>
-        <YouTube
-          videoId={this.state.currVideoId}
-          onReady={this.handleOnReady}
-          onPlay={this.handleOnPlay}
-          onStateChange={this.handleOnStateChange}
-          onPause={this.handleOnPause}
-        />
-      </React.Fragment>
-    : null;
+    const videoPlayer =
+      this.state.isLoaded && this.state.isValid ? (
+        <React.Fragment>
+          <h1 style={{ color: "white" }}>{this.state.name || "Room" + id}</h1>
+          <YouTube
+            videoId={this.state.currVideoId}
+            onReady={this.handleOnReady}
+            onPlay={this.handleOnPlay}
+            onStateChange={this.handleOnStateChange}
+            onPause={this.handleOnPause}
+          />
+        </React.Fragment>
+      ) : null;
 
-    let invalidRoomId = this.state.isLoaded && !this.state.isValid
-    ? <h1 style={{color: "white"}}>Invalid room id :(</h1>
-    : null;
+    const invalidRoomId =
+      this.state.isLoaded && !this.state.isValid ? <h1 style={{ color: "white" }}>Invalid room id :(</h1> : null;
 
-    let showLoadingIndicator = !this.state.isLoaded ?
-    <Lottie
-    options={defaultOptions}
-    height={400}
-    width={400} />: null ;
+    const showLoadingIndicator = !this.state.isLoaded ? (
+      <Lottie options={defaultOptions} height={400} width={400} />
+    ) : null;
 
     return (
-    <div className="container">
-      {videoPlayer}
-      {invalidRoomId}
-      {showLoadingIndicator}
-    </div>
+      <div className="container">
+        {videoPlayer}
+        {invalidRoomId}
+        {showLoadingIndicator}
+      </div>
     );
   }
-
 }
 
 export default Room;
