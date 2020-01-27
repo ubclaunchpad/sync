@@ -30,43 +30,38 @@ class Room extends React.Component<Props, State> {
       name: "",
       currVideoId: ""
     };
-
+    this.handleOnPause = this.handleOnPause.bind(this);
+    this.handleOnPlay = this.handleOnPlay.bind(this);
+    this.handleOnStateChange = this.handleOnStateChange.bind(this);
+    this.handleOnReady = this.handleOnReady.bind(this);
   }
 
-  handleOnPause = (event: { target: any, data: number }) => {
+  handleOnPause(event: { target: any, data: number }) {
     const player = event.target;
     this.socket.emit(Event.PAUSE_VIDEO, player.getCurrentTime());
   }
 
-  handleOnPlay = (event: { target: any, data: number }) => {
+  handleOnPlay(event: { target: any, data: number }) {
     const player = event.target;
     this.socket.emit(Event.PLAY_VIDEO, player.getCurrentTime());
   }
 
-  handleOnStateChange = (event: { target: any, data: number }) => {
+  handleOnStateChange(event: { target: any, data: number }) {
     console.log('State has changed');
   }
 
-  //When the video player is ready, add listeners for play, pause etc
-  handleOnReady = (event: { target: any; }) => {
+  handleOnReady(event: { target: any; }) {
     const player = event.target;
-    const { id } = this.props.match.params;
 
-    this.socket.on(Event.PLAY_VIDEO, (dataFromServer: any) => {
-      console.log(dataFromServer.msg);
-      if (dataFromServer.time && Math.abs(dataFromServer.time - player.getCurrentTime()) > 0.5) {
-        player.seekTo(dataFromServer);
+    this.socket.on(Event.PLAY_VIDEO, (time: number) => {
+      if (time && Math.abs(time - player.getCurrentTime()) > 0.5) {
+        player.seekTo(time);
       }
       player.playVideo();
     });
 
-    this.socket.on(Event.PAUSE_VIDEO, (dataFromServer: any) => {
-      console.log(dataFromServer);
+    this.socket.on(Event.PAUSE_VIDEO, (time: number) => {
       player.pauseVideo();
-    });
-
-    this.socket.on(Event.MESSAGE, (dataFromServer: any) => {
-      console.log( dataFromServer);
     });
   }
 
@@ -119,7 +114,8 @@ class Room extends React.Component<Props, State> {
     : null;
 
     let showLoadingIndicator = !this.state.isLoaded ?
-    <Lottie options={defaultOptions}
+    <Lottie
+    options={defaultOptions}
     height={400}
     width={400} />: null ;
 
