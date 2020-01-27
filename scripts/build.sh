@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eo pipefail
+CI=false
 
 cd backend
 echo "Backend: compiling..."
