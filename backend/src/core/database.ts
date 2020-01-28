@@ -9,11 +9,11 @@ interface Room {
 export default class Database {
   private client: redis.RedisClient;
 
-  constructor(port?: number, host?: string) {
-    if (port && host) {
+  constructor(port: number, host?: string) {
+    if (host) {
       this.client = redis.createClient(port, host);
     } else {
-      this.client = redis.createClient();
+      this.client = redis.createClient(port);
     }
 
     this.initListeners();
