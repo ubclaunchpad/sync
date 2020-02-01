@@ -70,15 +70,22 @@ class Room extends React.Component<Props, State> {
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
     });
-    const res = await axios.get("http://localhost:8080/rooms/" + id);
-    if (res && res.status === 200) {
-      this.setState({
-        currVideoId: res.data.url.replace("https://www.youtube.com/watch?v=", ""),
-        isLoaded: true,
-        isValid: true,
-        name: res.data.name
-      });
-    } else {
+    try {
+      const res = await axios.get("http://localhost:8080/rooms/" + id);
+      if (res && res.status === 200) {
+        this.setState({
+          currVideoId: res.data.url.replace("https://www.youtube.com/watch?v=", ""),
+          isLoaded: true,
+          isValid: true,
+          name: res.data.name
+        });
+      } else {
+        this.setState({
+          isLoaded: true,
+          isValid: false
+        });
+      }
+    } catch (err) {
       this.setState({
         isLoaded: true,
         isValid: false
