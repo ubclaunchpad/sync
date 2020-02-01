@@ -28,4 +28,8 @@ handlers[Event.PAUSE_VIDEO] = (io: Server, socket: Socket, roomId: string, time:
   socket.to(roomId).emit(Event.PAUSE_VIDEO, time);
 };
 
+handlers[Event.ADD_TO_QUEUE] = (io: Server, socket: Socket, roomId: string, videoUrl: string): void => {
+  socket.to(roomId).emit(Event.ADD_TO_QUEUE, videoUrl);
+};
+
 export default joinRoom;

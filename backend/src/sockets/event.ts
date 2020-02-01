@@ -4,5 +4,6 @@ export enum Event {
   MESSAGE = "message",
   JOIN_ROOM = "join room",
   PLAY_VIDEO = "play video",
-  PAUSE_VIDEO = "pause video"
+  PAUSE_VIDEO = "pause video",
+  ADD_TO_QUEUE = "add to queue"
 }

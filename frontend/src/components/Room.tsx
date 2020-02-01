@@ -6,6 +6,7 @@ import YouTube from "react-youtube";
 import { Event } from "../sockets/event";
 import "../styles/Room.css";
 import loadingIndicator from "../lotties/loading.json";
+import Queue from "./Queue";
 
 interface Props {
   match: any;
@@ -114,6 +115,7 @@ class Room extends React.Component<Props, State> {
             onStateChange={this.handleOnStateChange}
             onPause={this.handleOnPause}
           />
+          <Queue socket={this.socket} />
         </React.Fragment>
       ) : null;
 
