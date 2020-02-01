@@ -6,6 +6,7 @@ import YouTube from 'react-youtube';
 import { Event } from "../sockets/event";
 import '../styles/Room.css';
 import loadingIndicator from '../lotties/loading.json';
+import Chat from './Chat';
 
 interface Props {
   match: any;
@@ -16,6 +17,7 @@ interface State {
   isLoaded: boolean;
   name: string;
   currVideoId: string;
+  messages: string[];
 }
 
 class Room extends React.Component<Props, State> {
@@ -28,7 +30,8 @@ class Room extends React.Component<Props, State> {
       isValid: false,
       isLoaded: false,
       name: "",
-      currVideoId: ""
+      currVideoId: "",
+      messages: []
     };
 
   }
@@ -45,6 +48,21 @@ class Room extends React.Component<Props, State> {
 
   handleOnStateChange = (event: { target: any, data: number }) => {
     console.log('State has changed');
+  }
+
+  addMessage = (message: string) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      messages: prevState.messages.concat(message)
+    }));
+  };
+
+  handleSendMessage = (data: string) => {
+    // console.log(data);
+    if (data) {
+      this.socket.emit(Event.MESSAGE, data);
+      this.addMessage(data);
+    }
   }
 
   //When the video player is ready, add listeners for play, pause etc
@@ -66,7 +84,8 @@ class Room extends React.Component<Props, State> {
     });
 
     this.socket.on(Event.MESSAGE, (dataFromServer: any) => {
-      console.log( dataFromServer);
+      console.log(dataFromServer);
+
     });
   }
 
@@ -102,8 +121,8 @@ class Room extends React.Component<Props, State> {
     };
     const { id } = this.props.match.params;
     const videoPlayer = this.state.isLoaded && this.state.isValid
-    ? <React.Fragment>
-        <h1 style={{color: "white"}}>{this.state.name || ("Room" + id)}</h1>
+      ? <React.Fragment>
+        <h1 style={{ color: "white" }}>{this.state.name || ("Room" + id)}</h1>
         <YouTube
           videoId={this.state.currVideoId}
           onReady={this.handleOnReady}
@@ -112,23 +131,25 @@ class Room extends React.Component<Props, State> {
           onPause={this.handleOnPause}
         />
       </React.Fragment>
-    : null;
+      : null;
 
     let invalidRoomId = this.state.isLoaded && !this.state.isValid
-    ? <h1 style={{color: "white"}}>Invalid room id :(</h1>
-    : null;
+      ? <h1 style={{ color: "white" }}>Invalid room id :(</h1>
+      : null;
 
     let showLoadingIndicator = !this.state.isLoaded ?
-    <Lottie options={defaultOptions}
-    height={400}
-    width={400} />: null ;
+      <Lottie options={defaultOptions}
+        height={400}
+        width={400} /> : null;
 
     return (
-    <div className="container">
-      {videoPlayer}
-      {invalidRoomId}
-      {showLoadingIndicator}
-    </div>
+      <div className="container">
+        {videoPlayer}
+        {invalidRoomId}
+        {showLoadingIndicator}
+        <Chat messages={["fc"]} sendMessage={this.handleSendMessage} />
+
+      </div>
     );
   }
 

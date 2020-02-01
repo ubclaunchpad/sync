@@ -46,6 +46,11 @@ export default class Server {
       socket.on(Event.DISCONNECT, socket => {
         logger.debug(`Socket ${socket.id} disconnected.`);
       });
+
+      socket.on(Event.MESSAGE, data => {
+        socket.broadcast.emit(Event.MESSAGE, data);
+        logger.debug(data);
+      })
     });
   }
 }

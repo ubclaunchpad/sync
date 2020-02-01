@@ -28,4 +28,8 @@ handlers[Event.PAUSE_VIDEO] = (io: Server, socket: Socket, roomId: string, time:
   socket.to(roomId).emit(Event.PAUSE_VIDEO, time);
 };
 
+handlers[Event.MESSAGE] = (io: Server, socket: Socket, roomId: string, time: number, message: string): void => {
+  // socket.to(roomId).emit(Event.MESSAGE, time);
+}
+
 export default joinRoom;
