@@ -4,8 +4,9 @@ import axios from "axios";
 import Lottie from "react-lottie";
 import YouTube from "react-youtube";
 import { Event } from "../sockets/event";
-import "../styles/Room.css";
-import loadingIndicator from "../lotties/loading.json";
+import '../styles/Room.css';
+import loadingIndicator from '../lotties/loading.json';
+import Chat from './Chat';
 
 interface Props {
   match: any;
@@ -16,6 +17,7 @@ interface State {
   isLoaded: boolean;
   name: string;
   currVideoId: string;
+  messages: string[];
 }
 
 class Room extends React.Component<Props, State> {
@@ -28,7 +30,8 @@ class Room extends React.Component<Props, State> {
       isValid: false,
       isLoaded: false,
       name: "",
-      currVideoId: ""
+      currVideoId: "",
+      messages: []
     };
     this.handleOnPause = this.handleOnPause.bind(this);
     this.handleOnPlay = this.handleOnPlay.bind(this);
@@ -50,7 +53,23 @@ class Room extends React.Component<Props, State> {
     console.log("State has changed");
   }
 
-  handleOnReady(event: { target: any }) {
+  addMessage = (message: string) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      messages: prevState.messages.concat(message)
+    }));
+  };
+
+  handleSendMessage = (data: string) => {
+    // console.log(data);
+    if (data) {
+      this.socket.emit(Event.MESSAGE, data);
+      this.addMessage(data);
+    }
+  }
+
+  //When the video player is ready, add listeners for play, pause etc
+  handleOnReady = (event: { target: any; }) => {
     const player = event.target;
 
     this.socket.on(Event.PLAY_VIDEO, (time: number) => {
@@ -62,6 +81,11 @@ class Room extends React.Component<Props, State> {
 
     this.socket.on(Event.PAUSE_VIDEO, (time: number) => {
       player.pauseVideo();
+    });
+
+    this.socket.on(Event.MESSAGE, (dataFromServer: any) => {
+      console.log(dataFromServer);
+
     });
   }
 
@@ -129,6 +153,8 @@ class Room extends React.Component<Props, State> {
         {videoPlayer}
         {invalidRoomId}
         {showLoadingIndicator}
+        <Chat messages={["fc"]} sendMessage={this.handleSendMessage} />
+
       </div>
     );
   }
