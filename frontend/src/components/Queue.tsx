@@ -1,7 +1,8 @@
 import React from "react";
-import { List, ListItem, ListItemText, ListSubheader } from "@material-ui/core";
+import { List, ListItem, ListItemText, TextField, ListItemSecondaryAction, IconButton } from "@material-ui/core";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import { Event } from "../sockets/event";
+import AddIcon from "@material-ui/icons/Add";
 
 interface Video {
   name: string;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 interface State {
+  newVideoUrl: string;
   videos: Video[];
 }
 
@@ -21,23 +23,24 @@ class Queue extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      newVideoUrl: "",
       videos: []
     };
 
-    this.addVideo = this.addVideo.bind(this);
-    this.handleAddVideo = this.handleAddVideo.bind(this);
+    this.add = this.add.bind(this);
+    this.requestAdd = this.requestAdd.bind(this);
   }
 
-  handleAddVideo(): void {
+  requestAdd(videoUrl: string): void {
     debugger;
-    this.addVideo();
-    this.props.socket.emit(Event.ADD_TO_QUEUE);
+    this.props.socket.emit(Event.REQUEST_ADD_TO_QUEUE, videoUrl);
   }
 
-  addVideo(): void {
+  add(title: string): void {
     debugger;
+    console.log("Adding a video");
     const videos = this.state.videos;
-    const newVideo = { name: "Test Video", url: "https://youtube.com" };
+    const newVideo = { name: title, url: "https://youtube.com" };
     videos.push(newVideo);
 
     this.setState({ videos });
@@ -45,7 +48,7 @@ class Queue extends React.Component<Props, State> {
 
   componentDidMount() {
     debugger;
-    this.props.socket.on(Event.ADD_TO_QUEUE, this.addVideo);
+    this.props.socket.on(Event.ADD_TO_QUEUE, (title: string) => this.add(title));
   }
 
   render() {
@@ -53,14 +56,25 @@ class Queue extends React.Component<Props, State> {
 
     return (
       <List component="nav" className={classes.list}>
-        {this.state.videos.map(video => (
-          <ListItem>
+        <ListItem>
+          <TextField
+            InputProps={{ className: classes.textField }}
+            InputLabelProps={{ className: classes.textField }}
+            label="YouTube URL"
+            variant="outlined"
+            onChange={event => this.setState({ newVideoUrl: event.target.value })}
+          />
+          <ListItemSecondaryAction>
+            <IconButton edge="end" aria-label="comments" onClick={() => this.requestAdd(this.state.newVideoUrl)}>
+              <AddIcon style={{ color: "white" }} />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+        {this.state.videos.map((video, i) => (
+          <ListItem key={i}>
             <ListItemText primary={video.name} />
           </ListItem>
         ))}
-        <ListItem button onClick={this.handleAddVideo}>
-          <ListItemText primary="Add video" />
-        </ListItem>
       </List>
     );
   }
@@ -68,6 +82,13 @@ class Queue extends React.Component<Props, State> {
 
 const materialUiStyles = createStyles({
   list: {
+    color: "white"
+  },
+  textField: {
+    "& input + fieldset": {
+      borderColor: "green !important",
+      borderWidth: 2
+    },
     color: "white"
   }
 });
