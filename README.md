@@ -1,4 +1,4 @@
-# Sync Along
+# Sync
 [![Build Status](https://travis-ci.com/ubclaunchpad/sync.svg?branch=master)](https://travis-ci.com/ubclaunchpad/sync)
 
 Sync is an interactive streaming site where you can watch YouTube videos synchronously with others. 
