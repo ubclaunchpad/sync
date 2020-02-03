@@ -38,6 +38,7 @@ class Room extends React.Component<Props, State> {
     this.handleOnPlay = this.handleOnPlay.bind(this);
     this.handleOnStateChange = this.handleOnStateChange.bind(this);
     this.handleOnReady = this.handleOnReady.bind(this);
+    this.handleEnd = this.handleEnd.bind(this);
     this.requestAddToQueue = this.requestAddToQueue.bind(this);
     this.addToQueue = this.addToQueue.bind(this);
   }
@@ -53,10 +54,16 @@ class Room extends React.Component<Props, State> {
   }
 
   handleOnStateChange(event: { target: any; data: number }) {
-    console.log("State has changed");
+    console.log("State has changed with data = " + event.data);
+
+    // If event.data is 5, a new video has just been set so we should play it
+    if (event.data == 5) {
+      event.target.playVideo();
+    }
   }
 
   handleOnReady(event: { target: any }) {
+    console.log("Called handleOnready");
     const player = event.target;
 
     this.socket.on(Event.PLAY_VIDEO, (time: number) => {
@@ -69,6 +76,14 @@ class Room extends React.Component<Props, State> {
     this.socket.on(Event.PAUSE_VIDEO, (time: number) => {
       player.pauseVideo();
     });
+
+    this.socket.on(Event.SET_VIDEO, (video: Video) => {
+      this.setState({ currVideoId: video.url.replace("https://www.youtube.com/watch?v=", "") });
+    });
+  }
+
+  handleEnd(event: { target: any }) {
+    if (this.state.videoQueue.length > 0) this.socket.emit(Event.SET_VIDEO, this.state.videoQueue[0]);
   }
 
   requestAddToQueue(videoUrl: string): void {
@@ -130,6 +145,7 @@ class Room extends React.Component<Props, State> {
             onPlay={this.handleOnPlay}
             onStateChange={this.handleOnStateChange}
             onPause={this.handleOnPause}
+            onEnd={this.handleEnd}
           />
           <Queue onAddVideo={this.requestAddToQueue} videos={this.state.videoQueue} />
         </React.Fragment>
