@@ -7,6 +7,7 @@ import { Event } from "../sockets/event";
 import "../styles/Room.css";
 import loadingIndicator from "../lotties/loading.json";
 import Queue from "./Queue";
+import Video from "../models/video";
 
 interface Props {
   match: any;
@@ -17,6 +18,7 @@ interface State {
   isLoaded: boolean;
   name: string;
   currVideoId: string;
+  videoQueue: Video[];
 }
 
 class Room extends React.Component<Props, State> {
@@ -29,12 +31,15 @@ class Room extends React.Component<Props, State> {
       isValid: false,
       isLoaded: false,
       name: "",
-      currVideoId: ""
+      currVideoId: "",
+      videoQueue: []
     };
     this.handleOnPause = this.handleOnPause.bind(this);
     this.handleOnPlay = this.handleOnPlay.bind(this);
     this.handleOnStateChange = this.handleOnStateChange.bind(this);
     this.handleOnReady = this.handleOnReady.bind(this);
+    this.requestAddToQueue = this.requestAddToQueue.bind(this);
+    this.addToQueue = this.addToQueue.bind(this);
   }
 
   handleOnPause(event: { target: any; data: number }) {
@@ -66,11 +71,22 @@ class Room extends React.Component<Props, State> {
     });
   }
 
+  requestAddToQueue(videoUrl: string): void {
+    this.socket.emit(Event.REQUEST_ADD_TO_QUEUE, videoUrl);
+  }
+
+  addToQueue(video: Video): void {
+    const videoQueue = this.state.videoQueue;
+    videoQueue.push(video);
+    this.setState({ videoQueue });
+  }
+
   async componentDidMount() {
     const { id } = this.props.match.params;
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
     });
+    this.socket.on(Event.ADD_TO_QUEUE, (video: Video) => this.addToQueue(video));
     try {
       const res = await axios.get("http://localhost:8080/rooms/" + id);
       if (res && res.status === 200) {
@@ -115,7 +131,7 @@ class Room extends React.Component<Props, State> {
             onStateChange={this.handleOnStateChange}
             onPause={this.handleOnPause}
           />
-          <Queue socket={this.socket} />
+          <Queue onAddVideo={this.requestAddToQueue} videos={this.state.videoQueue} />
         </React.Fragment>
       ) : null;
 
