@@ -18,6 +18,7 @@ type MessageProps = {
   message: string;
 };
 
+// eslint-disable-next-line react/prop-types
 const Message: FunctionComponent<MessageProps> = ({ message }) => (
   <div>
     <p>{message}</p>

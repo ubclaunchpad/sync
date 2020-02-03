@@ -4,9 +4,9 @@ import axios from "axios";
 import Lottie from "react-lottie";
 import YouTube from "react-youtube";
 import { Event } from "../sockets/event";
-import '../styles/Room.css';
-import loadingIndicator from '../lotties/loading.json';
-import Chat from './Chat';
+import "../styles/Room.css";
+import loadingIndicator from "../lotties/loading.json";
+import Chat from "./Chat";
 
 interface Props {
   match: any;
@@ -54,22 +54,19 @@ class Room extends React.Component<Props, State> {
   }
 
   addMessage = (message: string) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      messages: prevState.messages.concat(message)
+    this.setState(prevState => ({
+      messages: [...prevState.messages, message]
     }));
   };
 
   handleSendMessage = (data: string) => {
-    // console.log(data);
     if (data) {
       this.socket.emit(Event.MESSAGE, data);
       this.addMessage(data);
     }
-  }
+  };
 
-  //When the video player is ready, add listeners for play, pause etc
-  handleOnReady = (event: { target: any; }) => {
+  handleOnReady(event: { target: any }) {
     const player = event.target;
 
     this.socket.on(Event.PLAY_VIDEO, (time: number) => {
@@ -84,8 +81,7 @@ class Room extends React.Component<Props, State> {
     });
 
     this.socket.on(Event.MESSAGE, (dataFromServer: any) => {
-      console.log(dataFromServer);
-
+      this.addMessage(dataFromServer);
     });
   }
 
@@ -153,8 +149,8 @@ class Room extends React.Component<Props, State> {
         {videoPlayer}
         {invalidRoomId}
         {showLoadingIndicator}
-        <Chat messages={["fc"]} sendMessage={this.handleSendMessage} />
-
+        {console.log(this.state.messages)}
+        <Chat messages={this.state.messages} sendMessage={this.handleSendMessage} />
       </div>
     );
   }
