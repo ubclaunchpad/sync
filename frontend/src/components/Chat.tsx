@@ -27,7 +27,7 @@ interface Props {
   sendMessage: Function,
   messages: Array<String>,
 }
-
+ 
 interface State {
   message: string
 }
