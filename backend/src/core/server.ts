@@ -24,7 +24,7 @@ export default class Server {
     });
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
-    this.app.use("/", new API(new Database()).router);
+    this.app.use("/", new API(new Database(6379, process.env.DB_HOST)).router);
     this.setupSockets();
   }
 
@@ -46,11 +46,6 @@ export default class Server {
       socket.on(Event.DISCONNECT, socket => {
         logger.debug(`Socket ${socket.id} disconnected.`);
       });
-
-      socket.on(Event.MESSAGE, data => {
-        socket.broadcast.emit(Event.MESSAGE, data);
-        logger.debug(data);
-      })
     });
   }
 }

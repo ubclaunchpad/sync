@@ -1,7 +1,4 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
-import queryString from 'query-string';
-import io from 'socket.io-client';
-import { ReactComponent } from "*.svg";
 
 const styles = {
   chatBox: {
