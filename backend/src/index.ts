@@ -1,3 +1,3 @@
 import Server from "./core/server";
 
-new Server().listen();
+new Server(Number(process.env.BACKEND_PORT)).listen();

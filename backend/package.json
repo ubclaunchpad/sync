@@ -4,7 +4,8 @@
   "scripts": {
     "build": "tsc",
     "prestart": "npm run build",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "lint": "eslint --ext ts ."
   },
   "dependencies": {
     "@types/body-parser": "^1.17.1",

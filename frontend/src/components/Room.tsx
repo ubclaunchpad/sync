@@ -6,6 +6,7 @@ import YouTube from "react-youtube";
 import { Event } from "../sockets/event";
 import "../styles/Room.css";
 import loadingIndicator from "../lotties/loading.json";
+import Chat from "./Chat";
 
 interface Props {
   match: any;
@@ -65,8 +66,7 @@ class Room extends React.Component<Props, State> {
     }
   }
 
-  //When the video player is ready, add listeners for play, pause etc
-  handleOnReady = (event: { target: any; }) => {
+  handleOnReady(event: { target: any }) {
     const player = event.target;
 
     this.socket.on(Event.PLAY_VIDEO, (time: number) => {
@@ -109,7 +109,7 @@ class Room extends React.Component<Props, State> {
       this.setState({
         isLoaded: true,
         isValid: false
-      })
+      });
     }
   }
 
@@ -149,8 +149,7 @@ class Room extends React.Component<Props, State> {
         {videoPlayer}
         {invalidRoomId}
         {showLoadingIndicator}
-        {console.log(this.state.messages)
-        }
+        {console.log(this.state.messages)}
         <Chat messages={this.state.messages} sendMessage={this.handleSendMessage} />
 
       </div>
