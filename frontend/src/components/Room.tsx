@@ -1,12 +1,11 @@
-import React from 'react';
+import React from "react";
 import io from "socket.io-client";
-import axios from 'axios';
-import Lottie from 'react-lottie';
-import YouTube from 'react-youtube';
+import axios from "axios";
+import Lottie from "react-lottie";
+import YouTube from "react-youtube";
 import { Event } from "../sockets/event";
-import '../styles/Room.css';
-import loadingIndicator from '../lotties/loading.json';
-import Chat from './Chat';
+import "../styles/Room.css";
+import loadingIndicator from "../lotties/loading.json";
 
 interface Props {
   match: any;
@@ -33,32 +32,33 @@ class Room extends React.Component<Props, State> {
       currVideoId: "",
       messages: []
     };
-
+    this.handleOnPause = this.handleOnPause.bind(this);
+    this.handleOnPlay = this.handleOnPlay.bind(this);
+    this.handleOnStateChange = this.handleOnStateChange.bind(this);
+    this.handleOnReady = this.handleOnReady.bind(this);
   }
 
-  handleOnPause = (event: { target: any, data: number }) => {
+  handleOnPause(event: { target: any; data: number }) {
     const player = event.target;
     this.socket.emit(Event.PAUSE_VIDEO, player.getCurrentTime());
   }
 
-  handleOnPlay = (event: { target: any, data: number }) => {
+  handleOnPlay(event: { target: any; data: number }) {
     const player = event.target;
     this.socket.emit(Event.PLAY_VIDEO, player.getCurrentTime());
   }
 
-  handleOnStateChange = (event: { target: any, data: number }) => {
-    console.log('State has changed');
+  handleOnStateChange(event: { target: any; data: number }) {
+    console.log("State has changed");
   }
 
   addMessage = (message: string) => {
     this.setState((prevState) => ({
-      ...prevState,
-      messages: prevState.messages.concat(message)
+      messages:[...prevState.messages, message]
     }));
   };
 
   handleSendMessage = (data: string) => {
-    // console.log(data);
     if (data) {
       this.socket.emit(Event.MESSAGE, data);
       this.addMessage(data);
@@ -68,24 +68,20 @@ class Room extends React.Component<Props, State> {
   //When the video player is ready, add listeners for play, pause etc
   handleOnReady = (event: { target: any; }) => {
     const player = event.target;
-    const { id } = this.props.match.params;
 
-    this.socket.on(Event.PLAY_VIDEO, (dataFromServer: any) => {
-      console.log(dataFromServer.msg);
-      if (dataFromServer.time && Math.abs(dataFromServer.time - player.getCurrentTime()) > 0.5) {
-        player.seekTo(dataFromServer);
+    this.socket.on(Event.PLAY_VIDEO, (time: number) => {
+      if (time && Math.abs(time - player.getCurrentTime()) > 0.5) {
+        player.seekTo(time);
       }
       player.playVideo();
     });
 
-    this.socket.on(Event.PAUSE_VIDEO, (dataFromServer: any) => {
-      console.log(dataFromServer);
+    this.socket.on(Event.PAUSE_VIDEO, (time: number) => {
       player.pauseVideo();
     });
 
     this.socket.on(Event.MESSAGE, (dataFromServer: any) => {
-      console.log(dataFromServer);
-
+      this.addMessage(dataFromServer);
     });
   }
 
@@ -94,19 +90,26 @@ class Room extends React.Component<Props, State> {
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
     });
-    const res = await axios.get("http://localhost:8080/rooms/" + id);
-    if (res && res.status === 200) {
+    try {
+      const res = await axios.get("http://localhost:8080/rooms/" + id);
+      if (res && res.status === 200) {
+        this.setState({
+          currVideoId: res.data.url.replace("https://www.youtube.com/watch?v=", ""),
+          isLoaded: true,
+          isValid: true,
+          name: res.data.name
+        });
+      } else {
+        this.setState({
+          isLoaded: true,
+          isValid: false
+        });
+      }
+    } catch (err) {
       this.setState({
-        currVideoId: res.data.url.replace("https://www.youtube.com/watch?v=", ""),
         isLoaded: true,
-        isValid: true,
-        name: res.data.name
-      });
-    } else {
-      this.setState({
-        isLoaded: true,
-        isValid: false,
-      });
+        isValid: false
+      })
     }
   }
 
@@ -116,43 +119,43 @@ class Room extends React.Component<Props, State> {
       autoplay: true,
       animationData: loadingIndicator,
       rendererSettings: {
-        preserveAspectRatio: 'xMidYMid slice'
+        preserveAspectRatio: "xMidYMid slice"
       }
     };
     const { id } = this.props.match.params;
-    const videoPlayer = this.state.isLoaded && this.state.isValid
-      ? <React.Fragment>
-        <h1 style={{ color: "white" }}>{this.state.name || ("Room" + id)}</h1>
-        <YouTube
-          videoId={this.state.currVideoId}
-          onReady={this.handleOnReady}
-          onPlay={this.handleOnPlay}
-          onStateChange={this.handleOnStateChange}
-          onPause={this.handleOnPause}
-        />
-      </React.Fragment>
-      : null;
+    const videoPlayer =
+      this.state.isLoaded && this.state.isValid ? (
+        <React.Fragment>
+          <h1 style={{ color: "white" }}>{this.state.name || "Room" + id}</h1>
+          <YouTube
+            videoId={this.state.currVideoId}
+            onReady={this.handleOnReady}
+            onPlay={this.handleOnPlay}
+            onStateChange={this.handleOnStateChange}
+            onPause={this.handleOnPause}
+          />
+        </React.Fragment>
+      ) : null;
 
-    let invalidRoomId = this.state.isLoaded && !this.state.isValid
-      ? <h1 style={{ color: "white" }}>Invalid room id :(</h1>
-      : null;
+    const invalidRoomId =
+      this.state.isLoaded && !this.state.isValid ? <h1 style={{ color: "white" }}>Invalid room id :(</h1> : null;
 
-    let showLoadingIndicator = !this.state.isLoaded ?
-      <Lottie options={defaultOptions}
-        height={400}
-        width={400} /> : null;
+    const showLoadingIndicator = !this.state.isLoaded ? (
+      <Lottie options={defaultOptions} height={400} width={400} />
+    ) : null;
 
     return (
       <div className="container">
         {videoPlayer}
         {invalidRoomId}
         {showLoadingIndicator}
-        <Chat messages={["fc"]} sendMessage={this.handleSendMessage} />
+        {console.log(this.state.messages)
+        }
+        <Chat messages={this.state.messages} sendMessage={this.handleSendMessage} />
 
       </div>
     );
   }
-
 }
 
 export default Room;
