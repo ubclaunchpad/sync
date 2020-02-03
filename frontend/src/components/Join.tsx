@@ -1,21 +1,19 @@
-import React from 'react';
-import axios from 'axios';
-import { Redirect } from 'react-router-dom';
-import TextField from '@material-ui/core/TextField';
-import { withStyles, createStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import React from "react";
+import { Redirect } from "react-router-dom";
+import TextField from "@material-ui/core/TextField";
+import { withStyles, createStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 
 interface Props {
-  classes: any
+  classes: any;
 }
 
 interface State {
-  id: string,
-  redirect: boolean
+  id: string;
+  redirect: boolean;
 }
 
 class Join extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -29,9 +27,13 @@ class Join extends React.Component<Props, State> {
 
   redirectIfRoomJoined() {
     if (this.state.redirect) {
-      return <Redirect to={{
-        pathname: "/rooms/" + this.state.id
-      }} />
+      return (
+        <Redirect
+          to={{
+            pathname: "/rooms/" + this.state.id
+          }}
+        />
+      );
     }
   }
 
@@ -46,51 +48,52 @@ class Join extends React.Component<Props, State> {
   render() {
     const { classes } = this.props;
     return (
-      <div style={{textAlign: "center"}}>
+      <div style={{ textAlign: "center" }}>
         {this.redirectIfRoomJoined()}
         <h1>Join Room</h1>
-          <div style={{marginTop: "50px"}}>
-            <TextField
-              onChange={this.handleRoomIdFieldChange}
-              id="outlined-basic"
-              className={classes.textField}
-              label="Room Id"
-              margin="normal"
-              variant="outlined"
-            />
-          </div>
-          <Button onClick={this.handleJoinRoom} variant="outlined" className={classes.button}>Submit</Button>
+        <div style={{ marginTop: "50px" }}>
+          <TextField
+            onChange={this.handleRoomIdFieldChange}
+            id="outlined-basic"
+            className={classes.textField}
+            label="Room Id"
+            margin="normal"
+            variant="outlined"
+          />
         </div>
+        <Button onClick={this.handleJoinRoom} variant="outlined" className={classes.button}>
+          Submit
+        </Button>
+      </div>
     );
   }
-
 }
 
 const materialUiStyles = createStyles({
   container: {
-    display: 'flex',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexWrap: "wrap"
   },
   textField: {
-    marginLeft: '0',
-    marginRight: '0',
-    width: '500px',
+    marginLeft: "0",
+    marginRight: "0",
+    width: "500px"
   },
   button: {
-    background: '#001953',
-    boxSizing: 'border-box',
-    borderRadius: '5px',
-    color: 'white',
+    background: "#001953",
+    boxSizing: "border-box",
+    borderRadius: "5px",
+    color: "white",
     "&:hover": {
       backgroundColor: "#001953"
     },
-    marginTop: '100px',
-    height: '60px',
-    width: '260px',
+    marginTop: "100px",
+    height: "60px",
+    width: "260px"
   },
   input: {
-    display: 'none',
-  },
+    display: "none"
+  }
 });
 
 export default withStyles(materialUiStyles)(Join);

@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+  - node
+cache:
+  directories:
+    - frontend/node_modules
+    - backend/node_modules
+install:
+  - . scripts/install.sh
+script:
+  - . scripts/build.sh
