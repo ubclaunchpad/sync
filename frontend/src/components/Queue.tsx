@@ -3,11 +3,7 @@ import { List, ListItem, ListItemText, TextField, ListItemSecondaryAction, IconB
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import { Event } from "../sockets/event";
 import AddIcon from "@material-ui/icons/Add";
-
-interface Video {
-  name: string;
-  url: string;
-}
+import Video from "../models/video";
 
 interface Props {
   classes: any;
@@ -32,23 +28,18 @@ class Queue extends React.Component<Props, State> {
   }
 
   requestAdd(videoUrl: string): void {
-    debugger;
     this.props.socket.emit(Event.REQUEST_ADD_TO_QUEUE, videoUrl);
   }
 
-  add(title: string): void {
-    debugger;
-    console.log("Adding a video");
+  add(video: Video): void {
     const videos = this.state.videos;
-    const newVideo = { name: title, url: "https://youtube.com" };
-    videos.push(newVideo);
+    videos.push(video);
 
     this.setState({ videos });
   }
 
   componentDidMount() {
-    debugger;
-    this.props.socket.on(Event.ADD_TO_QUEUE, (title: string) => this.add(title));
+    this.props.socket.on(Event.ADD_TO_QUEUE, (video: Video) => this.add(video));
   }
 
   render() {
@@ -72,7 +63,7 @@ class Queue extends React.Component<Props, State> {
         </ListItem>
         {this.state.videos.map((video, i) => (
           <ListItem key={i}>
-            <ListItemText primary={video.name} />
+            <ListItemText primary={video.title} />
           </ListItem>
         ))}
       </List>
