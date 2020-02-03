@@ -54,8 +54,8 @@ class Room extends React.Component<Props, State> {
   }
 
   addMessage = (message: string) => {
-    this.setState((prevState) => ({
-      messages:[...prevState.messages, message]
+    this.setState(prevState => ({
+      messages: [...prevState.messages, message]
     }));
   };
 
@@ -64,7 +64,7 @@ class Room extends React.Component<Props, State> {
       this.socket.emit(Event.MESSAGE, data);
       this.addMessage(data);
     }
-  }
+  };
 
   handleOnReady(event: { target: any }) {
     const player = event.target;
@@ -151,7 +151,6 @@ class Room extends React.Component<Props, State> {
         {showLoadingIndicator}
         {console.log(this.state.messages)}
         <Chat messages={this.state.messages} sendMessage={this.handleSendMessage} />
-
       </div>
     );
   }
