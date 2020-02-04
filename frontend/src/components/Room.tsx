@@ -78,7 +78,14 @@ class Room extends React.Component<Props, State> {
     });
 
     this.socket.on(Event.SET_VIDEO, (video: Video) => {
-      this.setState({ currVideoId: video.url.replace("https://www.youtube.com/watch?v=", "") });
+      const videoQueue: Video[] = [];
+      let foundVideo = false;
+      for (const v of this.state.videoQueue) {
+        if (foundVideo) videoQueue.push(v);
+        if (v.id == video.id) foundVideo = true;
+      }
+
+      this.setState({ currVideoId: video.url.replace("https://www.youtube.com/watch?v=", ""), videoQueue: videoQueue });
     });
   }
 
