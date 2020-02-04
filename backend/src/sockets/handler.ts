@@ -4,6 +4,7 @@ import axios from "axios";
 import logger from "../config/logger";
 import qs from "querystring";
 import Video from "../models/video";
+import uniqid from "uniqid";
 
 type EventHandler = {
   [event in Event]?: (io: Server, socket: Socket, roomId: string, args: any) => Promise<void>;
@@ -52,7 +53,7 @@ handlers[Event.REQUEST_ADD_TO_QUEUE] = async (
     const videoTitle = playerResponse.videoDetails.title;
     logger.info(`Video found: ${videoTitle}`);
 
-    const video: Video = { title: videoTitle, url: videoUrl };
+    const video: Video = { id: uniqid(), title: videoTitle, url: videoUrl };
     io.in(roomId).emit(Event.ADD_TO_QUEUE, video);
   } catch {
     logger.error("Failed to find info about video");
