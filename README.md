@@ -18,6 +18,6 @@ Sync is an interactive streaming site where you can watch YouTube videos synchro
 #### Backend
 - `npm install` to install all dependencies
 - `npm start` to build & start the Node.js server
- 
+
 ### Docker
 - `docker-compose up` to spin up the frontend, backend, and Redis containers
