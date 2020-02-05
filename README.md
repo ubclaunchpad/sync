@@ -14,7 +14,7 @@ Sync is an interactive streaming site where you can watch YouTube videos synchro
 #### Frontend
 - `npm install` to install all dependencies 
 - `npm start` to build & start the React app
-
+ 
 #### Backend
 - `npm install` to install all dependencies
 - `npm start` to build & start the Node.js server
