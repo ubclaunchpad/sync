@@ -75,18 +75,3 @@ class Chat extends React.Component<Props, State> {
 }
 
 export default Chat;
-
-// useEffect(() => {
-//   // var { name, room } = queryString.parse(window.location.search);
-
-//   let socket = io(ENDPOINT);
-//   socket.emit('join', data, () => {
-//     alert("printing again");
-//   });
-
-//   return () => {
-//     socket.emit('disconnect');
-
-//     socket.off('disconnect');
-//   }
-// }, [ENDPOINT, window.location.search]);
