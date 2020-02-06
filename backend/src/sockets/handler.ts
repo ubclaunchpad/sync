@@ -65,13 +65,22 @@ class RoomSocketHandler {
           logger.info(`Video found: ${videoTitle}`);
 
           const video: Video = { id: uniqid(), title: videoTitle, url: videoUrl };
+
+          const room = await this.database.getRoom(this.roomId);
+          room.videoQueue.push(video);
+          await this.database.setRoom(this.roomId, room);
+
           this.io.in(this.roomId).emit(Event.ADD_TO_QUEUE, video);
         } catch {
           logger.error("Failed to find info about video");
         }
       },
 
-      [Event.SET_VIDEO]: (video: Video): Promise<void> => {
+      [Event.SET_VIDEO]: async (video: Video): Promise<void> => {
+        const room = await this.database.getRoom(this.roomId);
+        room.url = video.url;
+        await this.database.setRoom(this.roomId, room);
+
         this.io.in(this.roomId).emit(Event.SET_VIDEO, video);
         return Promise.resolve();
       }
