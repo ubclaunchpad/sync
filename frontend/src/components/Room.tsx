@@ -116,7 +116,8 @@ class Room extends React.Component<Props, State> {
           currVideoId: res.data.url.replace("https://www.youtube.com/watch?v=", ""),
           isLoaded: true,
           isValid: true,
-          name: res.data.name
+          name: res.data.name,
+          videoQueue: res.data.videoQueue
         });
       } else {
         this.setState({
