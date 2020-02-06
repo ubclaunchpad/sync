@@ -8,6 +8,7 @@ import "../styles/Room.css";
 import loadingIndicator from "../lotties/loading.json";
 import Queue from "./Queue";
 import Video from "../models/video";
+import RoomInfo from "../models/room";
 
 interface Props {
   match: any;
@@ -77,15 +78,11 @@ class Room extends React.Component<Props, State> {
       player.pauseVideo();
     });
 
-    this.socket.on(Event.SET_VIDEO, (video: Video) => {
-      const videoQueue: Video[] = [];
-      let foundVideo = false;
-      for (const v of this.state.videoQueue) {
-        if (foundVideo) videoQueue.push(v);
-        if (v.id == video.id) foundVideo = true;
-      }
-
-      this.setState({ currVideoId: video.url.replace("https://www.youtube.com/watch?v=", ""), videoQueue: videoQueue });
+    this.socket.on(Event.UPDATE_ROOM, (room: RoomInfo) => {
+      this.setState({
+        currVideoId: room.url.replace("https://www.youtube.com/watch?v=", ""),
+        videoQueue: room.videoQueue
+      });
     });
   }
 

@@ -41,50 +41,64 @@ class RoomSocketHandler {
 
   private createEventHandler(): EventHandler {
     return {
-      [Event.PLAY_VIDEO]: (time: number): Promise<void> => {
-        this.socket.to(this.roomId).emit(Event.PLAY_VIDEO, time);
-        return Promise.resolve();
-      },
-
-      [Event.PAUSE_VIDEO]: (time: number): Promise<void> => {
-        this.socket.to(this.roomId).emit(Event.PAUSE_VIDEO, time);
-        return Promise.resolve();
-      },
-
-      [Event.REQUEST_ADD_TO_QUEUE]: async (videoUrl: string): Promise<void> => {
-        logger.info("REQUEST_ADD_TO_QUEUE called!");
-
-        try {
-          // TODO: Improve method of finding video ID to account for extra query parameters
-          const videoId = videoUrl.split("v=")[1];
-
-          const videoInfoResponse = await axios.get(`https://youtube.com/get_video_info?video_id=${videoId}`);
-          const videoInfo = qs.parse(videoInfoResponse.data);
-          const playerResponse = JSON.parse(videoInfo["player_response"] as string);
-          const videoTitle = playerResponse.videoDetails.title;
-          logger.info(`Video found: ${videoTitle}`);
-
-          const video: Video = { id: uniqid(), title: videoTitle, url: videoUrl };
-
-          const room = await this.database.getRoom(this.roomId);
-          room.videoQueue.push(video);
-          await this.database.setRoom(this.roomId, room);
-
-          this.io.in(this.roomId).emit(Event.ADD_TO_QUEUE, video);
-        } catch {
-          logger.error("Failed to find info about video");
-        }
-      },
-
-      [Event.SET_VIDEO]: async (video: Video): Promise<void> => {
-        const room = await this.database.getRoom(this.roomId);
-        room.url = video.url;
-        await this.database.setRoom(this.roomId, room);
-
-        this.io.in(this.roomId).emit(Event.SET_VIDEO, video);
-        return Promise.resolve();
-      }
+      [Event.PLAY_VIDEO]: (time: number): Promise<void> => this.playVideo(time),
+      [Event.PAUSE_VIDEO]: (time: number): Promise<void> => this.pauseVideo(time),
+      [Event.REQUEST_ADD_TO_QUEUE]: (videoUrl: string): Promise<void> => this.requestAddToQueue(videoUrl),
+      [Event.SET_VIDEO]: (video: Video): Promise<void> => this.setVideo(video)
     };
+  }
+
+  private playVideo(time: number): Promise<void> {
+    logger.info("PLAY_VIDEO");
+    this.socket.to(this.roomId).emit(Event.PLAY_VIDEO, time);
+    return Promise.resolve();
+  }
+
+  private pauseVideo(time: number): Promise<void> {
+    this.socket.to(this.roomId).emit(Event.PAUSE_VIDEO, time);
+    return Promise.resolve();
+  }
+
+  private async requestAddToQueue(videoUrl: string): Promise<void> {
+    logger.info("REQUEST_ADD_TO_QUEUE called!");
+
+    try {
+      // TODO: Improve method of finding video ID to account for extra query parameters
+      const videoId = videoUrl.split("v=")[1];
+
+      const videoInfoResponse = await axios.get(`https://youtube.com/get_video_info?video_id=${videoId}`);
+      const videoInfo = qs.parse(videoInfoResponse.data);
+      const playerResponse = JSON.parse(videoInfo["player_response"] as string);
+      const videoTitle = playerResponse.videoDetails.title;
+      logger.info(`Video found: ${videoTitle}`);
+
+      const video: Video = { id: uniqid(), title: videoTitle, url: videoUrl };
+
+      const room = await this.database.getRoom(this.roomId);
+      room.videoQueue.push(video);
+      await this.database.setRoom(this.roomId, room);
+
+      this.io.in(this.roomId).emit(Event.ADD_TO_QUEUE, video);
+    } catch {
+      logger.error("Failed to find info about video");
+    }
+  }
+
+  private async setVideo(video: Video): Promise<void> {
+    const room = await this.database.getRoom(this.roomId);
+    room.url = video.url;
+
+    const videoQueue: Video[] = [];
+    let foundVideo = false;
+    for (const v of room.videoQueue) {
+      if (foundVideo) videoQueue.push(v);
+      if (v.id == video.id) foundVideo = true;
+    }
+    room.videoQueue = videoQueue;
+
+    await this.database.setRoom(this.roomId, room);
+
+    this.io.in(this.roomId).emit(Event.UPDATE_ROOM, room);
   }
 }
 

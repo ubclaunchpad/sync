@@ -7,5 +7,6 @@ export enum Event {
   PLAY_VIDEO = "play video",
   PAUSE_VIDEO = "pause video",
   REQUEST_ADD_TO_QUEUE = "request add to queue",
-  SET_VIDEO = "set video"
+  SET_VIDEO = "set video",
+  UPDATE_ROOM = "update room"
 }
