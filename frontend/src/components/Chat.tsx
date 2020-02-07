@@ -18,13 +18,6 @@ type MessageProps = {
   message: string;
 };
 
-// eslint-disable-next-line react/prop-types
-const Message: FunctionComponent<MessageProps> = ({ message }) => (
-  <div>
-    <p>{message}</p>
-  </div>
-);
-
 interface Props {
   sendMessage: Function;
   messages: Array<string>;
