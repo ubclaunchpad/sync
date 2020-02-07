@@ -74,7 +74,7 @@ class Room extends React.Component<Props, State> {
       const res = await axios.get("http://localhost:8080/rooms/" + id);
       if (res && res.status === 200) {
         this.setState({
-          currVideoId: res.data.url.replace("https://www.youtube.com/watch?v=", ""),
+          currVideoId: res.data.videoId,
           isLoaded: true,
           isValid: true,
           name: res.data.name

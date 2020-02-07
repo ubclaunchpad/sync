@@ -40,11 +40,20 @@ class Create extends React.Component<Props, State> {
   }
 
   async handleCreateRoom() {
-    const res = await axios.post("http://localhost:8080/rooms", {
-      url: this.state.url,
-      name: this.state.name
-    });
-    this.setState({ id: res.data, redirect: true });
+    // check if state.url leads to a YouTube video
+    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+    var match = this.state.url.match(regExp);
+    if (match && match[2].length === 11) { // length of video id is always 11
+      const res = await axios.post("http://localhost:8080/rooms", {
+        videoId: match[2],
+        name: this.state.name
+      });
+      this.setState({ id: res.data, redirect: true });
+    }
+    else {
+        // TODO: add a pop-up or symbol to tell user the url is invalid? 
+
+    }
   }
 
   redirectIfRoomCreated() {
