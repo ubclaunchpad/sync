@@ -9,4 +9,3 @@ install:
   - . scripts/install.sh
 script:
   - . scripts/build.sh
-  

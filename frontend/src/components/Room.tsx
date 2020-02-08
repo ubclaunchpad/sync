@@ -12,12 +12,18 @@ interface Props {
   match: any;
 }
 
+interface Message {
+  user: string;
+  message: string;
+}
+
 interface State {
   isValid: boolean;
   isLoaded: boolean;
   name: string;
   currVideoId: string;
-  messages: string[];
+  messages: Message[];
+  userName: string;
 }
 
 class Room extends React.Component<Props, State> {
@@ -31,12 +37,14 @@ class Room extends React.Component<Props, State> {
       isLoaded: false,
       name: "",
       currVideoId: "",
-      messages: []
+      messages: [],
+      userName: ""
     };
     this.handleOnPause = this.handleOnPause.bind(this);
     this.handleOnPlay = this.handleOnPlay.bind(this);
     this.handleOnStateChange = this.handleOnStateChange.bind(this);
     this.handleOnReady = this.handleOnReady.bind(this);
+    this.handleSendMessage = this.handleSendMessage.bind(this);
   }
 
   handleOnPause(event: { target: any; data: number }) {
@@ -53,7 +61,7 @@ class Room extends React.Component<Props, State> {
     console.log("State has changed");
   }
 
-  addMessage = (message: string) => {
+  addMessage = (message: Message) => {
     this.setState(prevState => ({
       messages: [...prevState.messages, message]
     }));
@@ -61,8 +69,18 @@ class Room extends React.Component<Props, State> {
 
   handleSendMessage = (data: string) => {
     if (data) {
-      this.socket.emit(Event.MESSAGE, data);
-      this.addMessage(data);
+      const toSend: Message = {
+        user: this.state.userName,
+        message: data
+      };
+      this.socket.emit(Event.MESSAGE, toSend);
+      this.addMessage(toSend);
+    }
+  };
+
+  handleSignIn = (data: string) => {
+    if (data) {
+      this.setState({ userName: data });
     }
   };
 
@@ -75,12 +93,13 @@ class Room extends React.Component<Props, State> {
       }
       player.playVideo();
     });
-
+    //hello
     this.socket.on(Event.PAUSE_VIDEO, (time: number) => {
       player.pauseVideo();
     });
 
-    this.socket.on(Event.MESSAGE, (dataFromServer: any) => {
+    this.socket.on(Event.MESSAGE, (dataFromServer: Message) => {
+      console.log(JSON.stringify(dataFromServer));
       this.addMessage(dataFromServer);
     });
   }
@@ -150,7 +169,7 @@ class Room extends React.Component<Props, State> {
         {invalidRoomId}
         {showLoadingIndicator}
         {console.log(this.state.messages)}
-        <Chat messages={this.state.messages} sendMessage={this.handleSendMessage} />
+        <Chat signIn={this.handleSignIn} sendMessage={this.handleSendMessage} />
       </div>
     );
   }

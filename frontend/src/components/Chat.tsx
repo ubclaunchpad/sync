@@ -10,58 +10,72 @@ const styles = {
   }
 };
 
-const display = {
-  messages: []
-};
-
-type MessageProps = {
-  message: string;
-};
-
 interface Props {
   sendMessage: Function;
-  messages: Array<string>;
+  signIn: Function;
 }
 
 interface State {
   message: string;
+  signedIn: boolean;
 }
 
 class Chat extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      message: ""
+      message: "",
+      signedIn: false
     };
     this.onChange = this.onChange.bind(this);
     this.enterPressed = this.enterPressed.bind(this);
   }
 
-  onChange(event: React.FormEvent<HTMLInputElement>) {
+  onChange = (event: React.FormEvent<HTMLInputElement>) => {
     this.setState({ message: event.currentTarget.value });
-  }
+  };
 
-  enterPressed(event: React.KeyboardEvent) {
+  enterPressed = (event: React.KeyboardEvent) => {
     event.preventDefault();
     const code = event.keyCode || event.which;
     if (code === 13) {
-      this.props.sendMessage(this.state.message);
+      if (this.state.signedIn) {
+        this.props.sendMessage(this.state.message);
+      } else {
+        this.props.signIn(this.state.message);
+        if (this.state.message) {
+          this.setState({ signedIn: true });
+        }
+      }
       this.setState({ message: "" });
     }
-  }
+  };
 
   render() {
-    return (
-      <div style={styles.chatBox}>
-        <h3>Chat:</h3>
-        {display.messages}
+    const signInWindow = (
+      <div>
         <input
-          placeholder="Send a message"
-          name="chatinput"
+          placeholder="What is your name?"
           onChange={this.onChange}
           onKeyUp={this.enterPressed}
           value={this.state.message}
         />
+      </div>
+    );
+    const chatWindow = (
+      <div>
+        <input
+          placeholder="Send a message"
+          onChange={this.onChange}
+          onKeyUp={this.enterPressed}
+          value={this.state.message}
+        />
+      </div>
+    );
+    return (
+      <div style={styles.chatBox}>
+        <h3>Chat:</h3>
+        {this.state.signedIn ? chatWindow : signInWindow}
       </div>
     );
   }
