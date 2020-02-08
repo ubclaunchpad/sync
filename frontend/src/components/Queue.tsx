@@ -6,7 +6,7 @@ import Video from "../models/video";
 
 interface Props {
   classes: any;
-  onAddVideo: (url: string) => void;
+  onAddVideo: (videoId: string) => void;
   videos: Video[];
 }
 
@@ -36,7 +36,13 @@ class Queue extends React.Component<Props, State> {
             onChange={event => this.setState({ newVideoUrl: event.target.value })}
           />
           <ListItemSecondaryAction>
-            <IconButton edge="end" aria-label="comments" onClick={() => this.props.onAddVideo(this.state.newVideoUrl)}>
+            <IconButton
+              edge="end"
+              aria-label="comments"
+              onClick={() =>
+                this.props.onAddVideo(this.state.newVideoUrl.replace("https://www.youtube.com/watch?v=", ""))
+              }
+            >
               <AddIcon style={{ color: "white" }} />
             </IconButton>
           </ListItemSecondaryAction>
