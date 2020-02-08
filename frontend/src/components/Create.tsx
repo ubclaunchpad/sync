@@ -14,6 +14,7 @@ interface State {
   name: string;
   url: string;
   redirect: boolean;
+  errorMsg: string;
 }
 
 class Create extends React.Component<Props, State> {
@@ -23,7 +24,8 @@ class Create extends React.Component<Props, State> {
       id: "",
       name: "",
       url: "",
-      redirect: false
+      redirect: false,
+      errorMsg: ""
     };
     this.handleNameFieldChange = this.handleNameFieldChange.bind(this);
     this.handleUrlFieldChange = this.handleUrlFieldChange.bind(this);
@@ -41,19 +43,17 @@ class Create extends React.Component<Props, State> {
 
   async handleCreateRoom() {
     // check if state.url leads to a YouTube video
-    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
-    var match = this.state.url.match(regExp);
-    if (match && match[2].length === 11) { // length of video id is always 11
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+    const match = this.state.url.match(regExp);
+    if (match && match[2].length === 11) {
       const res = await axios.post("http://localhost:8080/rooms", {
         currVideoId: match[2],
         name: this.state.name,
         videoQueue: []
       });
       this.setState({ id: res.data, redirect: true });
-    }
-    else {
-        // TODO: add a pop-up or symbol to tell user the url is invalid? 
-
+    } else {
+      this.setState({ errorMsg: "Invalid URL" });
     }
   }
 
@@ -93,6 +93,7 @@ class Create extends React.Component<Props, State> {
             variant="outlined"
           />
         </div>
+        {this.state.errorMsg ? <p style={{ color: "red" }}>{this.state.errorMsg}</p> : ""}
         <Button
           onClick={this.handleCreateRoom}
           variant="outlined"
