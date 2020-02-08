@@ -41,8 +41,9 @@ class Create extends React.Component<Props, State> {
 
   async handleCreateRoom() {
     const res = await axios.post("http://localhost:8080/rooms", {
-      url: this.state.url,
-      name: this.state.name
+      currVideoId: this.state.url.replace("https://www.youtube.com/watch?v=", ""),
+      name: this.state.name,
+      videoQueue: []
     });
     this.setState({ id: res.data, redirect: true });
   }

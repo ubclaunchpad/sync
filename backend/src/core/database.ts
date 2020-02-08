@@ -1,10 +1,6 @@
 import redis from "redis";
 import logger from "../config/logger";
-
-interface Room {
-  name: string;
-  url: string;
-}
+import Room from "../models/room";
 
 export default class Database {
   private client: redis.RedisClient;
@@ -19,12 +15,12 @@ export default class Database {
     this.initListeners();
   }
 
-  public async createRoom(id: string, room: Room): Promise<void> {
+  public async setRoom(id: string, room: Room): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      logger.info(`Create room ${id}`);
+      logger.info(`Set room ${id}`);
       this.client.set(`room:${id}`, JSON.stringify(room), (err, res) => {
         if (err) {
-          logger.error(`Couldn't create room: ${err}`);
+          logger.error(`Couldn't set room: ${err}`);
           reject(err);
         }
         resolve();
