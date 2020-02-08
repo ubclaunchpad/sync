@@ -8,19 +8,9 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: "module",
-    ecmaFeatures: {
-      jsx: true,
-    },
   },
   rules: {
     "no-var": "error",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-unused-vars": "on",
-    "@typescript-eslint/explicit-function-return-type": "off"
   },
-  settings:  {
-    react:  {
-      version: "detect",
-    }
-  }
 };
