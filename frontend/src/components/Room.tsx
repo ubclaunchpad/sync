@@ -109,7 +109,6 @@ class Room extends React.Component<Props, State> {
       }
       player.playVideo();
     });
-    //hello
     this.socket.on(Event.PAUSE_VIDEO, (time: number) => {
       player.pauseVideo();
     });
