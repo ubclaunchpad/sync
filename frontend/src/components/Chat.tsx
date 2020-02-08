@@ -2,10 +2,10 @@ import React, { FunctionComponent, useState, useEffect } from "react";
 
 const styles = {
   chatBox: {
-    border: "10px solid white",
-    borderRadius: "20%",
+    border: "1px solid white",
+    borderRadius: "10%",
     color: "white",
-    maxWidth: "10vw",
+    width: "50vw",
     height: "50vh"
   }
 };
