@@ -7,6 +7,11 @@ import { Event } from "../sockets/event";
 import "../styles/Room.css";
 import loadingIndicator from "../lotties/loading.json";
 import Chat from "./Chat";
+import Queue from "./Queue";
+import Video from "../models/video";
+import RoomInfo from "../models/room";
+
+const VIDEO_CUED_EVENT = 5;
 
 interface Props {
   match: any;
@@ -24,6 +29,7 @@ interface State {
   currVideoId: string;
   messages: Message[];
   userName: string;
+  videoQueue: Video[];
 }
 
 class Room extends React.Component<Props, State> {
@@ -38,13 +44,17 @@ class Room extends React.Component<Props, State> {
       name: "",
       currVideoId: "",
       messages: [],
-      userName: ""
+      userName: "",
+      videoQueue: []
     };
     this.handleOnPause = this.handleOnPause.bind(this);
     this.handleOnPlay = this.handleOnPlay.bind(this);
     this.handleOnStateChange = this.handleOnStateChange.bind(this);
     this.handleOnReady = this.handleOnReady.bind(this);
     this.handleSendMessage = this.handleSendMessage.bind(this);
+    this.handleEnd = this.handleEnd.bind(this);
+    this.requestAddToQueue = this.requestAddToQueue.bind(this);
+    this.addToQueue = this.addToQueue.bind(this);
   }
 
   handleOnPause(event: { target: any; data: number }) {
@@ -58,7 +68,12 @@ class Room extends React.Component<Props, State> {
   }
 
   handleOnStateChange(event: { target: any; data: number }) {
-    console.log("State has changed");
+    console.log("State has changed with data = " + event.data);
+
+    // If event.data is 5, a new video has just been set so we should play it
+    if (event.data == VIDEO_CUED_EVENT) {
+      event.target.playVideo();
+    }
   }
 
   addMessage = (message: Message) => {
@@ -85,6 +100,7 @@ class Room extends React.Component<Props, State> {
   };
 
   handleOnReady(event: { target: any }) {
+    console.log("Called handleOnready");
     const player = event.target;
 
     this.socket.on(Event.PLAY_VIDEO, (time: number) => {
@@ -102,6 +118,26 @@ class Room extends React.Component<Props, State> {
       console.log(JSON.stringify(dataFromServer));
       this.addMessage(dataFromServer);
     });
+    this.socket.on(Event.UPDATE_ROOM, (room: RoomInfo) => {
+      this.setState({
+        currVideoId: room.currVideoId,
+        videoQueue: room.videoQueue
+      });
+    });
+  }
+
+  handleEnd(event: { target: any }) {
+    if (this.state.videoQueue.length > 0) this.socket.emit(Event.SET_VIDEO, this.state.videoQueue[0]);
+  }
+
+  requestAddToQueue(videoId: string): void {
+    this.socket.emit(Event.REQUEST_ADD_TO_QUEUE, videoId);
+  }
+
+  addToQueue(video: Video): void {
+    const videoQueue = this.state.videoQueue;
+    videoQueue.push(video);
+    this.setState({ videoQueue });
   }
 
   async componentDidMount() {
@@ -109,14 +145,16 @@ class Room extends React.Component<Props, State> {
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
     });
+    this.socket.on(Event.ADD_TO_QUEUE, (video: Video) => this.addToQueue(video));
     try {
       const res = await axios.get("http://localhost:8080/rooms/" + id);
       if (res && res.status === 200) {
         this.setState({
-          currVideoId: res.data.url.replace("https://www.youtube.com/watch?v=", ""),
+          currVideoId: res.data.currVideoId,
           isLoaded: true,
           isValid: true,
-          name: res.data.name
+          name: res.data.name,
+          videoQueue: res.data.videoQueue
         });
       } else {
         this.setState({
@@ -152,7 +190,9 @@ class Room extends React.Component<Props, State> {
             onPlay={this.handleOnPlay}
             onStateChange={this.handleOnStateChange}
             onPause={this.handleOnPause}
+            onEnd={this.handleEnd}
           />
+          <Queue onAddVideo={this.requestAddToQueue} videos={this.state.videoQueue} />
         </React.Fragment>
       ) : null;
 
