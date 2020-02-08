@@ -45,8 +45,9 @@ class Create extends React.Component<Props, State> {
     var match = this.state.url.match(regExp);
     if (match && match[2].length === 11) { // length of video id is always 11
       const res = await axios.post("http://localhost:8080/rooms", {
-        videoId: match[2],
-        name: this.state.name
+        currVideoId: match[2],
+        name: this.state.name,
+        videoQueue: []
       });
       this.setState({ id: res.data, redirect: true });
     }
