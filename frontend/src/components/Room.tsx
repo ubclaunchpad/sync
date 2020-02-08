@@ -10,6 +10,8 @@ import Queue from "./Queue";
 import Video from "../models/video";
 import RoomInfo from "../models/room";
 
+const VIDEO_CUED_EVENT = 5;
+
 interface Props {
   match: any;
 }
@@ -58,7 +60,7 @@ class Room extends React.Component<Props, State> {
     console.log("State has changed with data = " + event.data);
 
     // If event.data is 5, a new video has just been set so we should play it
-    if (event.data == 5) {
+    if (event.data == VIDEO_CUED_EVENT) {
       event.target.playVideo();
     }
   }
@@ -80,7 +82,7 @@ class Room extends React.Component<Props, State> {
 
     this.socket.on(Event.UPDATE_ROOM, (room: RoomInfo) => {
       this.setState({
-        currVideoId: room.url.replace("https://www.youtube.com/watch?v=", ""),
+        currVideoId: room.currVideoId,
         videoQueue: room.videoQueue
       });
     });
@@ -90,8 +92,8 @@ class Room extends React.Component<Props, State> {
     if (this.state.videoQueue.length > 0) this.socket.emit(Event.SET_VIDEO, this.state.videoQueue[0]);
   }
 
-  requestAddToQueue(videoUrl: string): void {
-    this.socket.emit(Event.REQUEST_ADD_TO_QUEUE, videoUrl);
+  requestAddToQueue(videoId: string): void {
+    this.socket.emit(Event.REQUEST_ADD_TO_QUEUE, videoId);
   }
 
   addToQueue(video: Video): void {
@@ -110,7 +112,7 @@ class Room extends React.Component<Props, State> {
       const res = await axios.get("http://localhost:8080/rooms/" + id);
       if (res && res.status === 200) {
         this.setState({
-          currVideoId: res.data.url.replace("https://www.youtube.com/watch?v=", ""),
+          currVideoId: res.data.currVideoId,
           isLoaded: true,
           isValid: true,
           name: res.data.name,

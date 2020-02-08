@@ -2,6 +2,6 @@ import Video from "./video";
 
 export default interface Room {
   name: string;
-  url: string;
+  currVideoId: string;
   videoQueue: Video[];
 }

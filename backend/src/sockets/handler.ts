@@ -59,12 +59,11 @@ class RoomSocketHandler {
     return Promise.resolve();
   }
 
-  private async requestAddToQueue(videoUrl: string): Promise<void> {
+  private async requestAddToQueue(videoId: string): Promise<void> {
     logger.info("REQUEST_ADD_TO_QUEUE called!");
 
     try {
       // TODO: Improve method of finding video ID to account for extra query parameters
-      const videoId = videoUrl.split("v=")[1];
 
       const videoInfoResponse = await axios.get(`https://youtube.com/get_video_info?video_id=${videoId}`);
       const videoInfo = qs.parse(videoInfoResponse.data);
@@ -72,7 +71,7 @@ class RoomSocketHandler {
       const videoTitle = playerResponse.videoDetails.title;
       logger.info(`Video found: ${videoTitle}`);
 
-      const video: Video = { id: uniqid(), title: videoTitle, url: videoUrl };
+      const video: Video = { id: uniqid(), title: videoTitle, currVideoId: videoId };
 
       const room = await this.database.getRoom(this.roomId);
       room.videoQueue.push(video);
@@ -86,7 +85,7 @@ class RoomSocketHandler {
 
   private async setVideo(video: Video): Promise<void> {
     const room = await this.database.getRoom(this.roomId);
-    room.url = video.url;
+    room.currVideoId = video.currVideoId;
 
     const videoQueue: Video[] = [];
     let foundVideo = false;
