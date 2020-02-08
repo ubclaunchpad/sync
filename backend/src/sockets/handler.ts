@@ -1,6 +1,11 @@
 import { Server, Socket } from "socket.io";
 import { Event } from "./event";
 
+interface Message {
+  user: string;
+  message: string;
+}
+
 type EventHandler = {
   [event in Event]?: Function;
 };
@@ -28,8 +33,8 @@ handlers[Event.PAUSE_VIDEO] = (io: Server, socket: Socket, roomId: string, time:
   socket.to(roomId).emit(Event.PAUSE_VIDEO, time);
 };
 
-handlers[Event.MESSAGE] = (io: Server, socket: Socket, roomId: string, message: string): void => {
-  socket.to(roomId).emit(Event.MESSAGE, `${message}`);
+handlers[Event.MESSAGE] = (io: Server, socket: Socket, roomId: string, message: Message): void => {
+  socket.to(roomId).emit(Event.MESSAGE, message);
 };
 
 export default joinRoom;
