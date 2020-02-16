@@ -39,9 +39,15 @@ class Queue extends React.Component<Props, State> {
             <IconButton
               edge="end"
               aria-label="comments"
-              onClick={() =>
-                this.props.onAddVideo(this.state.newVideoUrl.replace("https://www.youtube.com/watch?v=", ""))
-              }
+              onClick={() => {
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+                const match = this.state.newVideoUrl.match(regExp);
+                if (match && match[2].length === 11) {
+                  this.props.onAddVideo(match[2]);
+                } else {
+                  alert("Invalid URL");
+                }
+              }}
             >
               <AddIcon style={{ color: "white" }} />
             </IconButton>
