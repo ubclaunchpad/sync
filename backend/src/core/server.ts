@@ -41,15 +41,50 @@ export default class Server {
   private setupSockets(): void {
     const io = socketIo(this.httpServer);
     io.on(Event.CONNECT, (socket: ExtendedSocket) => {
-      logger.debug(`Socket ${socket.id} connected.`);
+      let clients = 0;
+      let clientNum = 1;
+      io.on(Event.CONNECT, socket => {
+        logger.debug(`Socket ${socket.id} connected.`);
 
-      socket.on(Event.JOIN_ROOM, roomId => {
-        new RoomSocketHandler(this.database, io, socket, roomId).initialize();
-      });
+        socket.on(Event.JOIN_ROOM, roomId => {
+          new RoomSocketHandler(this.database, io, socket, roomId).initialize();
+        });
 
-      socket.on(Event.DISCONNECT, (socket: ExtendedSocket) => {
-        logger.debug(`Socket ${socket.id} disconnected.`);
-      });
-    });
-  }
+        socket.on(Event.DISCONNECT, (socket: ExtendedSocket) => {
+
+          socket.on('newVideoChatPeer', () => {
+            // let clients = 0;
+            // let clientNum = 1;
+            // console.log('clients: ' + clients);
+            // console.log('Client ' + clientNum + ' received');
+            if (clients < 2) {
+              if (clients == 1) {
+                console.log('Creating new peer ' + clientNum);
+                socket.emit('CreatePeer');
+              }
+            }
+            else {
+              //Already a session going on
+              socket.emit('SessionActive');
+            }
+            clients++;
+            if (clientNum < 2) {
+              clientNum++;
+            }
+          })
+
+          socket.on('Offer', (offer) => {
+            console.log('Sending backOffer ' + clientNum);
+            socket.broadcast.emit("BackOffer", offer);
+          });
+          socket.on('Answer', (data) => {
+            console.log('Sending backAnswer ' + clientNum);
+            socket.broadcast.emit("BackAnswer", data);
+          });
+
+          socket.on(Event.DISCONNECT, socket => {
+            logger.debug(`Socket ${socket.id} disconnected.`);
+          });
+        });
+      }
 }

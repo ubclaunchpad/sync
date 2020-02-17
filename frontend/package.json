@@ -12,6 +12,7 @@
     "@types/react-lottie": "^1.2.3",
     "@types/react-router-dom": "^5.1.0",
     "@types/react-youtube": "^7.6.2",
+    "@types/simple-peer": "^9.6.0",
     "@types/socket.io-client": "^1.4.32",
     "@types/youtube": "0.0.38",
     "@typescript-eslint/eslint-plugin": "^2.17.0",
@@ -28,6 +29,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
     "react-youtube": "^7.9.0",
+    "simple-peer": "^9.6.2",
     "socket.io-client": "^2.3.0",
     "typescript": "^3.8.3",
     "unique-names-generator": "^4.2.0"
