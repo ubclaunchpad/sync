@@ -2,11 +2,13 @@ import React from "react";
 import { List, ListItem, ListItemText, TextField, ListItemSecondaryAction, IconButton } from "@material-ui/core";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
 import Video from "../models/video";
 
 interface Props {
   classes: any;
-  onAddVideo: (videoId: string) => void;
+  onAddVideo: (youtubeId: string) => void;
+  onRemoveVideo: (videoId: string) => void;
   videos: Video[];
 }
 
@@ -38,7 +40,7 @@ class Queue extends React.Component<Props, State> {
           <ListItemSecondaryAction>
             <IconButton
               edge="end"
-              aria-label="comments"
+              aria-label="add"
               onClick={() => {
                 const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
                 const match = this.state.newVideoUrl.match(regExp);
@@ -56,6 +58,11 @@ class Queue extends React.Component<Props, State> {
         {this.props.videos.map((video, i) => (
           <ListItem key={i}>
             <ListItemText primary={video.title} />
+            <ListItemSecondaryAction>
+              <IconButton edge="end" aria-label="remove" onClick={() => this.props.onRemoveVideo(video.id)}>
+                <RemoveIcon style={{ color: "white" }} />
+              </IconButton>
+            </ListItemSecondaryAction>
           </ListItem>
         ))}
       </List>
