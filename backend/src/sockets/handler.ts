@@ -7,6 +7,11 @@ import Video from "../models/video";
 import uniqid from "uniqid";
 import Database from "../core/database";
 
+interface Message {
+  user: string;
+  message: string;
+}
+
 type EventHandler = {
   [event in Event]?: (args: any) => Promise<void>;
 };
@@ -44,7 +49,8 @@ class RoomSocketHandler {
       [Event.PLAY_VIDEO]: (time: number): Promise<void> => this.playVideo(time),
       [Event.PAUSE_VIDEO]: (time: number): Promise<void> => this.pauseVideo(time),
       [Event.REQUEST_ADD_TO_QUEUE]: (videoUrl: string): Promise<void> => this.requestAddToQueue(videoUrl),
-      [Event.SET_VIDEO]: (video: Video): Promise<void> => this.setVideo(video)
+      [Event.SET_VIDEO]: (video: Video): Promise<void> => this.setVideo(video),
+      [Event.MESSAGE]: (message: Message): Promise<void> => this.sendMessage(message)
     };
   }
 
@@ -98,6 +104,11 @@ class RoomSocketHandler {
     await this.database.setRoom(this.roomId, room);
 
     this.io.in(this.roomId).emit(Event.UPDATE_ROOM, room);
+  }
+
+  private sendMessage(message: Message): Promise<void> {
+    this.socket.to(this.roomId).emit(Event.MESSAGE, message);
+    return Promise.resolve();
   }
 }
 

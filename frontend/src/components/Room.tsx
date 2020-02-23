@@ -6,6 +6,7 @@ import YouTube from "react-youtube";
 import { Event } from "../sockets/event";
 import "../styles/Room.css";
 import loadingIndicator from "../lotties/loading.json";
+import Chat from "./Chat";
 import Queue from "./Queue";
 import Video from "../models/video";
 import RoomInfo from "../models/room";
@@ -16,11 +17,18 @@ interface Props {
   match: any;
 }
 
+interface Message {
+  user: string;
+  message: string;
+}
+
 interface State {
   isValid: boolean;
   isLoaded: boolean;
   name: string;
   currVideoId: string;
+  messages: Message[];
+  userName: string;
   videoQueue: Video[];
 }
 
@@ -35,12 +43,15 @@ class Room extends React.Component<Props, State> {
       isLoaded: false,
       name: "",
       currVideoId: "",
+      messages: [],
+      userName: "",
       videoQueue: []
     };
     this.handleOnPause = this.handleOnPause.bind(this);
     this.handleOnPlay = this.handleOnPlay.bind(this);
     this.handleOnStateChange = this.handleOnStateChange.bind(this);
     this.handleOnReady = this.handleOnReady.bind(this);
+    this.handleSendMessage = this.handleSendMessage.bind(this);
     this.handleEnd = this.handleEnd.bind(this);
     this.requestAddToQueue = this.requestAddToQueue.bind(this);
     this.addToQueue = this.addToQueue.bind(this);
@@ -65,6 +76,29 @@ class Room extends React.Component<Props, State> {
     }
   }
 
+  addMessage = (message: Message) => {
+    this.setState(prevState => ({
+      messages: [...prevState.messages, message]
+    }));
+  };
+
+  handleSendMessage = (data: string) => {
+    if (data) {
+      const toSend: Message = {
+        user: this.state.userName,
+        message: data
+      };
+      this.socket.emit(Event.MESSAGE, toSend);
+      this.addMessage(toSend);
+    }
+  };
+
+  handleSignIn = (data: string) => {
+    if (data) {
+      this.setState({ userName: data });
+    }
+  };
+
   handleOnReady(event: { target: any }) {
     console.log("Called handleOnready");
     const player = event.target;
@@ -75,11 +109,14 @@ class Room extends React.Component<Props, State> {
       }
       player.playVideo();
     });
-
     this.socket.on(Event.PAUSE_VIDEO, (time: number) => {
       player.pauseVideo();
     });
 
+    this.socket.on(Event.MESSAGE, (dataFromServer: Message) => {
+      console.log(JSON.stringify(dataFromServer));
+      this.addMessage(dataFromServer);
+    });
     this.socket.on(Event.UPDATE_ROOM, (room: RoomInfo) => {
       this.setState({
         currVideoId: room.currVideoId,
@@ -170,6 +207,8 @@ class Room extends React.Component<Props, State> {
         {videoPlayer}
         {invalidRoomId}
         {showLoadingIndicator}
+        {console.log(this.state.messages)}
+        <Chat signIn={this.handleSignIn} sendMessage={this.handleSendMessage} />
       </div>
     );
   }
