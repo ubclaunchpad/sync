@@ -14,6 +14,7 @@ export default class API {
 
   private initRoutes(): void {
     this.router.get("/status", this.getStatus.bind(this));
+    this.router.get("/rooms", this.getRoomList.bind(this));
     this.router.get("/rooms/:id", this.getRoom.bind(this));
     this.router.delete("/rooms/:id", this.deleteRoom.bind(this));
     this.router.post("/rooms", this.createRoom.bind(this));
@@ -21,6 +22,20 @@ export default class API {
 
   private getStatus(req: Request, res: Response): void {
     res.sendStatus(200);
+  }
+
+  private async getRoomList(req: Request, res: Response): Promise<void> {
+    try {
+      const data = await this.db.getAllRooms();
+      // console.log(data);
+      res.send(data);
+    } catch (err) {
+      if (err.includes("404")) {
+        res.sendStatus(404);
+      } else {
+        res.status(500).send("Error: Couldn't Retrieve list of rooms");
+      }
+    }
   }
 
   private async getRoom(req: Request, res: Response): Promise<void> {

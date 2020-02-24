@@ -1,6 +1,6 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+// import TextField from "@material-ui/core/TextField";
+// import Button from "@material-ui/core/Button";
 import { withStyles, createStyles } from "@material-ui/core/styles";
 import axios from "axios";
 
@@ -12,7 +12,7 @@ interface State {
   roomlist: Array<any>;
 }
 
-class Browse extends React.Component<Props, State>{
+export class Browse extends React.Component<Props, State>{
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -21,10 +21,17 @@ class Browse extends React.Component<Props, State>{
   }
 
   async componentDidMount(){
-    var res = JSON.parse(await axios.get("rooms"));
-    this.setState({
-      roomlist: res,
-    })
+    try{
+      var res = JSON.parse(await axios.get("http://localhost:8080/rooms"));
+      console.log(res)
+      this.setState({
+        roomlist: res,
+      })
+    }
+    catch{
+      console.log("Failed to retrieve list of rooms");
+    }
+
   }
 
   renderRoom(room: any){
@@ -54,15 +61,14 @@ class Browse extends React.Component<Props, State>{
   render() {
     return(
       <div className="roomlist">
-        test
-        {/* {this.state.roomlist.map((item) => {
+        {this.state.roomlist.map((item) => {
           return this.renderRoom(item);
-        })} */}
+        })}
       </div>
     )
   }
 }
-// const materialUiStyles = createStyles({
+const materialUiStyles = createStyles({
 //   container: {
 //     display: "flex",
 //     flexWrap: "wrap"
@@ -87,9 +93,9 @@ class Browse extends React.Component<Props, State>{
 //   input: {
 //     display: "none"
 //   }
-// });
+});
 
-// export default withStyles(materialUiStyles)(Browse);
+export default withStyles(materialUiStyles)(Browse);
 
 
 // export default Browse;

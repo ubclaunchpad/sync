@@ -80,6 +80,25 @@ export default class Database {
     });
   }
 
+  public async getAllRooms(): Promise<Room[]> {
+    console.log("Run this ls;akdjfa;lksdf;alksdf");
+    return new Promise<Room[]>((resolve, reject) => {
+      logger.info("Get room list");
+      const rooms: Room[] = [];
+      try {
+        this.client.keys("*", async (err, keys) => {
+          for (const key of keys) {
+            rooms.push(await this.getRoom(key));
+          }
+        });
+        resolve(rooms);
+      } catch (err) {
+        logger.error(`Couldn't retrieve the list of rooms. ${err}`);
+        resolve(err);
+      }
+    });
+  }
+
   private initListeners(): void {
     this.client.on("connect", () => {
       logger.info("Connected to Redis Server");
