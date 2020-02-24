@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Route, BrowserRouter as Router } from "react-router-dom";
 import Room from "./components/Room";
 import Home from "./components/Home";
-import Browse from "./components/Browse";
+import { Browse } from "./components/Browse";
 import "./styles/index.css";
 
 const App = (
