@@ -17,14 +17,14 @@ interface Props {
 }
 
 interface State {
-  roomlist: any;
+  roomList: any;
 }
 
 export class Browse extends React.Component<Props, State>{
   constructor(props: Props) {
     super(props);
     this.state = {
-      roomlist: [],
+      roomList: [],
     };
   }
 
@@ -33,7 +33,7 @@ export class Browse extends React.Component<Props, State>{
       var res = await axios.get("http://localhost:8080/rooms");
       console.log(res)
       this.setState({
-        roomlist: res.data,
+        roomList: res.data,
       })
     }
     catch (err) {
@@ -43,18 +43,18 @@ export class Browse extends React.Component<Props, State>{
   }
 
   renderRoom(room: any, key: any) {
-    const youtubeid = key.split(':')[1]
+    const youtubeId = key.split(':')[1]
     return (
       <Grow in={true} timeout='auto'>
         <TableRow hover key={key}>
           <TableCell>
-            <img src={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`} onClick={event => window.location.href = "/rooms/" + youtubeid}></img>
+            <img src={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`} onClick={event => window.location.href = "/rooms/" + youtubeId}></img>
           </TableCell>
           <TableCell>{room.currVideoId}</TableCell>
           <TableCell>{room.name}</TableCell>
           <TableCell>{key}</TableCell>
           <TableCell>
-            <Button onClick={event => window.location.href = "/rooms/" + youtubeid}>Go to Room</Button>
+            <Button onClick={event => window.location.href = "/rooms/" + youtubeId}>Go to Room</Button>
           </TableCell>
         </TableRow>
       </Grow>
@@ -64,7 +64,7 @@ export class Browse extends React.Component<Props, State>{
 
   render() {
     return (
-      <div className="roomlist">
+      <div className="roomList">
         <Paper>
           <Table>
             <TableHead>
@@ -77,8 +77,8 @@ export class Browse extends React.Component<Props, State>{
               </TableRow>
             </TableHead>
             <TableBody>
-              {Object.keys(this.state.roomlist).map((key) => {
-                return this.renderRoom(this.state.roomlist[key], key);
+              {Object.keys(this.state.roomList).map((key) => {
+                return this.renderRoom(this.state.roomList[key], key);
               })}
             </TableBody>
           </Table>
