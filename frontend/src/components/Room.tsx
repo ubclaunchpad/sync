@@ -55,6 +55,7 @@ class Room extends React.Component<Props, State> {
     this.handleEnd = this.handleEnd.bind(this);
     this.requestAddToQueue = this.requestAddToQueue.bind(this);
     this.addToQueue = this.addToQueue.bind(this);
+    this.removeFromQueue = this.removeFromQueue.bind(this);
   }
 
   handleOnPause(event: { target: any; data: number }) {
@@ -71,7 +72,7 @@ class Room extends React.Component<Props, State> {
     console.log("State has changed with data = " + event.data);
 
     // If event.data is 5, a new video has just been set so we should play it
-    if (event.data == VIDEO_CUED_EVENT) {
+    if (event.data === VIDEO_CUED_EVENT) {
       event.target.playVideo();
     }
   }
@@ -129,8 +130,8 @@ class Room extends React.Component<Props, State> {
     if (this.state.videoQueue.length > 0) this.socket.emit(Event.SET_VIDEO, this.state.videoQueue[0]);
   }
 
-  requestAddToQueue(videoId: string): void {
-    this.socket.emit(Event.REQUEST_ADD_TO_QUEUE, videoId);
+  requestAddToQueue(youtubeId: string): void {
+    this.socket.emit(Event.REQUEST_ADD_TO_QUEUE, youtubeId);
   }
 
   addToQueue(video: Video): void {
@@ -139,12 +140,18 @@ class Room extends React.Component<Props, State> {
     this.setState({ videoQueue });
   }
 
+  removeFromQueue(id: string): void {
+    this.socket.emit(Event.REMOVE_FROM_QUEUE, id);
+
+    const videoQueue = this.state.videoQueue;
+    this.setState({ videoQueue: videoQueue.filter(video => video.id !== id) });
+  }
+
   async componentDidMount() {
     const { id } = this.props.match.params;
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
     });
-    this.socket.on(Event.ADD_TO_QUEUE, (video: Video) => this.addToQueue(video));
     try {
       const res = await axios.get("http://localhost:8080/rooms/" + id);
       if (res && res.status === 200) {
@@ -191,7 +198,11 @@ class Room extends React.Component<Props, State> {
             onPause={this.handleOnPause}
             onEnd={this.handleEnd}
           />
-          <Queue onAddVideo={this.requestAddToQueue} videos={this.state.videoQueue} />
+          <Queue
+            onAddVideo={this.requestAddToQueue}
+            onRemoveVideo={this.removeFromQueue}
+            videos={this.state.videoQueue}
+          />
         </React.Fragment>
       ) : null;
 
