@@ -62,7 +62,7 @@ export default class Database {
   public async getRoomIds(): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       logger.info(`Get room ids`);
-      this.client.keys("room:*", function (err, res) {
+      this.client.keys("room:*", function(err, res) {
         if (err) {
           logger.error(`Couldn't get room ids: ${err}`);
           reject(err);
@@ -83,7 +83,7 @@ export default class Database {
       const rooms: RoomList = {};
       this.client.keys("*", async (err, keys) => {
         for (const key of keys) {
-          rooms[key] = await this.getRoom(key.split(':')[1]);
+          rooms[key] = await this.getRoom(key.split(":")[1]);
         }
         logger.info(rooms);
         resolve(rooms);
