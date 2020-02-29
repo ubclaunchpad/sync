@@ -54,7 +54,7 @@ export class Browse extends React.Component<Props, State> {
 
   renderRoom(room: any, key: any) {
     console.log(this.state);
-    const youtubeId = key.split(":")[1];
+    const roomId = key.split(":")[1];
     return (
       <Grow in={true} timeout="auto" key={key}>
         <TableRow hover key={key}>
@@ -62,14 +62,14 @@ export class Browse extends React.Component<Props, State> {
             <img
               alt={key}
               src={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`}
-              onClick={event => (window.location.href = "/rooms/" + youtubeId)}
+              onClick={event => (window.location.href = "/rooms/" + roomId)}
             ></img>
           </TableCell>
           <TableCell>{this.state["vidTitle"][room.currVideoId]}</TableCell>
           <TableCell>{room.name}</TableCell>
-          <TableCell>{key}</TableCell>
+          <TableCell>{roomId}</TableCell>
           <TableCell>
-            <Button onClick={event => (window.location.href = "/rooms/" + youtubeId)}>Go to Room</Button>
+            <Button onClick={event => (window.location.href = "/rooms/" + roomId)}>Go to Room</Button>
           </TableCell>
         </TableRow>
       </Grow>
