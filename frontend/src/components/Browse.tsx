@@ -1,15 +1,23 @@
 import React from "react";
-// import TextField from "@material-ui/core/TextField";
-// import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 import { withStyles, createStyles } from "@material-ui/core/styles";
 import axios from "axios";
+
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import Grow from '@material-ui/core/Grow';
 
 interface Props {
   classes: any;
 }
 
 interface State {
-  roomlist: Array<any>;
+  roomlist: any;
 }
 
 export class Browse extends React.Component<Props, State>{
@@ -20,82 +28,64 @@ export class Browse extends React.Component<Props, State>{
     };
   }
 
-  async componentDidMount(){
-    try{
-      var res = JSON.parse(await axios.get("http://localhost:8080/rooms"));
+  async componentDidMount() {
+    try {
+      var res = await axios.get("http://localhost:8080/rooms");
       console.log(res)
       this.setState({
-        roomlist: res,
+        roomlist: res.data,
       })
     }
-    catch{
+    catch (err) {
+      console.log(err);
       console.log("Failed to retrieve list of rooms");
     }
-
   }
 
-  renderRoom(room: any){
-    var test = room;
-    return(
-      <div className="card">
-        <h1>Browse Rooms</h1>
-        <div className="card__header">
-          <h1 className="card__title">Rooms</h1>
-        </div>
-        <div className="room">
-          <div className="room__info">
-            <div className="room__name">
-              <span>Lego</span>
-            </div>
-            <span className="room__nb-of-people">Seats 2 people</span>
-          </div>
-          <div className="room__actions">
-            <button className="button">Book Room</button>
-            <a href="#" className="more">...</a>
-          </div>
-        </div>
-      </div>
+  renderRoom(room: any, key: any) {
+    const youtubeid = key.split(':')[1]
+    return (
+      <Grow in={true} timeout='auto'>
+        <TableRow hover key={key}>
+          <TableCell>
+            <img src={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`} onClick={event => window.location.href = "/rooms/" + youtubeid}></img>
+          </TableCell>
+          <TableCell>{room.currVideoId}</TableCell>
+          <TableCell>{room.name}</TableCell>
+          <TableCell>{key}</TableCell>
+          <TableCell>
+            <Button onClick={event => window.location.href = "/rooms/" + youtubeid}>Go to Room</Button>
+          </TableCell>
+        </TableRow>
+      </Grow>
+
     )
   }
 
   render() {
-    return(
+    return (
       <div className="roomlist">
-        {this.state.roomlist.map((item) => {
-          return this.renderRoom(item);
-        })}
+        <Paper>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Video Playing</TableCell>
+                <TableCell>Video Name</TableCell>
+                <TableCell>Room Name</TableCell>
+                <TableCell>Room Key</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Object.keys(this.state.roomlist).map((key) => {
+                return this.renderRoom(this.state.roomlist[key], key);
+              })}
+            </TableBody>
+          </Table>
+        </Paper>
       </div>
     )
   }
 }
-const materialUiStyles = createStyles({
-//   container: {
-//     display: "flex",
-//     flexWrap: "wrap"
-//   },
-//   textField: {
-//     marginLeft: "0",
-//     marginRight: "0",
-//     width: "500px"
-//   },
-//   button: {
-//     background: "#001953",
-//     boxSizing: "border-box",
-//     borderRadius: "5px",
-//     color: "white",
-//     "&:hover": {
-//       backgroundColor: "#001953"
-//     },
-//     marginTop: "100px",
-//     height: "60px",
-//     width: "260px"
-//   },
-//   input: {
-//     display: "none"
-//   }
-});
 
-export default withStyles(materialUiStyles)(Browse);
-
-
-// export default Browse;
+export default Browse;
