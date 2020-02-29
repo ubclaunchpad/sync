@@ -67,7 +67,7 @@ export default class API {
       while (ids.includes(roomId)) {
         roomId = uniqid();
       }
-      await this.db.createRoom(roomId, req.body);
+      await this.db.setRoom(roomId, req.body);
       res.send(roomId);
     } catch (err) {
       res.status(500).send("Error: Couldn't create room.");
