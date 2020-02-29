@@ -1,9 +1,7 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import { withStyles, createStyles } from "@material-ui/core/styles";
 import axios from "axios";
 
+import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -31,21 +29,19 @@ export class Browse extends React.Component<Props, State>{
   async componentDidMount() {
     try {
       var res = await axios.get("http://localhost:8080/rooms");
-      console.log(res)
       this.setState({
         roomList: res.data,
       })
     }
     catch (err) {
       console.log(err);
-      console.log("Failed to retrieve list of rooms");
     }
   }
 
   renderRoom(room: any, key: any) {
     const youtubeId = key.split(':')[1]
     return (
-      <Grow in={true} timeout='auto'>
+      <Grow in={true} timeout='auto' key={key}>
         <TableRow hover key={key}>
           <TableCell>
             <img src={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`} onClick={event => window.location.href = "/rooms/" + youtubeId}></img>
