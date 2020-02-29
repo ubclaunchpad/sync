@@ -27,8 +27,7 @@ export default class API {
   private async getRoomList(req: Request, res: Response): Promise<void> {
     try {
       const data = await this.db.getAllRooms();
-      // console.log(data);
-      res.send(data);
+      res.json(data);
     } catch (err) {
       if (err.includes("404")) {
         res.sendStatus(404);
