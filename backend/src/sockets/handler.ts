@@ -46,11 +46,12 @@ class RoomSocketHandler {
 
   private createEventHandler(): EventHandler {
     return {
+      [Event.MESSAGE]: (message: Message): Promise<void> => this.sendMessage(message),
       [Event.PLAY_VIDEO]: (time: number): Promise<void> => this.playVideo(time),
       [Event.PAUSE_VIDEO]: (time: number): Promise<void> => this.pauseVideo(time),
-      [Event.REQUEST_ADD_TO_QUEUE]: (videoUrl: string): Promise<void> => this.requestAddToQueue(videoUrl),
-      [Event.SET_VIDEO]: (video: Video): Promise<void> => this.setVideo(video),
-      [Event.MESSAGE]: (message: Message): Promise<void> => this.sendMessage(message)
+      [Event.REMOVE_FROM_QUEUE]: (id: string): Promise<void> => this.removeFromQueue(id),
+      [Event.REQUEST_ADD_TO_QUEUE]: (videoUrl: string): Promise<void> => this.tryAddToQueue(videoUrl),
+      [Event.SET_VIDEO]: (video: Video): Promise<void> => this.setVideo(video)
     };
   }
 
@@ -65,33 +66,38 @@ class RoomSocketHandler {
     return Promise.resolve();
   }
 
-  private async requestAddToQueue(videoId: string): Promise<void> {
-    logger.info("REQUEST_ADD_TO_QUEUE called!");
-
+  private async tryAddToQueue(youtubeId: string): Promise<void> {
     try {
-      // TODO: Improve method of finding video ID to account for extra query parameters
-
-      const videoInfoResponse = await axios.get(`https://youtube.com/get_video_info?video_id=${videoId}`);
+      const videoInfoResponse = await axios.get(`https://youtube.com/get_video_info?video_id=${youtubeId}`);
       const videoInfo = qs.parse(videoInfoResponse.data);
       const playerResponse = JSON.parse(videoInfo["player_response"] as string);
       const videoTitle = playerResponse.videoDetails.title;
       logger.info(`Video found: ${videoTitle}`);
 
-      const video: Video = { id: uniqid(), title: videoTitle, currVideoId: videoId };
+      const video: Video = { id: uniqid(), title: videoTitle, youtubeId: youtubeId };
 
       const room = await this.database.getRoom(this.roomId);
       room.videoQueue.push(video);
       await this.database.setRoom(this.roomId, room);
 
-      this.io.in(this.roomId).emit(Event.ADD_TO_QUEUE, video);
+      this.io.in(this.roomId).emit(Event.UPDATE_ROOM, room);
     } catch {
       logger.error("Failed to find info about video");
     }
   }
 
+  private async removeFromQueue(id: string): Promise<void> {
+    const room = await this.database.getRoom(this.roomId);
+    room.videoQueue = room.videoQueue.filter(video => video.id !== id);
+
+    await this.database.setRoom(this.roomId, room);
+
+    this.io.in(this.roomId).emit(Event.UPDATE_ROOM, room);
+  }
+
   private async setVideo(video: Video): Promise<void> {
     const room = await this.database.getRoom(this.roomId);
-    room.currVideoId = video.currVideoId;
+    room.currVideoId = video.youtubeId;
 
     const videoQueue: Video[] = [];
     let foundVideo = false;
