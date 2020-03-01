@@ -1,6 +1,7 @@
 import redis from "redis";
 import logger from "../config/logger";
 import Room from "../models/room";
+import RoomList from "../models/roomlist";
 
 export default class Database {
   private client: redis.RedisClient;
@@ -72,6 +73,20 @@ export default class Database {
           ids.push(key.replace("room:", ""));
         }
         resolve(ids);
+      });
+    });
+  }
+
+  public async getAllRooms(): Promise<RoomList> {
+    return new Promise<RoomList>((resolve, reject) => {
+      logger.info("Get room list");
+      const rooms: RoomList = {};
+      this.client.keys("*", async (err, keys) => {
+        for (const key of keys) {
+          rooms[key] = await this.getRoom(key.split(":")[1]);
+        }
+        logger.info(rooms);
+        resolve(rooms);
       });
     });
   }
