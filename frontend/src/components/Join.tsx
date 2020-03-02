@@ -11,6 +11,7 @@ interface Props {
 interface State {
   id: string;
   redirect: boolean;
+  username: string;
 }
 
 class Join extends React.Component<Props, State> {
@@ -18,11 +19,13 @@ class Join extends React.Component<Props, State> {
     super(props);
     this.state = {
       id: "",
-      redirect: false
+      redirect: false,
+      username: ""
     };
     this.handleRoomIdFieldChange = this.handleRoomIdFieldChange.bind(this);
     this.handleJoinRoom = this.handleJoinRoom.bind(this);
     this.redirectIfRoomJoined = this.redirectIfRoomJoined.bind(this);
+    this.handleUserNameCreation = this.handleUserNameCreation.bind(this);
   }
 
   redirectIfRoomJoined() {
@@ -30,7 +33,8 @@ class Join extends React.Component<Props, State> {
       return (
         <Redirect
           to={{
-            pathname: "/rooms/" + this.state.id
+            pathname: "/rooms/" + this.state.id,
+            state: { username: this.state.username }
           }}
         />
       );
@@ -39,6 +43,10 @@ class Join extends React.Component<Props, State> {
 
   handleRoomIdFieldChange(e: any) {
     this.setState({ id: e.target.value });
+  }
+
+  handleUserNameCreation(e: any) {
+    this.setState({ username: e.target.value });
   }
 
   handleJoinRoom() {
@@ -57,6 +65,14 @@ class Join extends React.Component<Props, State> {
             id="outlined-basic"
             className={classes.textField}
             label="Room Id"
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            onChange={this.handleUserNameCreation}
+            id="outlined-basic"
+            className={classes.textField}
+            label="Username (Optional)"
             margin="normal"
             variant="outlined"
           />

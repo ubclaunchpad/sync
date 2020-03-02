@@ -8,6 +8,11 @@ import { Event } from "../sockets/event";
 import joinRoom from "../sockets/handler";
 import logger from "../config/logger";
 import RoomSocketHandler from "../sockets/handler";
+import e from "express";
+
+interface ExtendedSocket extends socketIo.Socket {
+  username: string;
+}
 
 export default class Server {
   private app: express.Application;
@@ -48,6 +53,16 @@ export default class Server {
 
       socket.on(Event.DISCONNECT, socket => {
         logger.debug(`Socket ${socket.id} disconnected.`);
+      });
+
+      socket.on(Event.CREATE_USERNAME, username => {
+        const extSocket = socket as ExtendedSocket;
+        if (username === "") {
+          extSocket.username = "Anonymous Adam";
+        } else {
+          extSocket.username = username;
+        }
+        logger.info(`socket username set to ${extSocket.username}`);
       });
     });
   }

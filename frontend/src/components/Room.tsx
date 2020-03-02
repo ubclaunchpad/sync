@@ -10,10 +10,11 @@ import Chat from "./Chat";
 import Queue from "./Queue";
 import Video from "../models/video";
 import RoomInfo from "../models/room";
+import { RouteComponentProps } from "react-router-dom";
 
 const VIDEO_CUED_EVENT = 5;
 
-interface Props {
+interface Props extends RouteComponentProps {
   match: any;
 }
 
@@ -151,6 +152,7 @@ class Room extends React.Component<Props, State> {
     const { id } = this.props.match.params;
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
+      this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);
     });
     try {
       const res = await axios.get("http://localhost:8080/rooms/" + id);
