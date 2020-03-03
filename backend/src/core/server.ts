@@ -8,7 +8,6 @@ import { Event } from "../sockets/event";
 import joinRoom from "../sockets/handler";
 import logger from "../config/logger";
 import RoomSocketHandler from "../sockets/handler";
-import e from "express";
 
 interface ExtendedSocket extends socketIo.Socket {
   username: string;

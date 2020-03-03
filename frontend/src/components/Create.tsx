@@ -33,7 +33,7 @@ class Create extends React.Component<Props, State> {
     this.handleUrlFieldChange = this.handleUrlFieldChange.bind(this);
     this.handleCreateRoom = this.handleCreateRoom.bind(this);
     this.redirectIfRoomCreated = this.redirectIfRoomCreated.bind(this);
-    this.handleUserNameCreation = this.handleUserNameCreation.bind(this);
+    this.handleUsernameFieldChange = this.handleUsernameFieldChange.bind(this);
   }
 
   handleNameFieldChange(e: any) {
@@ -44,7 +44,7 @@ class Create extends React.Component<Props, State> {
     this.setState({ url: e.target.value });
   }
 
-  handleUserNameCreation(e: any) {
+  handleUsernameFieldChange(e: any) {
     this.setState({ username: e.target.value });
   }
 
@@ -101,7 +101,7 @@ class Create extends React.Component<Props, State> {
             variant="outlined"
           />
           <TextField
-            onChange={this.handleUserNameCreation}
+            onChange={this.handleUsernameFieldChange}
             id="outlined-basic"
             className={classes.textField}
             label="Username (Optional)"

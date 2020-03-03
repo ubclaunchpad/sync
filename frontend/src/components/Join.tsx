@@ -25,7 +25,7 @@ class Join extends React.Component<Props, State> {
     this.handleRoomIdFieldChange = this.handleRoomIdFieldChange.bind(this);
     this.handleJoinRoom = this.handleJoinRoom.bind(this);
     this.redirectIfRoomJoined = this.redirectIfRoomJoined.bind(this);
-    this.handleUserNameCreation = this.handleUserNameCreation.bind(this);
+    this.handleUsernameFieldChange = this.handleUsernameFieldChange.bind(this);
   }
 
   redirectIfRoomJoined() {
@@ -45,7 +45,7 @@ class Join extends React.Component<Props, State> {
     this.setState({ id: e.target.value });
   }
 
-  handleUserNameCreation(e: any) {
+  handleUsernameFieldChange(e: any) {
     this.setState({ username: e.target.value });
   }
 
@@ -69,7 +69,7 @@ class Join extends React.Component<Props, State> {
             variant="outlined"
           />
           <TextField
-            onChange={this.handleUserNameCreation}
+            onChange={this.handleUsernameFieldChange}
             id="outlined-basic"
             className={classes.textField}
             label="Username (Optional)"
