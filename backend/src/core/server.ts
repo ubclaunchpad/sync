@@ -8,6 +8,13 @@ import { Event } from "../sockets/event";
 import joinRoom from "../sockets/handler";
 import logger from "../config/logger";
 import RoomSocketHandler from "../sockets/handler";
+import { uniqueNamesGenerator, Config, adjectives, colors, animals } from "unique-names-generator";
+
+const customNameConfig: Config = {
+  dictionaries: [colors, animals],
+  separator: " ",
+  length: 2
+};
 
 interface ExtendedSocket extends socketIo.Socket {
   username: string;
@@ -57,7 +64,8 @@ export default class Server {
       socket.on(Event.CREATE_USERNAME, username => {
         const extSocket = socket as ExtendedSocket;
         if (username === "") {
-          extSocket.username = "Anonymous Adam";
+          const randomName: string = uniqueNamesGenerator(customNameConfig);
+          extSocket.username = `Anonymous ${randomName}`;
         } else {
           extSocket.username = username;
         }
