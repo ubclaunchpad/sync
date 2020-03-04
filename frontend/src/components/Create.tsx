@@ -15,6 +15,7 @@ interface State {
   url: string;
   redirect: boolean;
   errorMsg: string;
+  username: string;
 }
 
 class Create extends React.Component<Props, State> {
@@ -25,12 +26,14 @@ class Create extends React.Component<Props, State> {
       name: "",
       url: "",
       redirect: false,
-      errorMsg: ""
+      errorMsg: "",
+      username: ""
     };
     this.handleNameFieldChange = this.handleNameFieldChange.bind(this);
     this.handleUrlFieldChange = this.handleUrlFieldChange.bind(this);
     this.handleCreateRoom = this.handleCreateRoom.bind(this);
     this.redirectIfRoomCreated = this.redirectIfRoomCreated.bind(this);
+    this.handleUsernameFieldChange = this.handleUsernameFieldChange.bind(this);
   }
 
   handleNameFieldChange(e: any) {
@@ -39,6 +42,10 @@ class Create extends React.Component<Props, State> {
 
   handleUrlFieldChange(e: any) {
     this.setState({ url: e.target.value });
+  }
+
+  handleUsernameFieldChange(e: any) {
+    this.setState({ username: e.target.value });
   }
 
   async handleCreateRoom() {
@@ -62,7 +69,8 @@ class Create extends React.Component<Props, State> {
       return (
         <Redirect
           to={{
-            pathname: "/rooms/" + this.state.id
+            pathname: "/rooms/" + this.state.id,
+            state: { username: this.state.username }
           }}
         />
       );
@@ -89,6 +97,14 @@ class Create extends React.Component<Props, State> {
             id="outlined-basic"
             className={classes.textField}
             label="Video URL"
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            onChange={this.handleUsernameFieldChange}
+            id="outlined-basic"
+            className={classes.textField}
+            label="Username (Optional)"
             margin="normal"
             variant="outlined"
           />
