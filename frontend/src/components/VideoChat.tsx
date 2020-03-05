@@ -1,8 +1,18 @@
 import React from "react";
 import Peer from 'simple-peer';
 import io from "socket.io-client";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import { withStyles } from "@material-ui/core/styles";
+import List from '@material-ui/core/List';
+import { ListItem, ListItemText } from "@material-ui/core";
+import { v1 as uuidv1 } from 'uuid';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
+import Fade from "@material-ui/core/Fade";
 
 interface VideoChatProps {
+  classes: any,
 }
 
 interface VideoChatState {
@@ -10,7 +20,14 @@ interface VideoChatState {
   stream: any,
   peer: any,
   peerVideo: any,
-  startVideo: boolean,
+  // startVideo: boolean,
+  joined: boolean,
+  inVideoChat: boolean,
+  name: string,
+  videoChatSet: string[],
+  videoChatId: any,
+  openInviteModal: boolean,
+  inviteFrom: string,
 }
 
 interface PeerType {
@@ -37,11 +54,17 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     super(props);
     this.socket = io.connect("http://localhost:8080/");
     this.state = {
+      joined: false,
       gotAnswer: false,
       stream: null,
       peer: null,
       peerVideo: null,
-      startVideo: false,
+      inVideoChat: false,
+      name: "",
+      videoChatSet: [],
+      videoChatId: null,
+      openInviteModal: false,
+      inviteFrom: ''
     };
     this.videoRef = React.createRef();
     this.peerVideoRef = React.createRef();
@@ -49,24 +72,97 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     this.createVideo = this.createVideo.bind(this);
     this.makePeer = this.makePeer.bind(this);
     this.init = this.init.bind(this);
+    this.handleNameFieldChange = this.handleNameFieldChange.bind(this);
+    this.handleJoinVideoChat = this.handleJoinVideoChat.bind(this);
+    // this.buildList = this.buildList.bind(this);
+    this.setVideoChatSet = this.setVideoChatSet.bind(this);
+    this.acceptVideoChatInvite = this.acceptVideoChatInvite.bind(this);
   }
 
   componentDidMount() {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }) // this asks browser for permission to access cam/aud
-      .then((stream) => {
-        this.setState({ stream: stream });
-        const node = this.videoRef.current;
-        this.socket.emit('newVideoChatPeer'); //handled in server.js
-        if (node) {
-          node.srcObject = stream;
-        }
-      })
-      .catch();//If permission not given, display error
-
     this.socket.on('BackOffer', this.frontAnswer);
     this.socket.on('BackAnswer', this.signalAnswer); //if answer is from backend, handle, connect both clients
     this.socket.on('SessionActive', () => console.log('Session Active'));
     this.socket.on('CreatePeer', this.makePeer);
+    this.socket.on('VIDEOCHAT_LIST', (data: string[]) => this.setVideoChatSet(data));
+    this.socket.on('SEND_INVITE', (invObj: any) => {
+      console.log('received invite for ' + invObj.to);
+      if (this.state.name && invObj.to === this.state.name) {
+        this.openInviteModal(invObj);
+      }
+    })
+    this.socket.on('ACCEPT_INVITE', (acceptObj: any) => {
+      console.log('video chat accepted by : ' + JSON.stringify(acceptObj));
+      if (acceptObj.to === this.state.name) {
+        this.sendVideoChatId(acceptObj);
+      }
+    })
+
+    this.socket.on('SEND_VIDEOCHATID', (videoChatIdObj: any) => {
+      console.log('this.state.name: ' + this.state.name);
+      console.log('videoChatIdObj: ' + JSON.stringify(videoChatIdObj));
+      if (this.state.name && videoChatIdObj.to === this.state.name) {
+        console.log('this.state.name == videoChatIdObj.to');
+        this.setVideoChatId(videoChatIdObj.id);
+      }
+    })
+
+  }
+
+  setInVideoChat = () => {
+    this.setState({ inVideoChat: true });
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }) // this asks browser for permission to access cam/aud
+      .then((stream) => {
+        this.setState({ stream: stream });
+        const node = this.videoRef.current;
+        //TODO: Include id in this emit
+        this.socket.emit('newVideoChatPeer', (this.state.videoChatId)); //handled in server.js
+        if (node) {
+          node.srcObject = stream;
+        }
+      })
+      .catch(() => console.log('Permission Not Given'));//If permission not given, display error
+  }
+
+  setVideoChatId = (id: any) => {
+    this.setState({ videoChatId: id });
+    this.socket.emit('VIDEO_CHAT', this.state.videoChatId);
+    this.setInVideoChat();
+  }
+
+  sendVideoChatId = (acceptObj: any) => {
+    let videoChatId = uuidv1();
+    let videoChatIdObj = { id: videoChatId, to: acceptObj.acceptedBy };
+    this.setVideoChatId(videoChatIdObj.id);
+    this.socket.emit('SEND_VIDEOCHATID', videoChatIdObj);
+  }
+
+  openInviteModal = (invObj: any) => {
+    console.log('inviteFrom: ' + invObj.sentBy);
+    this.setState({ inviteFrom: invObj.sentBy });
+    this.setState({ openInviteModal: true });
+  }
+
+  sendInvite = (name: string) => {
+    console.log('name clicked on: ' + name);
+    let invObj = { sentBy: this.state.name, to: name }
+    this.socket.emit('SEND_INVITE', invObj);
+  }
+
+  setVideoChatSet = (arr: string[]) => {
+    // console.log('set: ' + set.entries(set));
+    console.log('arr: ' + arr);
+    this.setState({ videoChatSet: arr })
+  }
+
+  acceptVideoChatInvite = () => {
+    // let invObj = { sentBy: this.state.name, to: name }
+    let acceptObj = { acceptedBy: this.state.name, to: this.state.inviteFrom }
+    this.socket.emit('ACCEPT_INVITE', acceptObj);
+    this.setState({ openInviteModal: false });
+  }
+
+  declineVideoChatInvite = () => {
 
   }
 
@@ -95,10 +191,13 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   makePeer = (): void => {
     const gotAnswer = this.state.gotAnswer;
     let socket = this.socket;
+    let videoChatId = this.state.videoChatId;
     let peer = this.init('init');
     peer.on('signal', function (data) {
       if (!gotAnswer) {
-        socket.emit('Offer', data);
+        //TODO: somehow include id in this emit offer
+        let offerObj = { data: data, videoChatId: videoChatId };
+        socket.emit('Offer', offerObj);
       }
     })
     this.setState({ peer: peer })
@@ -107,11 +206,15 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   frontAnswer = (offer: any): void => {
     let peer = this.init('notInit');
     let socket = this.socket;
+    let videoChatId = this.state.videoChatId;
     //this doesnt run automatically, have to call signal
     peer.on('signal', (data) => {
       //means we have gotten our offer
       //we want to imitate with even Answer
-      socket.emit('Answer', data);
+      //TODO: Include id in this emit
+      let answerObj = { data: data, videoChatId: videoChatId };
+      socket.emit('Answer', answerObj);
+      // socket.emit('Answer', data);
     })
     //pass offer to signal, generate answer to backend, which will send to other user
     peer.signal(offer);
@@ -136,17 +239,120 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     }
   }
 
+  handleNameFieldChange(e: any) {
+    this.setState({ name: e.target.value });
+  }
+
+  handleJoinVideoChat = () => {
+    this.setState({ joined: true });
+    this.socket.emit('JOINED_VIDEOCHAT', this.state.name);
+  }
+
   render() {
+    let usersList = this.state.videoChatSet;
+    const { classes } = this.props;
     return (
       <React.Fragment>
         <h1>Test Video Chat</h1>
-        <video ref={this.videoRef} autoPlay></video>
-        {<video ref={this.peerVideoRef} autoPlay></video>}
-        <button onClick={() => this.setState({ startVideo: true })}>Start</button>
-        <button onClick={() => this.setState({ startVideo: false })}>End</button>
+
+        {!this.state.joined &&
+          <React.Fragment>
+            <TextField
+              onChange={this.handleNameFieldChange}
+              id="outlined-basic"
+              // className={classes.textField}
+              label="Join"
+              margin="normal"
+              variant="outlined"
+            />
+            <Button
+              onClick={this.handleJoinVideoChat}
+              variant="outlined"
+              // className={classes.button}
+              style={{ marginTop: "35px" }}
+            >
+              Join
+            </Button>
+          </React.Fragment>
+        }
+
+        {
+          this.state.joined && !this.state.inVideoChat &&
+          <React.Fragment>
+            <List component="nav">
+              {usersList.map((user) => {
+                return (
+                  <React.Fragment>
+                    <ListItemText primary={user} /> <button onClick={() => this.sendInvite(user)}>Video Chat</button>
+                  </React.Fragment>
+                )
+              })}
+            </List>
+          </React.Fragment>
+        }
+
+
+        {this.state.inVideoChat &&
+          <React.Fragment>
+            <h1>Video Chat: + {this.state.videoChatId}</h1>
+            <video ref={this.videoRef} autoPlay></video>
+            <video ref={this.peerVideoRef} autoPlay></video>
+          </React.Fragment>
+        }
+
+        <Modal
+          disableAutoFocus={true}
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={this.state.openInviteModal}
+          onClose={() => console.log('onClose modal')}
+          closeAfterTransition
+        // BackdropComponent={Backdrop}
+        // BackdropProps={{
+        //   timeout: 500
+        // }}
+        >
+          <Fade in={this.state.openInviteModal}>
+            <div className={classes.paper}>
+              <h1>Video Chat invite from {this.state.inviteFrom}</h1>
+              <button onClick={this.acceptVideoChatInvite}>Accept</button>
+              <button>Decline</button>
+            </div>
+          </Fade>
+        </Modal>
       </React.Fragment>
     );
   }
 }
 
-export default VideoChat;
+const materialUiStyles = {
+  root: {
+    background: "#000000",
+    height: "292px",
+    width: "212px",
+    marginRight: "50px",
+    marginLeft: "50px",
+    border: "2px solid #051633",
+    borderRadius: "10px",
+    opacity: "1 !important"
+  },
+  textPrimary: {
+    color: "white"
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  paper: {
+    backgroundColor: "white",
+    border: "1px solid #000",
+    width: "905px",
+    height: "400px",
+    borderRadius: "20px",
+    outline: "none"
+  }
+};
+
+export default withStyles(materialUiStyles)(VideoChat);
