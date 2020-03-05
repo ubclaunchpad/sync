@@ -167,7 +167,11 @@ class Room extends React.Component<Props, State> {
     const { id } = this.props.match.params;
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
-      this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);
+      if (typeof this.props.location.state.username !== 'undefined') {
+        this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);
+      } else {
+        this.socket.emit(Event.CREATE_USERNAME, "");
+      }
     });
     try {
       const res = await axios.get("http://localhost:8080/rooms/" + id);
