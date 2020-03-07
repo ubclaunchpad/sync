@@ -64,6 +64,7 @@ class Chat extends React.Component<Props, State> {
         return "";
       }
     };
+
     for (const m of this.props.messages) {
       chat.push(
         <span>
@@ -73,7 +74,11 @@ class Chat extends React.Component<Props, State> {
       );
       count++;
     }
-    return chat;
+    if (this.props.messages.length) {
+      return <List>{chat}</List>;
+    } else {
+      return "";
+    }
   };
 
   render() {
@@ -91,20 +96,15 @@ class Chat extends React.Component<Props, State> {
       </div>
     );
     return (
-      <div style={styles.chatBox}>
+      <div>
         {chatWindow}
-        <Paper style={{ maxHeight: "30vh", overflow: "auto" }}>
-          <List aria-label="ChatRoom">{this.renderChat()}</List>
-        </Paper>
+        <Paper style={{ height: "30vh", overflow: "auto" }}>{this.renderChat()}</Paper>
       </div>
     );
   }
 }
 
 const materialUiStyles = createStyles({
-  list: {
-    color: "white"
-  },
   textField: {
     "& input + fieldset": {
       borderColor: "green !important",
