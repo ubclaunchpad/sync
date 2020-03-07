@@ -153,13 +153,16 @@ class Room extends React.Component<Props, State> {
     });
 
     this.socket.on(Event.UPDATE_VIDEO_STATE, (videoState: VideoState) => {
+      console.log("Responding to an UPDATE_VIDEO_STATE with " + JSON.stringify(videoState));
       if (videoState.playerState === PlayerState.PAUSED) {
+        console.log("Trying to pause video!");
+        player.seekTo(videoState.secondsElapsed);
         player.pauseVideo();
       } else if (videoState.playerState === PlayerState.PLAYING) {
+        console.log("Trying to play video!");
+        player.seekTo(videoState.secondsElapsed);
         player.playVideo();
       }
-
-      player.seekTo(videoState.secondsElapsed);
     });
 
     this.socket.on(Event.REQUEST_VIDEO_STATE, (socketId: string) => {
