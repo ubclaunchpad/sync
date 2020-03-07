@@ -98,8 +98,6 @@ class Room extends React.Component<Props, State> {
   }
 
   addMessage = (message: Message) => {
-    console.log("added message");
-
     this.setState(prevState => ({
       messages: [...prevState.messages, message]
     }));
@@ -107,7 +105,6 @@ class Room extends React.Component<Props, State> {
 
   handleSendMessage = (data: string) => {
     if (data) {
-      console.log("wtf");
       const toSend: Message = {
         // user: this.state.userName,
         user: "Bill",
@@ -133,8 +130,6 @@ class Room extends React.Component<Props, State> {
     });
     this.socket.on(Event.MESSAGE, (dataFromServer: Message) => {
       console.log(JSON.stringify(dataFromServer));
-      console.log("recieved message");
-
       this.addMessage(dataFromServer);
     });
     this.socket.on(Event.UPDATE_ROOM, (room: RoomInfo) => {
