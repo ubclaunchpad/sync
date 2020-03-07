@@ -116,7 +116,6 @@ class RoomSocketHandler {
   }
 
   private sendMessage(message: Message): Promise<void> {
-    logger.info("sent over socket");
     this.socket.to(this.roomId).emit(Event.MESSAGE, message);
     return Promise.resolve();
   }
