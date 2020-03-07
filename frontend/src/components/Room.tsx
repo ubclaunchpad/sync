@@ -11,6 +11,13 @@ import Queue from "./Queue";
 import Video from "../models/video";
 import RoomInfo from "../models/room";
 import { RouteComponentProps } from "react-router-dom";
+import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-generator";
+
+const customNameConfig: Config = {
+  dictionaries: [colors, animals],
+  separator: " ",
+  length: 2
+};
 
 interface Props extends RouteComponentProps {
   match: any;
@@ -55,6 +62,7 @@ class Room extends React.Component<Props, State> {
     this.requestAddToQueue = this.requestAddToQueue.bind(this);
     this.addToQueue = this.addToQueue.bind(this);
     this.removeFromQueue = this.removeFromQueue.bind(this);
+    this.generateUsername = this.generateUsername.bind(this);
   }
 
   handleOnPause(event: { target: any; data: number }) {
@@ -163,8 +171,18 @@ class Room extends React.Component<Props, State> {
     this.setState({ videoQueue: videoQueue.filter(video => video.id !== id) });
   }
 
+  generateUsername(): void {
+    if (this.state.userName === "") {
+      const randomName: string = uniqueNamesGenerator(customNameConfig);
+      this.setState({
+        userName: randomName
+      });
+    }
+  }
+
   async componentDidMount() {
     const { id } = this.props.match.params;
+    this.generateUsername();
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
       this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);

@@ -6,6 +6,7 @@ import qs from "querystring";
 import Video from "../models/video";
 import uniqid from "uniqid";
 import Database from "../core/database";
+import ExtendedSocket from "../models/extendedSocket";
 
 interface Message {
   user: string;
@@ -19,10 +20,10 @@ type EventHandler = {
 class RoomSocketHandler {
   private database: Database;
   private io: Server;
-  private socket: Socket;
+  private socket: ExtendedSocket;
   private roomId: string;
 
-  constructor(database: Database, io: Server, socket: Socket, roomId: string) {
+  constructor(database: Database, io: Server, socket: ExtendedSocket, roomId: string) {
     this.database = database;
     this.io = io;
     this.socket = socket;
