@@ -46,16 +46,12 @@ export default class Server {
     let videoChats: any = {};
     io.on(Event.CONNECT, socket => {
       logger.debug(`Socket ${socket.id} connected.`);
-      // videoChatSet.push('Test');
-      // console.log('videoChatSetHas: ' + videoChatSet.has('test'));
-
-
+      logger.info(`Socket ${socket.id} connected.`);
       socket.on(Event.JOIN_ROOM, roomId => {
         new RoomSocketHandler(this.database, io, socket, roomId).initialize();
       });
 
       socket.on('SEND_INVITE', (invObj) => {
-        // console.log('INV_OBJ: ' + invObj);
         socket.broadcast.emit('SEND_INVITE', invObj);
       })
 
@@ -64,7 +60,6 @@ export default class Server {
       })
 
       socket.on('SEND_VIDEOCHATID', (videoChatIdObj) => {
-        // console.log('videoChatIdObj: ' + JSON.stringify(videoChatIdObj));
         socket.broadcast.emit('SEND_VIDEOCHATID', videoChatIdObj);
       })
 
@@ -73,7 +68,6 @@ export default class Server {
         io.emit('VIDEOCHAT_LIST', videoChatSet);
       })
 
-      // this.socket.emit('VIDEO_CHAT', this.state.videoChatId);
       socket.on('VIDEO_CHAT', (id: any) => {
         console.log('Joining videoChat: ' + id);
         socket.join(id);
@@ -82,14 +76,11 @@ export default class Server {
       socket.on('newVideoChatPeer', (videoChatId: any) => {
         if (!(videoChatId in videoChats)) {
           videoChats[videoChatId] = { numClients: 0, clientNum: 0 };
-          // console.log('videoChatsObj: ' + JSON.stringify(videoChats[videoChatId]));
         }
 
         if (videoChats[videoChatId]['numClients'] < 2) {
           if (videoChats[videoChatId]['numClients'] == 1) {
-            // console.log('Creating new peer ' + videoChatId + videoChats[videoChatId]['clientNum']);
             socket.to(videoChatId).emit('CreatePeer');
-            // socket.emit('CreatePeer', videoChatId);
           }
         }
         else {
@@ -104,21 +95,10 @@ export default class Server {
       })
 
       socket.on('Offer', (offerObj: any) => {
-        //offerObj = {data:data, videoChatId:videoChatId};
-        // console.log('Sending backOffer ' + clientNum);
         socket.to(offerObj.videoChatId).emit("BackOffer", offerObj.data);
-        // socket.broadcast.emit("BackOffer", offer);
       });
 
-      // socket.on('Offer', (offer) => {
-      //   console.log('Sending backOffer ' + clientNum);
-      //   //socket.to(id).emit("BackOffer", offer)
-      //   socket.broadcast.emit("BackOffer", offer);
-      // });
       socket.on('Answer', (answerObj: any) => {
-        //answerObj = { data: data, videoChatId: videoChatId };
-        // console.log('Sending backAnswer ' + clientNum);
-        //socket.to(id).emit("BackAnswer", data)
         socket.to(answerObj.videoChatId).emit("BackAnswer", answerObj.data);
       });
 
