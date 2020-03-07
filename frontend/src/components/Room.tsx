@@ -45,6 +45,7 @@ interface State {
   videoQueue: Video[];
   playerState: PlayerState;
   modal: ModalType;
+  users: string[];
 }
 
 class Room extends React.Component<Props, State> {
@@ -62,7 +63,7 @@ class Room extends React.Component<Props, State> {
       username: "",
       videoQueue: [],
       playerState: PlayerState.UNSTARTED,
-      modal: ModalType.NONE
+      users: [],
     };
     this.handleOnPause = this.handleOnPause.bind(this);
     this.handleOnPlay = this.handleOnPlay.bind(this);
@@ -73,6 +74,11 @@ class Room extends React.Component<Props, State> {
     this.setUsernameAndEmit = this.setUsernameAndEmit.bind(this);
     this.setModalState = this.setModalState.bind(this);
     this.changeUsernameAndEmit = this.changeUsernameAndEmit.bind(this);
+    this.handleSetUsers = this.handleSetUsers.bind(this);
+  }
+
+  handleSetUsers(users: string[]) {
+    this.setState({ users: users });
   }
 
   handleOnPause(event: { target: any; data: number }) {
@@ -222,6 +228,11 @@ class Room extends React.Component<Props, State> {
     const { id } = this.props.match.params;
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
+      this.setUsernameAndEmit();
+      this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);
+      this.socket.on('CLIENTS', (clients: string[]) => {
+        this.handleSetUsers(clients)
+      });
     });
     this.setUsernameAndEmit();
     this.setModalState();
