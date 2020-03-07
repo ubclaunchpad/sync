@@ -114,12 +114,6 @@ class Room extends React.Component<Props, State> {
     }
   };
 
-  handleSignIn = (data: string) => {
-    if (data) {
-      this.setState({ userName: data });
-    }
-  };
-
   handleOnReady(event: { target: any }) {
     console.log("Called handleOnready");
     const player = event.target;
@@ -235,7 +229,7 @@ class Room extends React.Component<Props, State> {
         {invalidRoomId}
         {showLoadingIndicator}
         {console.log(this.state.messages)}
-        <Chat signIn={this.handleSignIn} sendMessage={this.handleSendMessage} />
+        <Chat messages={this.state.messages} sendMessage={this.handleSendMessage} />
       </div>
     );
   }
