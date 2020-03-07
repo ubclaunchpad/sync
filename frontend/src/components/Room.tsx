@@ -167,7 +167,7 @@ class Room extends React.Component<Props, State> {
     const { id } = this.props.match.params;
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
-      if (typeof this.props.location.state.username !== 'undefined') {
+      if (typeof this.props.location.state.username !== "undefined") {
         this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);
       } else {
         this.socket.emit(Event.CREATE_USERNAME, "");
