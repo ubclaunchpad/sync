@@ -68,7 +68,7 @@ class Chat extends React.Component<Props, State> {
     for (const m of this.props.messages) {
       chat.push(
         <span>
-          <ListItemText key={count} primary={setUser(m) + m.message} />
+          <ListItemText style={{ paddingLeft: "10px" }} key={count} primary={setUser(m) + m.message} />
           <Divider variant="middle" />
         </span>
       );
@@ -87,7 +87,8 @@ class Chat extends React.Component<Props, State> {
     const chatWindow = (
       <div>
         <TextField
-          className={classes.textField}
+          InputProps={{ className: classes.textField }}
+          InputLabelProps={{ className: classes.textField }}
           label="Send a Message!"
           onChange={this.onChange}
           onKeyUp={this.enterPressed}
@@ -96,9 +97,9 @@ class Chat extends React.Component<Props, State> {
       </div>
     );
     return (
-      <div>
+      <div style={{ paddingLeft: "2vw" }}>
         {chatWindow}
-        <Paper style={{ height: "30vh", overflow: "auto" }}>{this.renderChat()}</Paper>
+        <Paper style={{ height: "30vh", overflow: "auto", width: "50vw" }}>{this.renderChat()}</Paper>
       </div>
     );
   }
@@ -106,10 +107,8 @@ class Chat extends React.Component<Props, State> {
 
 const materialUiStyles = createStyles({
   textField: {
-    "& input + fieldset": {
-      borderColor: "green !important",
-      borderWidth: 2
-    },
+    borderColor: "green",
+    borderWidth: 2,
     color: "white"
   }
 });
