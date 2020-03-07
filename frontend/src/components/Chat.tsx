@@ -1,10 +1,11 @@
 import React, { FunctionComponent, useState, useEffect, ChangeEvent } from "react";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
+import { createStyles, withStyles } from "@material-ui/core/styles";
+
 const styles = {
   chatBox: {
     border: "1px solid white",
@@ -21,6 +22,7 @@ interface Message {
 }
 
 interface Props {
+  classes: any;
   sendMessage: Function;
   messages: Message[];
 }
@@ -54,22 +56,34 @@ class Chat extends React.Component<Props, State> {
 
   renderChat = () => {
     const chat = [];
+    let count = 0;
+    const setUser = (message: Message) => {
+      if (message.user) {
+        return message.user + ": ";
+      } else {
+        return "";
+      }
+    };
     for (const m of this.props.messages) {
       chat.push(
         <span>
-          <ListItemText primary={m.user + ": " + m.message} />
+          <ListItemText key={count} primary={setUser(m) + m.message} />
           <Divider variant="middle" />
         </span>
       );
+      count++;
     }
     return chat;
   };
 
   render() {
+    const { classes } = this.props;
+
     const chatWindow = (
       <div>
         <TextField
-          placeholder="Send a Message!"
+          className={classes.textField}
+          label="Send a Message!"
           onChange={this.onChange}
           onKeyUp={this.enterPressed}
           value={this.state.message}
@@ -87,4 +101,17 @@ class Chat extends React.Component<Props, State> {
   }
 }
 
-export default Chat;
+const materialUiStyles = createStyles({
+  list: {
+    color: "white"
+  },
+  textField: {
+    "& input + fieldset": {
+      borderColor: "green !important",
+      borderWidth: 2
+    },
+    color: "white"
+  }
+});
+
+export default withStyles(materialUiStyles)(Chat);
