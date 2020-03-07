@@ -28,6 +28,14 @@ class Join extends React.Component<Props, State> {
     this.handleUsernameFieldChange = this.handleUsernameFieldChange.bind(this);
   }
 
+  enterPressed = (event: any) => {
+    event.preventDefault();
+    const code = event.keyCode || event.which;
+    if (code === 13) {
+      this.handleJoinRoom();
+    }
+  };
+
   redirectIfRoomJoined() {
     if (this.state.redirect) {
       return (
@@ -67,6 +75,7 @@ class Join extends React.Component<Props, State> {
             label="Room Id"
             margin="normal"
             variant="outlined"
+            onKeyUp={this.enterPressed}
           />
           <TextField
             onChange={this.handleUsernameFieldChange}
@@ -75,6 +84,7 @@ class Join extends React.Component<Props, State> {
             label="Username (Optional)"
             margin="normal"
             variant="outlined"
+            onKeyUp={this.enterPressed}
           />
         </div>
         <Button onClick={this.handleJoinRoom} variant="outlined" className={classes.button}>

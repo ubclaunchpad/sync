@@ -48,6 +48,14 @@ class Create extends React.Component<Props, State> {
     this.setState({ username: e.target.value });
   }
 
+  enterPressed = (event: any) => {
+    event.preventDefault();
+    const code = event.keyCode || event.which;
+    if (code === 13) {
+      this.handleCreateRoom();
+    }
+  };
+
   async handleCreateRoom() {
     // check if state.url leads to a YouTube video
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
@@ -91,6 +99,7 @@ class Create extends React.Component<Props, State> {
             label="Room Name"
             margin="normal"
             variant="outlined"
+            onKeyUp={this.enterPressed}
           />
           <TextField
             onChange={this.handleUrlFieldChange}
@@ -99,6 +108,7 @@ class Create extends React.Component<Props, State> {
             label="Video URL"
             margin="normal"
             variant="outlined"
+            onKeyUp={this.enterPressed}
           />
           <TextField
             onChange={this.handleUsernameFieldChange}
@@ -107,6 +117,7 @@ class Create extends React.Component<Props, State> {
             label="Username (Optional)"
             margin="normal"
             variant="outlined"
+            onKeyUp={this.enterPressed}
           />
         </div>
         {this.state.errorMsg ? <p style={{ color: "red" }}>{this.state.errorMsg}</p> : ""}
