@@ -63,11 +63,6 @@ export default class Server {
         socket.broadcast.emit('SEND_VIDEOCHATID', videoChatIdObj);
       })
 
-      socket.on('JOINED_VIDEOCHAT', (data) => {
-        videoChatSet.push(data);
-        io.emit('VIDEOCHAT_LIST', videoChatSet);
-      })
-
       socket.on('VIDEO_CHAT', (id: any) => {
         console.log('Joining videoChat: ' + id);
         socket.join(id);

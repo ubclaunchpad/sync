@@ -29,6 +29,7 @@ const customNameConfig: Config = {
   separator: " ",
   length: 2
 };
+import VideoChat from './VideoChat';
 
 interface Props extends RouteComponentProps {
   match: any;
@@ -323,6 +324,7 @@ class Room extends React.Component<Props, State> {
             </div>
           </Fade>
         </Modal>
+        <VideoChat users={this.state.users} />
       </div>
     );
   }

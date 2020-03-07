@@ -13,6 +13,7 @@ import Fade from "@material-ui/core/Fade";
 
 interface VideoChatProps {
   classes: any,
+  users: string[],
 }
 
 interface VideoChatState {
@@ -21,7 +22,6 @@ interface VideoChatState {
   peer: any,
   peerVideo: any,
   // startVideo: boolean,
-  joined: boolean,
   inVideoChat: boolean,
   name: string,
   videoChatSet: string[],
@@ -54,7 +54,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     super(props);
     this.socket = io.connect("http://localhost:8080/");
     this.state = {
-      joined: false,
       gotAnswer: false,
       stream: null,
       peer: null,
@@ -72,8 +71,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     this.createVideo = this.createVideo.bind(this);
     this.makePeer = this.makePeer.bind(this);
     this.init = this.init.bind(this);
-    this.handleNameFieldChange = this.handleNameFieldChange.bind(this);
-    this.handleJoinVideoChat = this.handleJoinVideoChat.bind(this);
     // this.buildList = this.buildList.bind(this);
     this.setVideoChatSet = this.setVideoChatSet.bind(this);
     this.acceptVideoChatInvite = this.acceptVideoChatInvite.bind(this);
@@ -239,48 +236,19 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     }
   }
 
-  handleNameFieldChange(e: any) {
-    this.setState({ name: e.target.value });
-  }
-
-  handleJoinVideoChat = () => {
-    this.setState({ joined: true });
-    this.socket.emit('JOINED_VIDEOCHAT', this.state.name);
-  }
 
   render() {
-    let usersList = this.state.videoChatSet;
-    const { classes } = this.props;
+    // let usersList = this.state.videoChatSet;
+    const { classes, users } = this.props;
     return (
       <React.Fragment>
-        <h1>Test Video Chat</h1>
-
-        {!this.state.joined &&
-          <React.Fragment>
-            <TextField
-              onChange={this.handleNameFieldChange}
-              id="outlined-basic"
-              // className={classes.textField}
-              label="Join"
-              margin="normal"
-              variant="outlined"
-            />
-            <Button
-              onClick={this.handleJoinVideoChat}
-              variant="outlined"
-              // className={classes.button}
-              style={{ marginTop: "35px" }}
-            >
-              Join
-            </Button>
-          </React.Fragment>
-        }
+        <h1>Video Chat</h1>
 
         {
-          this.state.joined && !this.state.inVideoChat &&
+          !this.state.inVideoChat &&
           <React.Fragment>
             <List component="nav">
-              {usersList.map((user) => {
+              {users.map((user) => {
                 return (
                   <React.Fragment>
                     <ListItemText primary={user} /> <button onClick={() => this.sendInvite(user)}>Video Chat</button>
