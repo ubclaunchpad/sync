@@ -8,17 +8,7 @@ import { Event } from "../sockets/event";
 import joinRoom from "../sockets/handler";
 import logger from "../config/logger";
 import RoomSocketHandler from "../sockets/handler";
-import { uniqueNamesGenerator, Config, adjectives, colors, animals } from "unique-names-generator";
-
-const customNameConfig: Config = {
-  dictionaries: [colors, animals],
-  separator: " ",
-  length: 2
-};
-
-interface ExtendedSocket extends socketIo.Socket {
-  username: string;
-}
+import ExtendedSocket from "../models/extendedSocket";
 
 export default class Server {
   private app: express.Application;
@@ -50,26 +40,20 @@ export default class Server {
 
   private setupSockets(): void {
     const io = socketIo(this.httpServer);
-    io.on(Event.CONNECT, socket => {
+    io.on(Event.CONNECT, (socket: ExtendedSocket) => {
       logger.debug(`Socket ${socket.id} connected.`);
 
       socket.on(Event.JOIN_ROOM, roomId => {
         new RoomSocketHandler(this.database, io, socket, roomId).initialize();
       });
 
-      socket.on(Event.DISCONNECT, socket => {
+      socket.on(Event.DISCONNECT, (socket: ExtendedSocket) => {
         logger.debug(`Socket ${socket.id} disconnected.`);
       });
 
-      socket.on(Event.CREATE_USERNAME, username => {
-        const extSocket = socket as ExtendedSocket;
-        if (username === "") {
-          const randomName: string = uniqueNamesGenerator(customNameConfig);
-          extSocket.username = `Anonymous ${randomName}`;
-        } else {
-          extSocket.username = username;
-        }
-        logger.info(`socket username set to ${extSocket.username}`);
+      socket.on(Event.CREATE_USERNAME, (username: string, socket: ExtendedSocket) => {
+        socket.username = username;
+        logger.info(`socket username set to ${socket.username}`);
       });
     });
   }
