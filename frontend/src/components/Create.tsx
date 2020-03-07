@@ -63,6 +63,13 @@ class Create extends React.Component<Props, State> {
       this.setState({ errorMsg: "Invalid URL" });
     }
   }
+  enterPressed = (event: any) => {
+    event.preventDefault();
+    const code = event.keyCode || event.which;
+    if (code === 13) {
+      this.handleCreateRoom();
+    }
+  };
 
   redirectIfRoomCreated() {
     if (this.state.redirect) {
@@ -91,6 +98,7 @@ class Create extends React.Component<Props, State> {
             label="Room Name"
             margin="normal"
             variant="outlined"
+            onKeyUp={this.enterPressed}
           />
           <TextField
             onChange={this.handleUrlFieldChange}
@@ -99,6 +107,7 @@ class Create extends React.Component<Props, State> {
             label="Video URL"
             margin="normal"
             variant="outlined"
+            onKeyUp={this.enterPressed}
           />
           <TextField
             onChange={this.handleUsernameFieldChange}
@@ -107,6 +116,7 @@ class Create extends React.Component<Props, State> {
             label="Username (Optional)"
             margin="normal"
             variant="outlined"
+            onKeyUp={this.enterPressed}
           />
         </div>
         {this.state.errorMsg ? <p style={{ color: "red" }}>{this.state.errorMsg}</p> : ""}
