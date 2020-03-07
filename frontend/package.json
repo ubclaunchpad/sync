@@ -13,12 +13,14 @@
     "@types/react-router-dom": "^5.1.0",
     "@types/react-youtube": "^7.6.2",
     "@types/socket.io-client": "^1.4.32",
+    "@types/youtube": "0.0.38",
     "@typescript-eslint/eslint-plugin": "^2.17.0",
     "@typescript-eslint/parser": "^2.17.0",
     "axios": "^0.19.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "get-youtube-title": "^1.0.0",
     "prettier": "^1.19.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
@@ -27,7 +29,7 @@
     "react-scripts": "^3.3.0",
     "react-youtube": "^7.9.0",
     "socket.io-client": "^2.3.0",
-    "typescript": "3.6.4"
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "start": "react-scripts start",

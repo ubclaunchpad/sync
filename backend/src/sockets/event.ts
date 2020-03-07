@@ -1,5 +1,6 @@
 export enum Event {
   CONNECT = "connect",
+  CREATE_USERNAME = "create username",
   DISCONNECT = "disconnect",
   MESSAGE = "message",
   JOIN_ROOM = "join room",
