@@ -8,6 +8,7 @@ import uniqid from "uniqid";
 import Database from "../core/database";
 import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
+import Room from "../models/room";
 
 interface Message {
   user: string;
@@ -60,14 +61,22 @@ class RoomSocketHandler {
     };
   }
 
-  private playVideo(time: number): Promise<void> {
-    this.socket.to(this.roomId).emit(Event.PLAY_VIDEO, time);
-    return Promise.resolve();
+  private async playVideo(time: number): Promise<void> {
+    const room: Room = await this.database.getRoom(this.roomId);
+    if (room.playerState !== PlayerState.PLAYING) {
+      this.socket.to(this.roomId).emit(Event.PLAY_VIDEO, time);
+      room.playerState = PlayerState.PLAYING;
+      await this.database.setRoom(this.roomId, room);
+    }
   }
 
-  private pauseVideo(time: number): Promise<void> {
-    this.socket.to(this.roomId).emit(Event.PAUSE_VIDEO, time);
-    return Promise.resolve();
+  private async pauseVideo(time: number): Promise<void> {
+    const room: Room = await this.database.getRoom(this.roomId);
+    if (room.playerState !== PlayerState.PAUSED) {
+      this.socket.to(this.roomId).emit(Event.PAUSE_VIDEO, time);
+      room.playerState = PlayerState.PAUSED;
+      await this.database.setRoom(this.roomId, room);
+    }
   }
 
   private async tryAddToQueue(youtubeId: string): Promise<void> {
@@ -91,7 +100,7 @@ class RoomSocketHandler {
   }
 
   private async removeFromQueue(id: string): Promise<void> {
-    const room = await this.database.getRoom(this.roomId);
+    const room: Room = await this.database.getRoom(this.roomId);
     room.videoQueue = room.videoQueue.filter(video => video.id !== id);
 
     await this.database.setRoom(this.roomId, room);
@@ -100,7 +109,7 @@ class RoomSocketHandler {
   }
 
   private async setVideo(video: Video): Promise<void> {
-    const room = await this.database.getRoom(this.roomId);
+    const room: Room = await this.database.getRoom(this.roomId);
     room.currVideoId = video.youtubeId;
 
     const videoQueue: Video[] = [];
