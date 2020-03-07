@@ -6,6 +6,8 @@ import qs from "querystring";
 import Video from "../models/video";
 import uniqid from "uniqid";
 import Database from "../core/database";
+import VideoState, { PlayerState } from "../models/videoState";
+import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
 
 interface Message {
   user: string;
@@ -37,6 +39,7 @@ class RoomSocketHandler {
       for (const [event, handler] of Object.entries(handlers)) {
         if (handler) {
           this.socket.on(event, async data => {
+            logger.debug(`Socket ${this.socket.id} sent ${event} with ${JSON.stringify(data)}`);
             await handler(data);
           });
         }
@@ -51,12 +54,13 @@ class RoomSocketHandler {
       [Event.PAUSE_VIDEO]: (time: number): Promise<void> => this.pauseVideo(time),
       [Event.REMOVE_FROM_QUEUE]: (id: string): Promise<void> => this.removeFromQueue(id),
       [Event.REQUEST_ADD_TO_QUEUE]: (videoUrl: string): Promise<void> => this.tryAddToQueue(videoUrl),
-      [Event.SET_VIDEO]: (video: Video): Promise<void> => this.setVideo(video)
+      [Event.REQUEST_VIDEO_STATE]: (): Promise<void> => this.getVideoState(),
+      [Event.SET_VIDEO]: (video: Video): Promise<void> => this.setVideo(video),
+      [Event.UPDATE_VIDEO_STATE]: (request: UpdateVideoStateRequest): Promise<void> => this.updateVideoState(request)
     };
   }
 
   private playVideo(time: number): Promise<void> {
-    logger.info("PLAY_VIDEO");
     this.socket.to(this.roomId).emit(Event.PLAY_VIDEO, time);
     return Promise.resolve();
   }
@@ -115,6 +119,23 @@ class RoomSocketHandler {
   private sendMessage(message: Message): Promise<void> {
     this.socket.to(this.roomId).emit(Event.MESSAGE, message);
     return Promise.resolve();
+  }
+
+  private async getVideoState(): Promise<void> {
+    const roomClients = this.io.sockets.adapter.rooms[this.roomId].sockets;
+    const roomClientIds = Object.keys(roomClients);
+    if (roomClientIds.length <= 1) {
+      const initialVideoState: VideoState = { secondsElapsed: 0, playerState: PlayerState.UNSTARTED };
+      this.io.to(this.socket.id).emit(Event.UPDATE_VIDEO_STATE, initialVideoState);
+    }
+
+    if (roomClientIds[0] !== this.socket.id) {
+      this.io.to(roomClientIds[0]).emit(Event.REQUEST_VIDEO_STATE, this.socket.id);
+    }
+  }
+
+  private async updateVideoState(updateVideoStateRequest: UpdateVideoStateRequest): Promise<void> {
+    this.io.to(updateVideoStateRequest.socketId).emit(Event.UPDATE_VIDEO_STATE, updateVideoStateRequest.videoState);
   }
 }
 
