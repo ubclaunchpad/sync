@@ -32,8 +32,11 @@ class RoomSocketHandler {
   initialize(): void {
     this.socket.join(this.roomId, () => {
       const handlers = this.createEventHandler();
-
-      this.socket.to(this.roomId).emit(Event.MESSAGE, "A new user has joined the room!");
+      const newJoin: Message = {
+        user: "",
+        message: "A new user has joined the room!"
+      };
+      this.socket.to(this.roomId).emit(Event.MESSAGE, newJoin);
       for (const [event, handler] of Object.entries(handlers)) {
         if (handler) {
           this.socket.on(event, async data => {
@@ -113,6 +116,7 @@ class RoomSocketHandler {
   }
 
   private sendMessage(message: Message): Promise<void> {
+    logger.info("sent over socket");
     this.socket.to(this.roomId).emit(Event.MESSAGE, message);
     return Promise.resolve();
   }
