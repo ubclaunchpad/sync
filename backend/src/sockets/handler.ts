@@ -130,21 +130,29 @@ class RoomSocketHandler {
     return Promise.resolve();
   }
 
-  private async getVideoState(): Promise<void> {
+  private getVideoState(): Promise<void> {
     const roomClients = this.io.sockets.adapter.rooms[this.roomId].sockets;
     const roomClientIds = Object.keys(roomClients);
+    logger.debug(JSON.stringify(roomClientIds));
     if (roomClientIds.length <= 1) {
       const initialVideoState: VideoState = { secondsElapsed: 0, playerState: PlayerState.UNSTARTED };
-      this.io.to(this.socket.id).emit(Event.UPDATE_VIDEO_STATE, initialVideoState);
+      logger.debug(`Sending UPDATE_VIDEO_STATE to ${this.socket.id} with ${JSON.stringify(initialVideoState)}`);
+      this.socket.emit(Event.UPDATE_VIDEO_STATE, initialVideoState);
+      return Promise.resolve();
     }
 
     if (roomClientIds[0] !== this.socket.id) {
       this.io.to(roomClientIds[0]).emit(Event.REQUEST_VIDEO_STATE, this.socket.id);
+    } else {
+      this.io.to(roomClientIds[1]).emit(Event.REQUEST_VIDEO_STATE, this.socket.id);
     }
+
+    return Promise.resolve();
   }
 
-  private async updateVideoState(updateVideoStateRequest: UpdateVideoStateRequest): Promise<void> {
+  private updateVideoState(updateVideoStateRequest: UpdateVideoStateRequest): Promise<void> {
     this.io.to(updateVideoStateRequest.socketId).emit(Event.UPDATE_VIDEO_STATE, updateVideoStateRequest.videoState);
+    return Promise.resolve();
   }
 }
 

@@ -1,5 +1,6 @@
 export enum Event {
   CONNECT = "connect",
+  CREATE_USERNAME = "create username",
   DISCONNECT = "disconnect",
   MESSAGE = "message",
   JOIN_ROOM = "join room",
@@ -10,6 +11,5 @@ export enum Event {
   REQUEST_VIDEO_STATE = "request video state",
   SET_VIDEO = "set video",
   UPDATE_ROOM = "update room",
-  CREATE_USERNAME = "create username",
   UPDATE_VIDEO_STATE = "update video state"
 }

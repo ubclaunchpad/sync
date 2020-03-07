@@ -51,7 +51,7 @@ export default class Server {
   private setupSockets(): void {
     const io = socketIo(this.httpServer);
     io.on(Event.CONNECT, socket => {
-      logger.info(`Socket ${socket.id} connected.`);
+      logger.debug(`Socket ${socket.id} connected.`);
 
       socket.on(Event.JOIN_ROOM, roomId => {
         new RoomSocketHandler(this.database, io, socket, roomId).initialize();
