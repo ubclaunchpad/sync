@@ -324,7 +324,7 @@ class Room extends React.Component<Props, State> {
             </div>
           </Fade>
         </Modal>
-        <VideoChat users={this.state.users} />
+        <VideoChat users={this.state.users} socket={this.socket} />
       </div>
     );
   }

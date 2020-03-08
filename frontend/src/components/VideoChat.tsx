@@ -14,6 +14,7 @@ import Fade from "@material-ui/core/Fade";
 interface VideoChatProps {
   classes: any,
   users: string[],
+  socket: SocketIOClient.Socket,
 }
 
 interface VideoChatState {
@@ -52,7 +53,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
   constructor(props: VideoChatProps) {
     super(props);
-    this.socket = io.connect("http://localhost:8080/");
+    this.socket = this.props.socket
     this.state = {
       gotAnswer: false,
       stream: null,
@@ -82,26 +83,21 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     this.socket.on('SessionActive', () => console.log('Session Active'));
     this.socket.on('CreatePeer', this.makePeer);
     this.socket.on('VIDEOCHAT_LIST', (data: string[]) => this.setVideoChatSet(data));
-    this.socket.on('SEND_INVITE', (invObj: any) => {
-      console.log('received invite for ' + invObj.to);
-      if (this.state.name && invObj.to === this.state.name) {
-        this.openInviteModal(invObj);
-      }
+    this.socket.on('SEND_INVITE', (invite: any) => {
+      this.openInviteModal(invite);
     })
-    this.socket.on('ACCEPT_INVITE', (acceptObj: any) => {
-      console.log('video chat accepted by : ' + JSON.stringify(acceptObj));
-      if (acceptObj.to === this.state.name) {
-        this.sendVideoChatId(acceptObj);
-      }
+    this.socket.on('ACCEPT_INVITE', (accept: any) => {
+      this.sendVideoChatId(accept);
+
     })
 
     this.socket.on('SEND_VIDEOCHATID', (videoChatIdObj: any) => {
-      console.log('this.state.name: ' + this.state.name);
-      console.log('videoChatIdObj: ' + JSON.stringify(videoChatIdObj));
-      if (this.state.name && videoChatIdObj.to === this.state.name) {
-        console.log('this.state.name == videoChatIdObj.to');
-        this.setVideoChatId(videoChatIdObj.id);
-      }
+      // console.log('this.state.name: ' + this.state.name);
+      // console.log('videoChatIdObj: ' + JSON.stringify(videoChatIdObj));
+      // if (this.state.name && videoChatIdObj.to === this.state.name) {
+      // console.log('this.state.name == videoChatIdObj.to');
+      this.setVideoChatId(videoChatIdObj.id);
+
     })
 
   }
@@ -127,23 +123,22 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     this.setInVideoChat();
   }
 
-  sendVideoChatId = (acceptObj: any) => {
+  sendVideoChatId = (accept: any) => {
     let videoChatId = uuidv1();
-    let videoChatIdObj = { id: videoChatId, to: acceptObj.acceptedBy };
+    let videoChatIdObj = { id: videoChatId, receiver: accept.sender };
     this.setVideoChatId(videoChatIdObj.id);
     this.socket.emit('SEND_VIDEOCHATID', videoChatIdObj);
   }
 
-  openInviteModal = (invObj: any) => {
-    console.log('inviteFrom: ' + invObj.sentBy);
-    this.setState({ inviteFrom: invObj.sentBy });
+  openInviteModal = (invite: any) => {
+    console.log('inviteFrom: ' + invite.sender);
+    this.setState({ inviteFrom: invite.sender });
     this.setState({ openInviteModal: true });
   }
 
-  sendInvite = (name: string) => {
-    console.log('name clicked on: ' + name);
-    let invObj = { sentBy: this.state.name, to: name }
-    this.socket.emit('SEND_INVITE', invObj);
+  sendInvite = (receiverId: string) => {
+    let invite = { sender: this.socket.id, receiver: receiverId }
+    this.socket.emit('SEND_INVITE', invite);
   }
 
   setVideoChatSet = (arr: string[]) => {
@@ -154,8 +149,8 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
   acceptVideoChatInvite = () => {
     // let invObj = { sentBy: this.state.name, to: name }
-    let acceptObj = { acceptedBy: this.state.name, to: this.state.inviteFrom }
-    this.socket.emit('ACCEPT_INVITE', acceptObj);
+    let accept = { sender: this.socket.id, receiver: this.state.inviteFrom }
+    this.socket.emit('ACCEPT_INVITE', accept);
     this.setState({ openInviteModal: false });
   }
 

@@ -51,16 +51,22 @@ export default class Server {
         new RoomSocketHandler(this.database, io, socket, roomId).initialize();
       });
 
-      socket.on('SEND_INVITE', (invObj) => {
-        socket.broadcast.emit('SEND_INVITE', invObj);
+      socket.on('SEND_INVITE', (invite) => {
+        socket.to(invite.receiver).emit('SEND_INVITE', invite);
+        // socket.broadcast.emit('SEND_INVITE', invObj);
       })
 
-      socket.on('ACCEPT_INVITE', (acceptObj) => {
-        socket.broadcast.emit('ACCEPT_INVITE', acceptObj);
+      socket.on('ACCEPT_INVITE', (accept) => {
+        console.log('accept_invite: ' + JSON.stringify(accept));
+        socket.to(accept.receiver).emit('ACCEPT_INVITE', accept);
+        // socket.broadcast.emit('ACCEPT_INVITE', accept);
       })
 
       socket.on('SEND_VIDEOCHATID', (videoChatIdObj) => {
-        socket.broadcast.emit('SEND_VIDEOCHATID', videoChatIdObj);
+        console.log('videoChatId ' + JSON.stringify(videoChatIdObj));
+        socket.to(videoChatIdObj.receiver).emit('SEND_VIDEOCHATID', videoChatIdObj);
+
+        // socket.broadcast.emit('SEND_VIDEOCHATID', videoChatIdObj);
       })
 
       socket.on('VIDEO_CHAT', (id: any) => {
