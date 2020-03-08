@@ -172,7 +172,7 @@ class Room extends React.Component<Props, State> {
   }
 
   setUsernameAndEmit(): void {
-    if (this.props.location.state.username === "") {
+    if (typeof this.props.location.state === "undefined" || this.props.location.state.username === "") {
       const randomName: string = uniqueNamesGenerator(customNameConfig);
       this.setState(
         {
@@ -182,6 +182,8 @@ class Room extends React.Component<Props, State> {
           this.socket.emit(Event.CREATE_USERNAME, this.state.userName);
         }
       );
+    } else {
+      this.socket.emit(Event.CREATE_USERNAME, this.state.userName);
     }
   }
 
