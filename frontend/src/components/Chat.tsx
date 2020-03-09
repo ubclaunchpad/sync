@@ -5,7 +5,7 @@ import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import { createStyles, withStyles } from "@material-ui/core/styles";
-
+import Message from "../models/message";
 const styles = {
   chatBox: {
     border: "1px solid white",
@@ -15,11 +15,6 @@ const styles = {
     height: "50vh"
   }
 };
-
-interface Message {
-  user: string;
-  message: string;
-}
 
 interface Props {
   classes: any;
@@ -84,8 +79,8 @@ class Chat extends React.Component<Props, State> {
   render() {
     const { classes } = this.props;
 
-    const chatWindow = (
-      <div>
+    const chatField = (
+      <div style={{ paddingTop: "1%", borderWidth: 2, borderColor: "green !important" }}>
         <TextField
           InputProps={{ className: classes.textField }}
           InputLabelProps={{ className: classes.textField }}
@@ -93,13 +88,14 @@ class Chat extends React.Component<Props, State> {
           onChange={this.onChange}
           onKeyUp={this.enterPressed}
           value={this.state.message}
+          variant="outlined"
         />
       </div>
     );
     return (
       <div style={{ paddingLeft: "2vw" }}>
-        {chatWindow}
         <Paper style={{ height: "30vh", overflow: "auto", width: "50vw" }}>{this.renderChat()}</Paper>
+        {chatField}
       </div>
     );
   }
@@ -107,8 +103,11 @@ class Chat extends React.Component<Props, State> {
 
 const materialUiStyles = createStyles({
   textField: {
-    borderColor: "green",
-    borderWidth: 2,
+    "& input + fieldset": {
+      borderColor: "green !important",
+      borderWidth: 2,
+      paddingTop: "5px"
+    },
     color: "white"
   }
 });
