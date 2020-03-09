@@ -34,7 +34,7 @@ interface State {
   name: string;
   currVideoId: string;
   messages: Message[];
-  userName: string;
+  username: string;
   videoQueue: Video[];
 }
 
@@ -50,7 +50,7 @@ class Room extends React.Component<Props, State> {
       name: "",
       currVideoId: "",
       messages: [],
-      userName: "",
+      username: "",
       videoQueue: []
     };
     this.handleOnPause = this.handleOnPause.bind(this);
@@ -114,7 +114,7 @@ class Room extends React.Component<Props, State> {
   handleSendMessage = (data: string) => {
     if (data) {
       const toSend: Message = {
-        user: this.state.userName,
+        user: this.state.username,
         message: data
       };
       this.socket.emit(Event.MESSAGE, toSend);
@@ -124,7 +124,7 @@ class Room extends React.Component<Props, State> {
 
   handleSignIn = (data: string) => {
     if (data) {
-      this.setState({ userName: data });
+      this.setState({ username: data });
     }
   };
 
@@ -176,14 +176,14 @@ class Room extends React.Component<Props, State> {
       const randomName: string = uniqueNamesGenerator(customNameConfig);
       this.setState(
         {
-          userName: randomName
+          username: randomName
         },
         () => {
-          this.socket.emit(Event.CREATE_USERNAME, this.state.userName);
+          this.socket.emit(Event.CREATE_USERNAME, this.state.username);
         }
       );
     } else {
-      this.socket.emit(Event.CREATE_USERNAME, this.state.userName);
+      this.socket.emit(Event.CREATE_USERNAME, this.state.username);
     }
   }
 
