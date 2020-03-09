@@ -41,7 +41,6 @@ export default class Server {
   private setupSockets(): void {
     const io = socketIo(this.httpServer);
     io.on(Event.CONNECT, (socket: ExtendedSocket) => {
-      socket.username = "";
       logger.debug(`Socket ${socket.id} connected.`);
 
       socket.on(Event.JOIN_ROOM, roomId => {
@@ -50,11 +49,6 @@ export default class Server {
 
       socket.on(Event.DISCONNECT, (socket: ExtendedSocket) => {
         logger.debug(`Socket ${socket.id} disconnected.`);
-      });
-
-      socket.on(Event.CREATE_USERNAME, (username: string) => {
-        socket.username = username;
-        logger.info(`socket username set to ${socket.username}`);
       });
     });
   }
