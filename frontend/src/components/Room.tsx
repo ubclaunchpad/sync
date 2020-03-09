@@ -26,7 +26,7 @@ interface State {
   name: string;
   currVideoId: string;
   messages: Message[];
-  userName: string;
+  username: string;
   videoQueue: Video[];
   playerState: PlayerState;
 }
@@ -43,7 +43,7 @@ class Room extends React.Component<Props, State> {
       name: "",
       currVideoId: "",
       messages: [],
-      userName: "",
+      username: "",
       videoQueue: [],
       playerState: PlayerState.UNSTARTED
     };
@@ -109,7 +109,7 @@ class Room extends React.Component<Props, State> {
   handleSendMessage = (data: string) => {
     if (data) {
       const toSend: Message = {
-        // user: this.state.userName,
+        // user: this.state.username,
         user: "Bill",
         message: data
       };
