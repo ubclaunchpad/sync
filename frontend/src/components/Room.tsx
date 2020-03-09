@@ -11,14 +11,9 @@ import Queue from "./Queue";
 import Video from "../models/video";
 import RoomInfo from "../models/room";
 import { RouteComponentProps } from "react-router-dom";
-
+import Message from "../models/message";
 interface Props extends RouteComponentProps {
   match: any;
-}
-
-interface Message {
-  user: string;
-  message: string;
 }
 
 interface State {
