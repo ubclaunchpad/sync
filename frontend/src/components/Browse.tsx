@@ -33,7 +33,7 @@ export class Browse extends React.Component<Props, State> {
 
   async componentDidMount() {
     try {
-      const res = await axios.get("http://localhost:8080/rooms");
+      const res = await axios.get("http://localhost:8080/api/rooms");
       const numrooms = Object.keys(res.data).length;
       let numParsed = 0;
       for (const key in res.data) {

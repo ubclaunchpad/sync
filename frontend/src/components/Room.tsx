@@ -232,7 +232,7 @@ class Room extends React.Component<Props, State> {
     });
 
     try {
-      const res: AxiosResponse<RoomData> = await axios.get("http://localhost:8080/rooms/" + id);
+      const res: AxiosResponse<RoomData> = await axios.get("http://localhost:8080/api/rooms/" + id);
       if (res && res.status === 200) {
         this.setState({
           currVideoId: res.data.currVideoId,
