@@ -7,6 +7,9 @@ import Video from "../models/video";
 import uniqid from "uniqid";
 import Database from "../core/database";
 import ExtendedSocket from "../models/extendedSocket";
+import VideoState, { PlayerState } from "../models/videoState";
+import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
+import Room from "../models/room";
 
 interface Message {
   user: string;
@@ -38,6 +41,7 @@ class RoomSocketHandler {
       for (const [event, handler] of Object.entries(handlers)) {
         if (handler) {
           this.socket.on(event, async data => {
+            logger.debug(`Socket ${this.socket.id} sent ${event} with ${JSON.stringify(data)}`);
             await handler(data);
           });
         }
@@ -53,6 +57,8 @@ class RoomSocketHandler {
       [Event.REMOVE_FROM_QUEUE]: (id: string): Promise<void> => this.removeFromQueue(id),
       [Event.REQUEST_ADD_TO_QUEUE]: (videoUrl: string): Promise<void> => this.tryAddToQueue(videoUrl),
       [Event.SET_VIDEO]: (video: Video): Promise<void> => this.setVideo(video),
+      [Event.REQUEST_VIDEO_STATE]: (): Promise<void> => this.getVideoState(),
+      [Event.UPDATE_VIDEO_STATE]: (request: UpdateVideoStateRequest): Promise<void> => this.updateVideoState(request),
       [Event.CREATE_USERNAME]: (username: string): Promise<void> => this.createUsername(username)
     };
   }
@@ -63,15 +69,22 @@ class RoomSocketHandler {
     return Promise.resolve();
   }
 
-  private playVideo(time: number): Promise<void> {
-    logger.info("PLAY_VIDEO");
-    this.socket.to(this.roomId).emit(Event.PLAY_VIDEO, time);
-    return Promise.resolve();
+  private async playVideo(time: number): Promise<void> {
+    const room: Room = await this.database.getRoom(this.roomId);
+    if (room.playerState !== PlayerState.PLAYING) {
+      this.socket.to(this.roomId).emit(Event.PLAY_VIDEO, time);
+      room.playerState = PlayerState.PLAYING;
+      await this.database.setRoom(this.roomId, room);
+    }
   }
 
-  private pauseVideo(time: number): Promise<void> {
-    this.socket.to(this.roomId).emit(Event.PAUSE_VIDEO, time);
-    return Promise.resolve();
+  private async pauseVideo(time: number): Promise<void> {
+    const room: Room = await this.database.getRoom(this.roomId);
+    if (room.playerState !== PlayerState.PAUSED) {
+      this.socket.to(this.roomId).emit(Event.PAUSE_VIDEO, time);
+      room.playerState = PlayerState.PAUSED;
+      await this.database.setRoom(this.roomId, room);
+    }
   }
 
   private async tryAddToQueue(youtubeId: string): Promise<void> {
@@ -95,7 +108,7 @@ class RoomSocketHandler {
   }
 
   private async removeFromQueue(id: string): Promise<void> {
-    const room = await this.database.getRoom(this.roomId);
+    const room: Room = await this.database.getRoom(this.roomId);
     room.videoQueue = room.videoQueue.filter(video => video.id !== id);
 
     await this.database.setRoom(this.roomId, room);
@@ -104,7 +117,7 @@ class RoomSocketHandler {
   }
 
   private async setVideo(video: Video): Promise<void> {
-    const room = await this.database.getRoom(this.roomId);
+    const room: Room = await this.database.getRoom(this.roomId);
     room.currVideoId = video.youtubeId;
 
     const videoQueue: Video[] = [];
@@ -122,6 +135,31 @@ class RoomSocketHandler {
 
   private sendMessage(message: Message): Promise<void> {
     this.socket.to(this.roomId).emit(Event.MESSAGE, message);
+    return Promise.resolve();
+  }
+
+  private getVideoState(): Promise<void> {
+    const roomClients = this.io.sockets.adapter.rooms[this.roomId].sockets;
+    const roomClientIds = Object.keys(roomClients);
+    logger.debug(JSON.stringify(roomClientIds));
+    if (roomClientIds.length <= 1) {
+      const initialVideoState: VideoState = { secondsElapsed: 0, playerState: PlayerState.UNSTARTED };
+      logger.debug(`Sending UPDATE_VIDEO_STATE to ${this.socket.id} with ${JSON.stringify(initialVideoState)}`);
+      this.socket.emit(Event.UPDATE_VIDEO_STATE, initialVideoState);
+      return Promise.resolve();
+    }
+
+    if (roomClientIds[0] !== this.socket.id) {
+      this.io.to(roomClientIds[0]).emit(Event.REQUEST_VIDEO_STATE, this.socket.id);
+    } else {
+      this.io.to(roomClientIds[1]).emit(Event.REQUEST_VIDEO_STATE, this.socket.id);
+    }
+
+    return Promise.resolve();
+  }
+
+  private updateVideoState(updateVideoStateRequest: UpdateVideoStateRequest): Promise<void> {
+    this.io.to(updateVideoStateRequest.socketId).emit(Event.UPDATE_VIDEO_STATE, updateVideoStateRequest.videoState);
     return Promise.resolve();
   }
 }
