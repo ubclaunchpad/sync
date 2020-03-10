@@ -6,6 +6,7 @@ import qs from "querystring";
 import Video from "../models/video";
 import uniqid from "uniqid";
 import Database from "../core/database";
+import ExtendedSocket from "../models/extendedSocket";
 import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
 import Room from "../models/room";
@@ -22,10 +23,10 @@ type EventHandler = {
 class RoomSocketHandler {
   private database: Database;
   private io: Server;
-  private socket: Socket;
+  private socket: ExtendedSocket;
   private roomId: string;
 
-  constructor(database: Database, io: Server, socket: Socket, roomId: string) {
+  constructor(database: Database, io: Server, socket: ExtendedSocket, roomId: string) {
     this.database = database;
     this.io = io;
     this.socket = socket;
@@ -55,10 +56,17 @@ class RoomSocketHandler {
       [Event.PAUSE_VIDEO]: (time: number): Promise<void> => this.pauseVideo(time),
       [Event.REMOVE_FROM_QUEUE]: (id: string): Promise<void> => this.removeFromQueue(id),
       [Event.REQUEST_ADD_TO_QUEUE]: (videoUrl: string): Promise<void> => this.tryAddToQueue(videoUrl),
-      [Event.REQUEST_VIDEO_STATE]: (): Promise<void> => this.getVideoState(),
       [Event.SET_VIDEO]: (video: Video): Promise<void> => this.setVideo(video),
-      [Event.UPDATE_VIDEO_STATE]: (request: UpdateVideoStateRequest): Promise<void> => this.updateVideoState(request)
+      [Event.REQUEST_VIDEO_STATE]: (): Promise<void> => this.getVideoState(),
+      [Event.UPDATE_VIDEO_STATE]: (request: UpdateVideoStateRequest): Promise<void> => this.updateVideoState(request),
+      [Event.CREATE_USERNAME]: (username: string): Promise<void> => this.createUsername(username)
     };
+  }
+
+  private createUsername(username: string): Promise<void> {
+    this.socket.username = username;
+    logger.info(`socket username set to ${this.socket.username}`);
+    return Promise.resolve();
   }
 
   private async playVideo(time: number): Promise<void> {
