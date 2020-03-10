@@ -22,13 +22,13 @@ export default class Server {
     this.httpServer = http.createServer(this.app);
     this.database = new Database(6379, process.env.DB_HOST);
     this.app.use((req, res, next) => {
-      res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+      res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
       next();
     });
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
-    this.app.use("/", new API(this.database).router);
+    this.app.use("/api", new API(this.database).router);
     this.setupSockets();
   }
 
