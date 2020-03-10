@@ -1,17 +1,20 @@
 import React from "react";
 import io from "socket.io-client";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import Lottie from "react-lottie";
 import { Event } from "../sockets/event";
 import "../styles/Room.css";
 import loadingIndicator from "../lotties/loading.json";
-import Player, { PlayerState } from "./Player";
+import Player from "./Player";
 import Chat from "./Chat";
 import Queue from "./Queue";
 import Video from "../models/video";
 import RoomInfo from "../models/room";
 import { RouteComponentProps } from "react-router-dom";
 import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-generator";
+import RoomData from "../models/room";
+import VideoState, { PlayerState } from "../models/videoState";
+import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
 
 const customNameConfig: Config = {
   dictionaries: [colors, animals],
@@ -36,6 +39,7 @@ interface State {
   messages: Message[];
   username: string;
   videoQueue: Video[];
+  playerState: PlayerState;
 }
 
 class Room extends React.Component<Props, State> {
@@ -51,7 +55,8 @@ class Room extends React.Component<Props, State> {
       currVideoId: "",
       messages: [],
       username: "",
-      videoQueue: []
+      videoQueue: [],
+      playerState: PlayerState.UNSTARTED
     };
     this.handleOnPause = this.handleOnPause.bind(this);
     this.handleOnPlay = this.handleOnPlay.bind(this);
@@ -103,6 +108,8 @@ class Room extends React.Component<Props, State> {
         this.handleOnCued(event);
         break;
     }
+
+    this.setState({ playerState: event.data });
   }
 
   addMessage = (message: Message) => {
@@ -152,6 +159,29 @@ class Room extends React.Component<Props, State> {
         videoQueue: room.videoQueue
       });
     });
+
+    this.socket.on(Event.UPDATE_VIDEO_STATE, (videoState: VideoState) => {
+      console.log("Responding to an UPDATE_VIDEO_STATE with " + JSON.stringify(videoState));
+      if (videoState.playerState === PlayerState.PAUSED) {
+        console.log("Trying to pause video!");
+        player.seekTo(videoState.secondsElapsed);
+        player.pauseVideo();
+      } else if (videoState.playerState === PlayerState.PLAYING) {
+        console.log("Trying to play video!");
+        player.seekTo(videoState.secondsElapsed);
+        player.playVideo();
+      }
+    });
+
+    this.socket.on(Event.REQUEST_VIDEO_STATE, (socketId: string) => {
+      const updateVideoStateRequest: UpdateVideoStateRequest = {
+        socketId,
+        videoState: { secondsElapsed: player.getCurrentTime(), playerState: this.state.playerState }
+      };
+      this.socket.emit(Event.UPDATE_VIDEO_STATE, updateVideoStateRequest);
+    });
+
+    this.socket.emit(Event.REQUEST_VIDEO_STATE);
   }
 
   requestAddToQueue(youtubeId: string): void {
@@ -183,7 +213,14 @@ class Room extends React.Component<Props, State> {
         }
       );
     } else {
-      this.socket.emit(Event.CREATE_USERNAME, this.state.username);
+      this.setState(
+        {
+          username: this.props.location.state.username
+        },
+        () => {
+          this.socket.emit(Event.CREATE_USERNAME, this.state.username);
+        }
+      );
     }
   }
 
@@ -193,8 +230,9 @@ class Room extends React.Component<Props, State> {
       this.socket.emit(Event.JOIN_ROOM, id);
       this.setUsernameAndEmit();
     });
+
     try {
-      const res = await axios.get("http://localhost:8080/rooms/" + id);
+      const res: AxiosResponse<RoomData> = await axios.get("http://localhost:8080/rooms/" + id);
       if (res && res.status === 200) {
         this.setState({
           currVideoId: res.data.currVideoId,
