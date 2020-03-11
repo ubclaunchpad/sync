@@ -80,10 +80,6 @@ class Room extends React.Component<Props, State> {
     this.socket.emit(Event.PLAY_VIDEO, player.getCurrentTime());
   }
 
-  handleOnCued(event: { target: any; data: number }) {
-    event.target.playVideo();
-  }
-
   handleOnEnd(event: { target: any; data: number }) {
     if (this.state.videoQueue.length > 0) {
       this.socket.emit(Event.SET_VIDEO, this.state.videoQueue[0]);
@@ -105,7 +101,6 @@ class Room extends React.Component<Props, State> {
       case PlayerState.BUFFERING:
         break;
       case PlayerState.CUED:
-        this.handleOnCued(event);
         break;
     }
 

@@ -8,6 +8,8 @@ declare global {
 }
 
 class Player extends React.Component<YT.PlayerOptions> {
+  private internalPlayer: any;
+
   constructor(props: YT.PlayerOptions) {
     super(props);
     const tag = document.createElement("script");
@@ -15,8 +17,27 @@ class Player extends React.Component<YT.PlayerOptions> {
     const firstScriptTag = document.getElementsByTagName("script")[0];
     firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
     window["onYouTubeIframeAPIReady"] = () => {
-      new window["YT"].Player("player", this.props);
+      this.internalPlayer = new window["YT"].Player("player", this.props);
     };
+  }
+
+  shouldUpdateVideo(prevProps: YT.PlayerOptions, props: YT.PlayerOptions) {
+    return prevProps.videoId !== props.videoId;
+  }
+
+  updateVideo(): void {
+    if (typeof this.props.videoId === "undefined" || this.props.videoId === null) {
+      this.internalPlayer.stopVideo();
+      return;
+    }
+
+    this.internalPlayer.loadVideoById(this.props.videoId);
+  }
+
+  componentDidUpdate(prevProps: YT.PlayerOptions) {
+    if (this.shouldUpdateVideo(prevProps, this.props)) {
+      this.updateVideo();
+    }
   }
 
   render() {
