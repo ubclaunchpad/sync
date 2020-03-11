@@ -26,7 +26,7 @@ class Player extends React.Component<YT.PlayerOptions> {
   }
 
   updateVideo(): void {
-    if (typeof this.props.videoId === "undefined" || this.props.videoId === null) {
+    if (!this.props.videoId) {
       this.internalPlayer.stopVideo();
       return;
     }
