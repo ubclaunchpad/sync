@@ -12,9 +12,16 @@ import Video from "../models/video";
 import RoomInfo from "../models/room";
 import { RouteComponentProps } from "react-router-dom";
 import Message from "../models/message";
+import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-generator";
 import RoomData from "../models/room";
 import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
+
+const customNameConfig: Config = {
+  dictionaries: [colors, animals],
+  separator: " ",
+  length: 2
+};
 
 interface Props extends RouteComponentProps {
   match: any;
@@ -56,6 +63,7 @@ class Room extends React.Component<Props, State> {
     this.requestAddToQueue = this.requestAddToQueue.bind(this);
     this.addToQueue = this.addToQueue.bind(this);
     this.removeFromQueue = this.removeFromQueue.bind(this);
+    this.setUsernameAndEmit = this.setUsernameAndEmit.bind(this);
   }
 
   handleOnPause(event: { target: any; data: number }) {
@@ -109,8 +117,7 @@ class Room extends React.Component<Props, State> {
   handleSendMessage = (data: string) => {
     if (data) {
       const toSend: Message = {
-        // user: this.state.username,
-        user: "Bill",
+        user: this.state.username,
         message: data
       };
       this.socket.emit(Event.MESSAGE, toSend);
@@ -183,15 +190,38 @@ class Room extends React.Component<Props, State> {
     this.setState({ videoQueue: videoQueue.filter(video => video.id !== id) });
   }
 
+  setUsernameAndEmit(): void {
+    if (typeof this.props.location.state === "undefined" || this.props.location.state.username === "") {
+      const randomName: string = uniqueNamesGenerator(customNameConfig);
+      this.setState(
+        {
+          username: randomName
+        },
+        () => {
+          this.socket.emit(Event.CREATE_USERNAME, this.state.username);
+        }
+      );
+    } else {
+      this.setState(
+        {
+          username: this.props.location.state.username
+        },
+        () => {
+          this.socket.emit(Event.CREATE_USERNAME, this.state.username);
+        }
+      );
+    }
+  }
+
   async componentDidMount() {
     const { id } = this.props.match.params;
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
-      this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);
+      this.setUsernameAndEmit();
     });
 
     try {
-      const res: AxiosResponse<RoomData> = await axios.get("http://localhost:8080/rooms/" + id);
+      const res: AxiosResponse<RoomData> = await axios.get("http://localhost:8080/api/rooms/" + id);
       if (res && res.status === 200) {
         this.setState({
           currVideoId: res.data.currVideoId,
