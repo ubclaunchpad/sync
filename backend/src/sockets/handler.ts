@@ -6,15 +6,11 @@ import qs from "querystring";
 import Video from "../models/video";
 import uniqid from "uniqid";
 import Database from "../core/database";
+import Message from "../models/message";
 import ExtendedSocket from "../models/extendedSocket";
 import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
 import Room from "../models/room";
-
-interface Message {
-  user: string;
-  message: string;
-}
 
 type EventHandler = {
   [event in Event]?: (args: any) => Promise<void>;
@@ -36,8 +32,10 @@ class RoomSocketHandler {
   initialize(): void {
     this.socket.join(this.roomId, () => {
       const handlers = this.createEventHandler();
-
-      this.socket.to(this.roomId).emit(Event.MESSAGE, "A new user has joined the room!");
+      const newJoin: Message = {
+        message: "A new user has joined the room!"
+      };
+      this.socket.to(this.roomId).emit(Event.MESSAGE, newJoin);
       for (const [event, handler] of Object.entries(handlers)) {
         if (handler) {
           this.socket.on(event, async data => {
