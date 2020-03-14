@@ -18,6 +18,7 @@ import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
 import { Modal, Backdrop, Fade, withStyles } from "@material-ui/core";
 import Username from "./Username";
+import VideoChat from './VideoChat';
 
 enum ModalType {
   NONE = 0,
@@ -29,7 +30,6 @@ const customNameConfig: Config = {
   separator: " ",
   length: 2
 };
-import VideoChat from './VideoChat';
 
 interface Props extends RouteComponentProps {
   match: any;
