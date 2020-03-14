@@ -1,5 +1,11 @@
-import React, { FunctionComponent, useState, useEffect } from "react";
-
+import React, { FunctionComponent, useState, useEffect, ChangeEvent } from "react";
+import List from "@material-ui/core/List";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
+import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
+import { createStyles, withStyles } from "@material-ui/core/styles";
+import Message from "../models/message";
 const styles = {
   chatBox: {
     border: "1px solid white",
@@ -11,27 +17,26 @@ const styles = {
 };
 
 interface Props {
+  classes: any;
   sendMessage: Function;
-  signIn: Function;
+  messages: Message[];
 }
 
 interface State {
   message: string;
-  signedIn: boolean;
 }
 
 class Chat extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      message: "",
-      signedIn: false
+      message: ""
     };
     this.onChange = this.onChange.bind(this);
     this.enterPressed = this.enterPressed.bind(this);
   }
 
-  onChange = (event: React.FormEvent<HTMLInputElement>) => {
+  onChange = (event: ChangeEvent<HTMLInputElement>) => {
     this.setState({ message: event.currentTarget.value });
   };
 
@@ -39,46 +44,72 @@ class Chat extends React.Component<Props, State> {
     event.preventDefault();
     const code = event.keyCode || event.which;
     if (code === 13) {
-      if (this.state.signedIn) {
-        this.props.sendMessage(this.state.message);
-      } else {
-        this.props.signIn(this.state.message);
-        if (this.state.message) {
-          this.setState({ signedIn: true });
-        }
-      }
+      this.props.sendMessage(this.state.message);
       this.setState({ message: "" });
     }
   };
 
+  renderChat = () => {
+    const chat = [];
+    let count = 0;
+    const setUser = (message: Message) => {
+      if (message.user) {
+        return message.user + ": ";
+      } else {
+        return "";
+      }
+    };
+
+    for (const m of this.props.messages) {
+      chat.push(
+        <span>
+          <ListItemText style={{ paddingLeft: "10px" }} key={count} primary={setUser(m) + m.message} />
+          <Divider variant="middle" />
+        </span>
+      );
+      count++;
+    }
+    if (this.props.messages.length) {
+      return <List>{chat}</List>;
+    } else {
+      return "";
+    }
+  };
+
   render() {
-    const signInWindow = (
-      <div>
-        <input
-          placeholder="What is your name?"
+    const { classes } = this.props;
+
+    const chatField = (
+      <div style={{ paddingTop: "1%", borderWidth: 2, borderColor: "green !important" }}>
+        <TextField
+          InputProps={{ className: classes.textField }}
+          InputLabelProps={{ className: classes.textField }}
+          label="Send a Message!"
           onChange={this.onChange}
           onKeyUp={this.enterPressed}
           value={this.state.message}
-        />
-      </div>
-    );
-    const chatWindow = (
-      <div>
-        <input
-          placeholder="Send a message"
-          onChange={this.onChange}
-          onKeyUp={this.enterPressed}
-          value={this.state.message}
+          variant="outlined"
         />
       </div>
     );
     return (
-      <div style={styles.chatBox}>
-        <h3>Chat:</h3>
-        {this.state.signedIn ? chatWindow : signInWindow}
+      <div style={{ paddingLeft: "2vw" }}>
+        <Paper style={{ height: "30vh", overflow: "auto", width: "50vw" }}>{this.renderChat()}</Paper>
+        {chatField}
       </div>
     );
   }
 }
 
-export default Chat;
+const materialUiStyles = createStyles({
+  textField: {
+    "& input + fieldset": {
+      borderColor: "green !important",
+      borderWidth: 2,
+      paddingTop: "5px"
+    },
+    color: "white"
+  }
+});
+
+export default withStyles(materialUiStyles)(Chat);

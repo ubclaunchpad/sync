@@ -11,6 +11,7 @@ import Queue from "./Queue";
 import Video from "../models/video";
 import RoomInfo from "../models/room";
 import { RouteComponentProps } from "react-router-dom";
+import Message from "../models/message";
 import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-generator";
 import RoomData from "../models/room";
 import VideoState, { PlayerState } from "../models/videoState";
@@ -24,11 +25,6 @@ const customNameConfig: Config = {
 
 interface Props extends RouteComponentProps {
   match: any;
-}
-
-interface Message {
-  user: string;
-  message: string;
 }
 
 interface State {
@@ -124,12 +120,6 @@ class Room extends React.Component<Props, State> {
     }
   };
 
-  handleSignIn = (data: string) => {
-    if (data) {
-      this.setState({ username: data });
-    }
-  };
-
   handleOnReady(event: { target: any }) {
     console.log("Called handleOnready");
     const player = event.target;
@@ -143,7 +133,6 @@ class Room extends React.Component<Props, State> {
     this.socket.on(Event.PAUSE_VIDEO, (time: number) => {
       player.pauseVideo();
     });
-
     this.socket.on(Event.MESSAGE, (dataFromServer: Message) => {
       console.log(JSON.stringify(dataFromServer));
       this.addMessage(dataFromServer);
@@ -291,8 +280,7 @@ class Room extends React.Component<Props, State> {
         {videoPlayer}
         {invalidRoomId}
         {showLoadingIndicator}
-        {console.log(this.state.messages)}
-        <Chat signIn={this.handleSignIn} sendMessage={this.handleSendMessage} />
+        <Chat messages={this.state.messages} sendMessage={this.handleSendMessage} />
       </div>
     );
   }
