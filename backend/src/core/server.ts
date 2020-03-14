@@ -56,6 +56,13 @@ export default class Server {
         // socket.broadcast.emit('SEND_INVITE', invObj);
       })
 
+      socket.on('close', () => {
+        console.log('close!');
+        // socket.to(invite.receiver).emit('SEND_INVITE', invite);
+        // socket.broadcast.emit('SEND_INVITE', invObj);
+      })
+
+
       socket.on('ACCEPT_INVITE', (accept) => {
         console.log('accept_invite: ' + JSON.stringify(accept));
         socket.to(accept.receiver).emit('ACCEPT_INVITE', accept);
