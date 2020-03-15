@@ -34,6 +34,7 @@ class Create extends React.Component<Props, State> {
     this.handleCreateRoom = this.handleCreateRoom.bind(this);
     this.redirectIfRoomCreated = this.redirectIfRoomCreated.bind(this);
     this.handleUsernameFieldChange = this.handleUsernameFieldChange.bind(this);
+    this.handleEnterPressed = this.handleEnterPressed.bind(this);
   }
 
   handleNameFieldChange(e: any) {
@@ -77,6 +78,14 @@ class Create extends React.Component<Props, State> {
     }
   }
 
+  handleEnterPressed = (event: React.KeyboardEvent) => {
+    event.preventDefault();
+    const code = event.keyCode || event.which;
+    if (code === 13) {
+      this.handleCreateRoom();
+    }
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -86,6 +95,7 @@ class Create extends React.Component<Props, State> {
         <div style={{ marginTop: "20px" }}>
           <TextField
             onChange={this.handleNameFieldChange}
+            onKeyUp={this.handleEnterPressed}
             id="outlined-basic"
             className={classes.textField}
             label="Room Name"
@@ -94,6 +104,7 @@ class Create extends React.Component<Props, State> {
           />
           <TextField
             onChange={this.handleUrlFieldChange}
+            onKeyUp={this.handleEnterPressed}
             id="outlined-basic"
             className={classes.textField}
             label="Video URL"
@@ -102,6 +113,7 @@ class Create extends React.Component<Props, State> {
           />
           <TextField
             onChange={this.handleUsernameFieldChange}
+            onKeyUp={this.handleEnterPressed}
             id="outlined-basic"
             className={classes.textField}
             label="Username (Optional)"
