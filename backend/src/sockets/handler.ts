@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { Event } from "./event";
+import Event from "./event";
 import axios from "axios";
 import logger from "../config/logger";
 import qs from "querystring";
@@ -100,8 +100,10 @@ class RoomSocketHandler {
       await this.database.setRoom(this.roomId, room);
 
       this.io.in(this.roomId).emit(Event.UPDATE_ROOM, room);
+      this.socket.emit(Event.ADD_VIDEO_TO_QUEUE_SUCCESS);
     } catch {
       logger.error("Failed to find info about video");
+      this.socket.emit(Event.ADD_VIDEO_TO_QUEUE_ERROR);
     }
   }
 

@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import socketIo from "socket.io";
 import Database from "./database";
 import API from "./api";
-import { Event } from "../sockets/event";
+import Event from "../sockets/event";
 import joinRoom from "../sockets/handler";
 import logger from "../config/logger";
 import RoomSocketHandler from "../sockets/handler";

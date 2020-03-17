@@ -4,24 +4,41 @@ import { createStyles, withStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import Video from "../models/video";
+import Event from "../sockets/event";
 
 interface Props {
   classes: any;
   onAddVideo: (youtubeId: string) => void;
   onRemoveVideo: (videoId: string) => void;
   videos: Video[];
+  socket: SocketIOClient.Socket;
 }
 
 interface State {
   newVideoUrl: string;
+  error: boolean;
 }
 
 class Queue extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      newVideoUrl: ""
+      newVideoUrl: "",
+      error: false
     };
+    this.setUpSocket(props.socket);
+  }
+
+  setUpSocket(socket: SocketIOClient.Socket) {
+    console.log("setting up sockets");
+    socket.on(Event.ADD_VIDEO_TO_QUEUE_SUCCESS, () => {
+      this.setState({ newVideoUrl: "", error: false });
+      console.log("Hit ADD_VIDEO_TO_QUEUE_SUCCESS");
+    });
+
+    socket.on(Event.ADD_VIDEO_TO_QUEUE_ERROR, () => {
+      this.setState({ error: true });
+    });
   }
 
   render() {
@@ -31,11 +48,12 @@ class Queue extends React.Component<Props, State> {
       <List component="nav" className={classes.list}>
         <ListItem>
           <TextField
-            InputProps={{ className: classes.textField }}
-            InputLabelProps={{ className: classes.textField }}
+            InputProps={{ className: this.state.error ? classes.textFieldError : classes.textField }}
+            InputLabelProps={{ className: this.state.error ? classes.textFieldError : classes.textField }}
             label="YouTube URL"
             variant="outlined"
             onChange={event => this.setState({ newVideoUrl: event.target.value })}
+            value={this.state.newVideoUrl}
           />
           <ListItemSecondaryAction>
             <IconButton
@@ -47,7 +65,7 @@ class Queue extends React.Component<Props, State> {
                 if (match && match[2].length === 11) {
                   this.props.onAddVideo(match[2]);
                 } else {
-                  alert("Invalid URL");
+                  this.setState({ error: true });
                 }
               }}
             >
@@ -77,6 +95,13 @@ const materialUiStyles = createStyles({
   textField: {
     "& input + fieldset": {
       borderColor: "green !important",
+      borderWidth: 2
+    },
+    color: "white"
+  },
+  textFieldError: {
+    "& input + fieldset": {
+      borderColor: "red !important",
       borderWidth: 2
     },
     color: "white"
