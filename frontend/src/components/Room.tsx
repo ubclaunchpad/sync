@@ -60,9 +60,6 @@ class Room extends React.Component<Props, State> {
     this.handleOnReady = this.handleOnReady.bind(this);
     this.handleSendMessage = this.handleSendMessage.bind(this);
     this.handleOnEnd = this.handleOnEnd.bind(this);
-    this.requestAddToQueue = this.requestAddToQueue.bind(this);
-    this.addToQueue = this.addToQueue.bind(this);
-    this.removeFromQueue = this.removeFromQueue.bind(this);
     this.setUsernameAndEmit = this.setUsernameAndEmit.bind(this);
   }
 
@@ -168,23 +165,6 @@ class Room extends React.Component<Props, State> {
     this.socket.emit(Event.REQUEST_VIDEO_STATE);
   }
 
-  requestAddToQueue(youtubeId: string): void {
-    this.socket.emit(Event.REQUEST_ADD_TO_QUEUE, youtubeId);
-  }
-
-  addToQueue(video: Video): void {
-    const videoQueue = this.state.videoQueue;
-    videoQueue.push(video);
-    this.setState({ videoQueue });
-  }
-
-  removeFromQueue(id: string): void {
-    this.socket.emit(Event.REMOVE_FROM_QUEUE, id);
-
-    const videoQueue = this.state.videoQueue;
-    this.setState({ videoQueue: videoQueue.filter(video => video.id !== id) });
-  }
-
   setUsernameAndEmit(): void {
     if (typeof this.props.location.state === "undefined" || this.props.location.state.username === "") {
       const randomName: string = uniqueNamesGenerator(customNameConfig);
@@ -260,12 +240,7 @@ class Room extends React.Component<Props, State> {
               onReady: this.handleOnReady
             }}
           />
-          <Queue
-            onAddVideo={this.requestAddToQueue}
-            onRemoveVideo={this.removeFromQueue}
-            videos={this.state.videoQueue}
-            socket={this.socket}
-          />
+          <Queue videos={this.state.videoQueue} socket={this.socket} />
         </React.Fragment>
       ) : null;
 
