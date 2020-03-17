@@ -2,7 +2,7 @@ import React from "react";
 import io from "socket.io-client";
 import axios, { AxiosResponse } from "axios";
 import Lottie from "react-lottie";
-import { Event } from "../sockets/event";
+import Event from "../sockets/event";
 import "../styles/Room.css";
 import loadingIndicator from "../lotties/loading.json";
 import Player from "./Player";
@@ -264,6 +264,7 @@ class Room extends React.Component<Props, State> {
             onAddVideo={this.requestAddToQueue}
             onRemoveVideo={this.removeFromQueue}
             videos={this.state.videoQueue}
+            socket={this.socket}
           />
         </React.Fragment>
       ) : null;
