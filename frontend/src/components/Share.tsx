@@ -3,9 +3,9 @@ import Paper from "@material-ui/core/Paper";
 import { FileCopy, Facebook, Reddit, Twitter } from "@material-ui/icons";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
-import TextField from "@material-ui/core/TextField";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import copy from "clipboard-copy";
+
 interface Props {
   roomUrl: string;
   classes: any;
@@ -28,9 +28,8 @@ class Share extends React.Component<Props, State> {
     const { classes } = this.props;
     return (
       <Paper className={classes.container}>
-        {/*sharing to facebook only works when Url is a valid web url*/}
         <Tooltip title="Share to Facebook">
-          <IconButton target="_blank" href={/*facebookURL*/ ""}>
+          <IconButton target="_blank" href={facebookURL}>
             <Facebook></Facebook>
           </IconButton>
         </Tooltip>
@@ -49,14 +48,6 @@ class Share extends React.Component<Props, State> {
             <FileCopy></FileCopy>
           </IconButton>
         </Tooltip>
-        <TextField
-          className="link"
-          inputProps={{ readOnly: true }}
-          defaultValue={this.props.roomUrl}
-          style={{ marginLeft: 10, paddingTop: 5, paddingBottom: -5, width: "33%" }}
-        >
-          {this.props.roomUrl}
-        </TextField>
       </Paper>
     );
   }
@@ -64,6 +55,7 @@ class Share extends React.Component<Props, State> {
 
 const materialUiStyles = createStyles({
   container: {
+    justifyContent: "center",
     position: "relative",
     width: "33%",
     zIndex: 2,
