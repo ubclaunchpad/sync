@@ -42,12 +42,14 @@ class Queue extends React.Component<Props, State> {
   render() {
     const { classes } = this.props;
 
+    const error = this.state.error;
     return (
       <List component="nav" className={classes.list}>
         <ListItem>
           <TextField
-            InputProps={{ className: this.state.error ? classes.textFieldError : classes.textField }}
-            InputLabelProps={{ className: this.state.error ? classes.textFieldError : classes.textField }}
+            error={error}
+            InputProps={{ className: classes.textField }}
+            InputLabelProps={{ className: classes.textField }}
             label="YouTube URL"
             variant="outlined"
             onChange={event => this.setState({ newVideoUrl: event.target.value })}
@@ -96,14 +98,7 @@ const materialUiStyles = createStyles({
   },
   textField: {
     "& input + fieldset": {
-      borderColor: "green !important",
-      borderWidth: 2
-    },
-    color: "white"
-  },
-  textFieldError: {
-    "& input + fieldset": {
-      borderColor: "red !important",
+      borderColor: "green",
       borderWidth: 2
     },
     color: "white"
