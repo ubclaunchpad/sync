@@ -31,7 +31,6 @@ class Queue extends React.Component<Props, State> {
     console.log("setting up sockets");
     socket.on(Event.ADD_VIDEO_TO_QUEUE_SUCCESS, () => {
       this.setState({ newVideoUrl: "", error: false });
-      console.log("Hit ADD_VIDEO_TO_QUEUE_SUCCESS");
     });
 
     socket.on(Event.ADD_VIDEO_TO_QUEUE_ERROR, () => {
