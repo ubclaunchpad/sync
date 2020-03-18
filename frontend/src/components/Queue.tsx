@@ -25,6 +25,9 @@ class Queue extends React.Component<Props, State> {
       error: false
     };
     this.setUpSocket(props.socket);
+
+    this.handleOnKeyDown = this.handleOnKeyDown.bind(this);
+    this.requestAddToQueue = this.requestAddToQueue.bind(this);
   }
 
   setUpSocket(socket: SocketIOClient.Socket) {
@@ -36,6 +39,23 @@ class Queue extends React.Component<Props, State> {
     socket.on(Event.ADD_VIDEO_TO_QUEUE_ERROR, () => {
       this.setState({ error: true });
     });
+  }
+
+  handleOnKeyDown(event: React.KeyboardEvent) {
+    const code = event.keyCode || event.which;
+    if (code === 13) {
+      this.requestAddToQueue();
+    }
+  }
+
+  requestAddToQueue() {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+    const match = this.state.newVideoUrl.match(regExp);
+    if (match && match[2].length === 11) {
+      this.props.socket.emit(Event.REQUEST_ADD_TO_QUEUE, match[2]);
+    } else {
+      this.setState({ error: true });
+    }
   }
 
   render() {
@@ -52,22 +72,11 @@ class Queue extends React.Component<Props, State> {
             label="YouTube URL"
             variant="outlined"
             onChange={event => this.setState({ newVideoUrl: event.target.value })}
+            onKeyDown={this.handleOnKeyDown}
             value={this.state.newVideoUrl}
           />
           <ListItemSecondaryAction>
-            <IconButton
-              edge="end"
-              aria-label="add"
-              onClick={() => {
-                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
-                const match = this.state.newVideoUrl.match(regExp);
-                if (match && match[2].length === 11) {
-                  this.props.socket.emit(Event.REQUEST_ADD_TO_QUEUE, match[2]);
-                } else {
-                  this.setState({ error: true });
-                }
-              }}
-            >
+            <IconButton edge="end" aria-label="add" onClick={this.requestAddToQueue}>
               <AddIcon style={{ color: "white" }} />
             </IconButton>
           </ListItemSecondaryAction>
