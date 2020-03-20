@@ -74,9 +74,7 @@ class Room extends React.Component<Props, State> {
   }
 
   handleOnEnd(event: { target: any; data: number }) {
-    if (this.state.videoQueue.length > 0) {
-      this.socket.emit(Event.SET_VIDEO, this.state.videoQueue[0]);
-    }
+    this.socket.emit(Event.VIDEO_ENDED, this.state.videoQueue[0]);
   }
 
   handleOnStateChange(event: { target: any; data: number }) {
