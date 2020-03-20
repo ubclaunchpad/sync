@@ -19,6 +19,7 @@ import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
 import { Modal, Backdrop, Fade, withStyles } from "@material-ui/core";
 import Username from "./Username";
 import VideoChat from './VideoChat';
+import { runInThisContext } from "vm";
 
 enum ModalType {
   NONE = 0,
@@ -47,6 +48,7 @@ interface State {
   playerState: PlayerState;
   modal: ModalType;
   users: string[];
+  newUsers: any;
 }
 
 class Room extends React.Component<Props, State> {
@@ -65,6 +67,7 @@ class Room extends React.Component<Props, State> {
       videoQueue: [],
       playerState: PlayerState.UNSTARTED,
       users: [],
+      newUsers: {},
     };
     this.handleOnPause = this.handleOnPause.bind(this);
     this.handleOnPlay = this.handleOnPlay.bind(this);
@@ -76,10 +79,34 @@ class Room extends React.Component<Props, State> {
     this.setModalState = this.setModalState.bind(this);
     this.changeUsernameAndEmit = this.changeUsernameAndEmit.bind(this);
     this.handleSetUsers = this.handleSetUsers.bind(this);
+    this.handleSetUsername = this.handleSetUsername.bind(this);
   }
 
   handleSetUsers(users: string[]) {
     this.setState({ users: users });
+    // Object.keys(myObj).length;
+    if (Object.keys(this.state.newUsers).length > 0) {
+      console.log('PREVIOUSLY ADDED NEW USERS');
+      users.map(user => {
+        if (!(user in this.state.newUsers)) {
+          let newState = this.state.newUsers;
+          newState[user] = null
+          this.setState({ newUsers: newState });
+        }
+      })
+      //update users if theres any in users array id that are new
+      this.socket.emit("get all user names");
+    }
+    else {
+      let userObj: any = {};
+      users.map((userId) => {
+        userObj[userId] = null;
+      })
+      this.setState({ newUsers: userObj });
+      console.log('this.state.newUsers: ' + JSON.stringify(this.state.newUsers));
+      this.socket.emit("get all user names");
+    }
+
   }
 
   handleOnPause(event: { target: any; data: number }) {
@@ -204,6 +231,11 @@ class Room extends React.Component<Props, State> {
       );
     }
   }
+  handleSetUsername(user: any) {
+    let users = this.state.newUsers;
+    users[user.id] = user.name;
+    this.setState({ newUsers: users });
+  }
 
   changeUsernameAndEmit(givenUsername: string): void {
     this.setState(
@@ -233,6 +265,9 @@ class Room extends React.Component<Props, State> {
       this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);
       this.socket.on('CLIENTS', (clients: string[]) => {
         this.handleSetUsers(clients)
+      });
+      this.socket.on("get all user names", (user: any) => {
+        this.handleSetUsername(user);
       });
     });
     this.setUsernameAndEmit();
@@ -324,8 +359,8 @@ class Room extends React.Component<Props, State> {
             </div>
           </Fade>
         </Modal>
-        <VideoChat users={this.state.users} socket={this.socket} />
-      </div>
+        <VideoChat users={this.state.newUsers} socket={this.socket} />
+      </div >
     );
   }
 }

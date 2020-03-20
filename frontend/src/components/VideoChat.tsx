@@ -289,17 +289,18 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     return (
       <React.Fragment>
         <h1>Video Chat</h1>
-
         {
           !this.state.inVideoChat &&
           <React.Fragment>
             <List component="nav">
-              {users.map((user) => {
-                return (
-                  <React.Fragment>
-                    <ListItemText primary={user} /> <button onClick={() => this.sendInvite(user)}>Video Chat</button>
-                  </React.Fragment>
-                )
+              {Object.entries(users).map((user) => {
+                if (user[1]) {
+                  return (
+                    <React.Fragment>
+                      <ListItemText primary={user[1]} /> <button onClick={() => this.sendInvite(user[0])}>Video Chat</button>
+                    </React.Fragment>
+                  )
+                }
               })}
             </List>
           </React.Fragment>
