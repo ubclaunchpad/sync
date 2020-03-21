@@ -1,4 +1,6 @@
-export enum Event {
+enum Event {
+  ADD_VIDEO_TO_QUEUE_SUCCESS = "add video to queue success",
+  ADD_VIDEO_TO_QUEUE_ERROR = "add video to queue error",
   CONNECT = "connect",
   CREATE_USERNAME = "create username",
   DISCONNECT = "disconnect",
@@ -9,7 +11,9 @@ export enum Event {
   REMOVE_FROM_QUEUE = "remove from queue",
   REQUEST_ADD_TO_QUEUE = "request add to queue",
   REQUEST_VIDEO_STATE = "request video state",
-  SET_VIDEO = "set video",
   UPDATE_ROOM = "update room",
-  UPDATE_VIDEO_STATE = "update video state"
+  UPDATE_VIDEO_STATE = "update video state",
+  VIDEO_ENDED = "video ended"
 }
+
+export default Event;
