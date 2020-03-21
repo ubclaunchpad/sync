@@ -297,9 +297,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
           </React.Fragment>
         }
 
-        <button onClick={() => this.stopMyVideoChat()}>Off Video</button>
-
-        <button>Leave VideoChat</button>
+        <button onClick={() => this.stopMyVideoChat()}>Leave</button>
 
         <Modal
           disableAutoFocus={true}
