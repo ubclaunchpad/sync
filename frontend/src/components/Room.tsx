@@ -66,7 +66,6 @@ class Room extends React.Component<Props, State> {
       username: "",
       videoQueue: [],
       playerState: PlayerState.UNSTARTED,
-      users: [],
       newUsers: {},
     };
     this.handleOnPause = this.handleOnPause.bind(this);
@@ -82,11 +81,11 @@ class Room extends React.Component<Props, State> {
     this.handleSetUsername = this.handleSetUsername.bind(this);
   }
 
+  //Creates an object of users { key: id, value : username}
+  //If users were previously set, just update this.state.newUsers
+  //If initializing users, set all username values to null
   handleSetUsers(users: string[]) {
-    this.setState({ users: users });
-    // Object.keys(myObj).length;
     if (Object.keys(this.state.newUsers).length > 0) {
-      console.log('PREVIOUSLY ADDED NEW USERS');
       users.map(user => {
         if (!(user in this.state.newUsers)) {
           let newState = this.state.newUsers;
@@ -94,8 +93,7 @@ class Room extends React.Component<Props, State> {
           this.setState({ newUsers: newState });
         }
       })
-      //update users if theres any in users array id that are new
-      this.socket.emit("get all user names");
+      this.socket.emit(Event.GET_ALL_USERNAMES);
     }
     else {
       let userObj: any = {};
@@ -103,10 +101,8 @@ class Room extends React.Component<Props, State> {
         userObj[userId] = null;
       })
       this.setState({ newUsers: userObj });
-      console.log('this.state.newUsers: ' + JSON.stringify(this.state.newUsers));
-      this.socket.emit("get all user names");
+      this.socket.emit(Event.GET_ALL_USERNAMES);
     }
-
   }
 
   handleOnPause(event: { target: any; data: number }) {
@@ -266,7 +262,7 @@ class Room extends React.Component<Props, State> {
       this.socket.on('CLIENTS', (clients: string[]) => {
         this.handleSetUsers(clients)
       });
-      this.socket.on("get all user names", (user: any) => {
+      this.socket.on(Event.GET_ALL_USERNAMES, (user: any) => {
         this.handleSetUsername(user);
       });
     });

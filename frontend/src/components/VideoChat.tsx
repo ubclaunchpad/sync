@@ -22,7 +22,6 @@ interface VideoChatState {
   stream: any,
   peer: any,
   peerVideo: any,
-  // startVideo: boolean,
   inVideoChat: boolean,
   name: string,
   videoChatSet: string[],
@@ -53,7 +52,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   private videoRef: React.RefObject<HTMLVideoElement>;
   private peerVideoRef: React.RefObject<HTMLVideoElement>;
   private socket: SocketIOClient.Socket;
-  private localstream: any;
 
   constructor(props: VideoChatProps) {
     super(props);
@@ -79,7 +77,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     this.createVideo = this.createVideo.bind(this);
     this.makePeer = this.makePeer.bind(this);
     this.init = this.init.bind(this);
-    // this.buildList = this.buildList.bind(this);
     this.setVideoChatSet = this.setVideoChatSet.bind(this);
     this.acceptVideoChatInvite = this.acceptVideoChatInvite.bind(this);
   }
@@ -97,16 +94,10 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     })
     this.socket.on('ACCEPT_INVITE', (accept: any) => {
       this.sendVideoChatId(accept);
-
     })
 
     this.socket.on('SEND_VIDEOCHATID', (videoChatIdObj: any) => {
-      // console.log('this.state.name: ' + this.state.name);
-      // console.log('videoChatIdObj: ' + JSON.stringify(videoChatIdObj));
-      // if (this.state.name && videoChatIdObj.to === this.state.name) {
-      // console.log('this.state.name == videoChatIdObj.to');
       this.setVideoChatId(videoChatIdObj.id);
-
     })
 
   }
@@ -127,11 +118,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
           videoTrack: stream.getTracks()[1],
           audioTrack: stream.getTracks()[0]
         })
-        // console.log(stream.getTracks()[0]);
-        // console.log(stream.getTracks()[1]);
-        console.log('TRACK: ' + this.state.videoTrack);
-        console.log('TRACK: ' + this.state.audioTrack);
-
       })
       .catch(() => console.log('Permission Not Given'));//If permission not given, display error
   }
@@ -193,7 +179,8 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   }
 
   declineVideoChatInvite = () => {
-
+    //TODO: Send an event that says declined?
+    this.setState({ openInviteModal: false });
   }
 
   //Used to initialize a peer, define a new peer and return it
@@ -267,8 +254,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   // then finally both the clients will be connected
   signalAnswer = (answer: any): void => {
     this.setState({ gotAnswer: true })
-    // client.gotAnswer = true;
-    // let peer = client.peer;
     let peer = this.state.peer;
     peer.signal(answer);
   }
@@ -281,10 +266,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     }
   }
 
-
   render() {
-    console.log('audioTrack: ' + this.state.audioTrack);
-    console.log('videoTrack: ' + this.state.videoTrack);
     const { classes, users } = this.props;
     return (
       <React.Fragment>
@@ -327,16 +309,12 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
           open={this.state.openInviteModal}
           onClose={() => console.log('onClose modal')}
           closeAfterTransition
-        // BackdropComponent={Backdrop}
-        // BackdropProps={{
-        //   timeout: 500
-        // }}
         >
           <Fade in={this.state.openInviteModal}>
             <div className={classes.paper}>
               <h1>Video Chat invite from {this.state.inviteFrom}</h1>
               <button onClick={this.acceptVideoChatInvite}>Accept</button>
-              <button>Decline</button>
+              <button onClick={this.declineVideoChatInvite}>Decline</button>
             </div>
           </Fade>
         </Modal>
