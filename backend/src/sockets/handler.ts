@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { Event } from "./event";
+import Event from "./event";
 import axios from "axios";
 import logger from "../config/logger";
 import qs from "querystring";
@@ -49,15 +49,15 @@ class RoomSocketHandler {
 
   private createEventHandler(): EventHandler {
     return {
+      [Event.CREATE_USERNAME]: (username: string): Promise<void> => this.createUsername(username),
       [Event.MESSAGE]: (message: Message): Promise<void> => this.sendMessage(message),
       [Event.PLAY_VIDEO]: (time: number): Promise<void> => this.playVideo(time),
       [Event.PAUSE_VIDEO]: (time: number): Promise<void> => this.pauseVideo(time),
       [Event.REMOVE_FROM_QUEUE]: (id: string): Promise<void> => this.removeFromQueue(id),
       [Event.REQUEST_ADD_TO_QUEUE]: (videoUrl: string): Promise<void> => this.tryAddToQueue(videoUrl),
-      [Event.SET_VIDEO]: (video: Video): Promise<void> => this.setVideo(video),
       [Event.REQUEST_VIDEO_STATE]: (): Promise<void> => this.getVideoState(),
       [Event.UPDATE_VIDEO_STATE]: (request: UpdateVideoStateRequest): Promise<void> => this.updateVideoState(request),
-      [Event.CREATE_USERNAME]: (username: string): Promise<void> => this.createUsername(username)
+      [Event.VIDEO_ENDED]: (): Promise<void> => this.handleVideoEnded()
     };
   }
 
@@ -96,35 +96,25 @@ class RoomSocketHandler {
       const video: Video = { id: uniqid(), title: videoTitle, youtubeId: youtubeId };
 
       const room = await this.database.getRoom(this.roomId);
-      room.videoQueue.push(video);
+      if (room.playerState === PlayerState.ENDED) {
+        room.currVideoId = video.youtubeId;
+      } else {
+        room.videoQueue.push(video);
+      }
+
       await this.database.setRoom(this.roomId, room);
 
       this.io.in(this.roomId).emit(Event.UPDATE_ROOM, room);
+      this.socket.emit(Event.ADD_VIDEO_TO_QUEUE_SUCCESS);
     } catch {
       logger.error("Failed to find info about video");
+      this.socket.emit(Event.ADD_VIDEO_TO_QUEUE_ERROR);
     }
   }
 
   private async removeFromQueue(id: string): Promise<void> {
     const room: Room = await this.database.getRoom(this.roomId);
     room.videoQueue = room.videoQueue.filter(video => video.id !== id);
-
-    await this.database.setRoom(this.roomId, room);
-
-    this.io.in(this.roomId).emit(Event.UPDATE_ROOM, room);
-  }
-
-  private async setVideo(video: Video): Promise<void> {
-    const room: Room = await this.database.getRoom(this.roomId);
-    room.currVideoId = video.youtubeId;
-
-    const videoQueue: Video[] = [];
-    let foundVideo = false;
-    for (const v of room.videoQueue) {
-      if (foundVideo) videoQueue.push(v);
-      if (v.id == video.id) foundVideo = true;
-    }
-    room.videoQueue = videoQueue;
 
     await this.database.setRoom(this.roomId, room);
 
@@ -159,6 +149,17 @@ class RoomSocketHandler {
   private updateVideoState(updateVideoStateRequest: UpdateVideoStateRequest): Promise<void> {
     this.io.to(updateVideoStateRequest.socketId).emit(Event.UPDATE_VIDEO_STATE, updateVideoStateRequest.videoState);
     return Promise.resolve();
+  }
+
+  private async handleVideoEnded(): Promise<void> {
+    const room: Room = await this.database.getRoom(this.roomId);
+    room.playerState = PlayerState.ENDED;
+    if (room.videoQueue.length > 0) {
+      room.currVideoId = room.videoQueue[0].youtubeId;
+      room.videoQueue.shift();
+    }
+    await this.database.setRoom(this.roomId, room);
+    this.io.in(this.roomId).emit(Event.UPDATE_ROOM, room);
   }
 }
 
