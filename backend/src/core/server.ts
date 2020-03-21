@@ -40,9 +40,6 @@ export default class Server {
 
   private setupSockets(): void {
     const io = socketIo(this.httpServer);
-    let clients = 0;
-    let clientNum = 1;
-    let videoChatSet: string[] = [];
     let videoChats: any = {};
     io.on(Event.CONNECT, socket => {
       logger.debug(`Socket ${socket.id} connected.`);
@@ -53,27 +50,20 @@ export default class Server {
 
       socket.on('SEND_INVITE', (invite) => {
         socket.to(invite.receiver).emit('SEND_INVITE', invite);
-        // socket.broadcast.emit('SEND_INVITE', invObj);
       })
 
       socket.on('close', () => {
         console.log('close!');
-        // socket.to(invite.receiver).emit('SEND_INVITE', invite);
-        // socket.broadcast.emit('SEND_INVITE', invObj);
       })
 
 
       socket.on('ACCEPT_INVITE', (accept) => {
-        console.log('accept_invite: ' + JSON.stringify(accept));
         socket.to(accept.receiver).emit('ACCEPT_INVITE', accept);
-        // socket.broadcast.emit('ACCEPT_INVITE', accept);
       })
 
       socket.on('SEND_VIDEOCHATID', (videoChatIdObj) => {
         console.log('videoChatId ' + JSON.stringify(videoChatIdObj));
         socket.to(videoChatIdObj.receiver).emit('SEND_VIDEOCHATID', videoChatIdObj);
-
-        // socket.broadcast.emit('SEND_VIDEOCHATID', videoChatIdObj);
       })
 
       socket.on('VIDEO_CHAT', (id: any) => {

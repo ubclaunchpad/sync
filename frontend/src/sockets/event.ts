@@ -13,7 +13,8 @@ enum Event {
   REQUEST_VIDEO_STATE = "request video state",
   UPDATE_ROOM = "update room",
   UPDATE_VIDEO_STATE = "update video state",
-  VIDEO_ENDED = "video ended"
+  VIDEO_ENDED = "video ended",
+  GET_ALL_USERNAMES = "get all user names",
 }
 
 export default Event;

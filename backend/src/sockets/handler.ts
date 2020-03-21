@@ -37,8 +37,6 @@ class RoomSocketHandler {
       };
       this.socket.to(this.roomId).emit(Event.MESSAGE, newJoin);
 
-      // this.socket.to(this.roomId).emit(Event.MESSAGE, "A new user has joined the room!");
-
       this.io.of('/').in(this.roomId).clients((error: any, clients: any) => {
         if (error) throw error;
         this.io.in(this.roomId).emit('CLIENTS', clients);
