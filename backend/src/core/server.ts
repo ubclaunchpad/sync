@@ -40,7 +40,7 @@ export default class Server {
 
   private setupSockets(): void {
     const io = socketIo(this.httpServer);
-    let videoChats: any = {};
+    const videoChats: any = {};
     io.on(Event.CONNECT, socket => {
       logger.debug(`Socket ${socket.id} connected.`);
       logger.info(`Socket ${socket.id} connected.`);
@@ -48,55 +48,49 @@ export default class Server {
         new RoomSocketHandler(this.database, io, socket, roomId).initialize();
       });
 
-      socket.on('SEND_INVITE', (invite) => {
+      socket.on("SEND_INVITE", invite => {
         socket.to(invite.receiver).emit('SEND_INVITE', invite);
-      })
+      });
 
-      socket.on('close', () => {
-        console.log('close!');
-      })
-
-
-      socket.on('ACCEPT_INVITE', (accept) => {
+      socket.on("ACCEPT_INVITE", accept => {
         socket.to(accept.receiver).emit('ACCEPT_INVITE', accept);
       })
 
-      socket.on('SEND_VIDEOCHATID', (videoChatIdObj) => {
-        console.log('videoChatId ' + JSON.stringify(videoChatIdObj));
-        socket.to(videoChatIdObj.receiver).emit('SEND_VIDEOCHATID', videoChatIdObj);
+      socket.on("SEND_VIDEOCHATID", videoChatIdObj => {
+        socket.to(videoChatIdObj.receiver).emit("SEND_VIDEOCHATID", videoChatIdObj);
       })
 
-      socket.on('VIDEO_CHAT', (id: any) => {
-        console.log('Joining videoChat: ' + id);
+      socket.on("VIDEO_CHAT", (id: any) => {
         socket.join(id);
       })
 
-      socket.on('newVideoChatPeer', (videoChatId: any) => {
+      socket.on("newVideoChatPeer", (videoChatId: any) => {
         if (!(videoChatId in videoChats)) {
           videoChats[videoChatId] = { numClients: 0, clientNum: 0 };
         }
 
-        if (videoChats[videoChatId]['numClients'] < 2) {
-          if (videoChats[videoChatId]['numClients'] == 1) {
-            socket.to(videoChatId).emit('CreatePeer');
+        if (videoChats[videoChatId]["numClients"] < 2) {
+          if (videoChats[videoChatId]["numClients"] == 1) {
+            socket.to(videoChatId).emit("CreatePeer");
           }
         }
         else {
           //Already a session going on
-          socket.emit('SessionActive');
+          //TODO: Remove this??
+          socket.emit("SessionActive");
         }
-        videoChats[videoChatId]['numClients']++;
-        if (videoChats[videoChatId]['clientNum'] < 2) {
-          videoChats[videoChatId]['clientNum']++;
+        videoChats[videoChatId]["numClients"]++;
+        if (videoChats[videoChatId]["clientNum"] < 2) {
+          videoChats[videoChatId]["clientNum"]++;
         }
 
       })
 
-      socket.on('Offer', (offerObj: any) => {
+      socket.on("Offer", (offerObj: any) => {
         socket.to(offerObj.videoChatId).emit("BackOffer", offerObj.data);
       });
 
-      socket.on('Answer', (answerObj: any) => {
+      socket.on("Answer", (answerObj: any) => {
         socket.to(answerObj.videoChatId).emit("BackAnswer", answerObj.data);
       });
 

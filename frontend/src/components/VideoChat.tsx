@@ -139,6 +139,8 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
       openInviteModal: false,
       inviteFrom: '',
     })
+    //TODO: SEND Leave video chat event to other use in video chat
+    //On receipt, they should stop stopVideoChat
   }
 
   setVideoChatId = (id: any) => {
@@ -204,7 +206,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
       copyThis.setState({ peerConnected: false });
       copyThis.setState({ inVideoChat: false });
       console.log('copythis.peerconnected: ' + copyThis.state.peerConnected);
-      socket.emit('close');
+      // socket.emit('close');
       peer.destroy();//Everything is cleaned up,
     });
 
@@ -293,7 +295,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
           <React.Fragment>
             <h1>Video Chat: + {this.state.videoChatId}</h1>
             <video ref={this.videoRef} autoPlay></video>
-            <video ref={this.peerVideoRef} autoPlay></video>}
+            <video ref={this.peerVideoRef} autoPlay></video>
           </React.Fragment>
         }
 
