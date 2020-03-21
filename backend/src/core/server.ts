@@ -49,20 +49,20 @@ export default class Server {
       });
 
       socket.on("SEND_INVITE", invite => {
-        socket.to(invite.receiver).emit('SEND_INVITE', invite);
+        socket.to(invite.receiver).emit("SEND_INVITE", invite);
       });
 
       socket.on("ACCEPT_INVITE", accept => {
-        socket.to(accept.receiver).emit('ACCEPT_INVITE', accept);
-      })
+        socket.to(accept.receiver).emit("ACCEPT_INVITE", accept);
+      });
 
       socket.on("SEND_VIDEOCHATID", videoChatIdObj => {
         socket.to(videoChatIdObj.receiver).emit("SEND_VIDEOCHATID", videoChatIdObj);
-      })
+      });
 
       socket.on("VIDEO_CHAT", (id: any) => {
         socket.join(id);
-      })
+      });
 
       socket.on("newVideoChatPeer", (videoChatId: any) => {
         if (!(videoChatId in videoChats)) {
@@ -83,8 +83,7 @@ export default class Server {
         if (videoChats[videoChatId]["clientNum"] < 2) {
           videoChats[videoChatId]["clientNum"]++;
         }
-
-      })
+      });
 
       socket.on("Offer", (offerObj: any) => {
         socket.to(offerObj.videoChatId).emit("BackOffer", offerObj.data);
