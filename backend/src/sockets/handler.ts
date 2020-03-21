@@ -37,9 +37,9 @@ class RoomSocketHandler {
       };
       this.socket.to(this.roomId).emit(Event.MESSAGE, newJoin);
 
-      this.io.of('/').in(this.roomId).clients((error: any, clients: any) => {
+      this.io.of("/").in(this.roomId).clients((error: any, clients: any) => {
         if (error) throw error;
-        this.io.in(this.roomId).emit('CLIENTS', clients);
+        this.io.in(this.roomId).emit("CLIENTS", clients);
       });
 
       for (const [event, handler] of Object.entries(handlers)) {
