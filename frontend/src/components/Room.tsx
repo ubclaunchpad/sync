@@ -75,6 +75,7 @@ class Room extends React.Component<Props, State> {
     this.removeFromQueue = this.removeFromQueue.bind(this);
     this.setUsernameAndEmit = this.setUsernameAndEmit.bind(this);
     this.setModalState = this.setModalState.bind(this);
+    this.changeUsernameAndEmit = this.changeUsernameAndEmit.bind(this);
   }
 
   handleOnPause(event: { target: any; data: number }) {
@@ -217,6 +218,17 @@ class Room extends React.Component<Props, State> {
         }
       );
     }
+  }
+
+  changeUsernameAndEmit(givenUsername: string): void {
+    this.setState(
+      {
+        username: givenUsername
+      },
+      () => {
+        this.socket.emit(Event.CREATE_USERNAME, this.state.username);
+      }
+    );
   }
 
   setModalState(): void {
