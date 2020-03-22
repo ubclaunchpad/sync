@@ -223,7 +223,8 @@ class Room extends React.Component<Props, State> {
   changeUsernameAndEmit(givenUsername: string): void {
     this.setState(
       {
-        username: givenUsername
+        username: givenUsername,
+        modal: ModalType.NONE
       },
       () => {
         this.socket.emit(Event.CREATE_USERNAME, this.state.username);
@@ -333,7 +334,7 @@ class Room extends React.Component<Props, State> {
         >
           <Fade in={this.state.modal == ModalType.CREATE_USERNAME}>
             <div className={classes.paper}>
-              <Username />
+              <Username changeUsernameAndEmit={this.changeUsernameAndEmit} />
             </div>
           </Fade>
         </Modal>

@@ -1,12 +1,11 @@
 import React from "react";
-import axios from "axios";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { withStyles, createStyles } from "@material-ui/core/styles";
-import { Redirect } from "react-router-dom";
 
 interface Props {
   classes: any;
+  changeUsernameAndEmit: any;
 }
 
 interface State {
@@ -32,12 +31,15 @@ class Username extends React.Component<Props, State> {
   }
 
   handleEnterPressed = (event: React.KeyboardEvent) => {
-    // TODO?
-    console.log("motherufuckerbithc");
+    event.preventDefault();
+    const code = event.keyCode || event.which;
+    if (code === 13) {
+      this.props.changeUsernameAndEmit(this.state.username);
+    }
   };
 
   handleCreateUsername() {
-    // TODO
+    this.props.changeUsernameAndEmit(this.state.username);
   }
 
   render() {
