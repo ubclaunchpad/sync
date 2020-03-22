@@ -73,8 +73,7 @@ export default class Server {
           if (videoChats[videoChatId]["numClients"] == 1) {
             socket.to(videoChatId).emit("CreatePeer");
           }
-        }
-        else {
+        } else {
           //Already a session going on
           //TODO: Remove this??
           socket.emit("SessionActive");
