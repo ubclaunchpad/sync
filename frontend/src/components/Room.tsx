@@ -7,6 +7,7 @@ import "../styles/Room.css";
 import loadingIndicator from "../lotties/loading.json";
 import Player from "./Player";
 import Chat from "./Chat";
+import Share from "./Share";
 import Queue from "./Queue";
 import Video from "../models/video";
 import RoomInfo from "../models/room";
@@ -285,6 +286,7 @@ class Room extends React.Component<Props, State> {
 
     return (
       <div className="container">
+        <Share roomUrl={window.location.href} />
         {videoPlayer}
         {invalidRoomId}
         {showLoadingIndicator}
