@@ -38,7 +38,9 @@ class RoomSocketHandler {
       this.socket.to(this.roomId).emit(Event.MESSAGE, newJoin);
 
       this.io.of("/").in(this.roomId).clients((error: any, clients: any) => {
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
         this.io.in(this.roomId).emit("CLIENTS", clients);
       });
 
@@ -65,7 +67,7 @@ class RoomSocketHandler {
       [Event.UPDATE_VIDEO_STATE]: (request: UpdateVideoStateRequest): Promise<void> => this.updateVideoState(request),
       [Event.VIDEO_ENDED]: (): Promise<void> => this.handleVideoEnded(),
       [Event.CREATE_USERNAME]: (username: string): Promise<void> => this.createUsername(username),
-      [Event.GET_ALL_USERNAMES]: (): Promise<void> => this.getAllUsernames(),
+      [Event.GET_ALL_USERNAMES]: (): Promise<void> => this.getAllUsernames()
     };
   }
 
