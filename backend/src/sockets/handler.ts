@@ -42,7 +42,8 @@ class RoomSocketHandler {
           throw error;
         }
         this.io.in(this.roomId).emit("CLIENTS", clients);
-      });
+      }
+      );
 
       for (const [event, handler] of Object.entries(handlers)) {
         if (handler) {
