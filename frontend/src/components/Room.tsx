@@ -290,7 +290,7 @@ class Room extends React.Component<Props, State> {
         {videoPlayer}
         {invalidRoomId}
         {showLoadingIndicator}
-        <Chat messages={this.state.messages} sendMessage={this.handleSendMessage} />
+        <Chat username={this.state.username} messages={this.state.messages} sendMessage={this.handleSendMessage} />
         <Modal
           disableAutoFocus={true}
           aria-labelledby="transition-modal-title"
