@@ -295,6 +295,7 @@ class Room extends React.Component<Props, State> {
 
   render() {
     const { classes } = this.props;
+    const username = this.state.username && this.state.username;
     const defaultOptions = {
       loop: true,
       autoplay: true,
@@ -355,8 +356,9 @@ class Room extends React.Component<Props, State> {
             </div>
           </Fade>
         </Modal>
-        <VideoChat users={this.state.newUsers} socket={this.socket} />
-      </div >
+        {/* </div > */}
+        {username && <VideoChat username={username} users={this.state.newUsers} socket={this.socket} />}
+      </div>
     );
   }
 }
