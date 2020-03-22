@@ -16,6 +16,13 @@ import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-gene
 import RoomData from "../models/room";
 import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
+import { Modal, Backdrop, Fade, withStyles } from "@material-ui/core";
+import Username from "./Username";
+
+enum ModalType {
+  NONE = 0,
+  CREATE_USERNAME = 1
+}
 
 const customNameConfig: Config = {
   dictionaries: [colors, animals],
@@ -25,6 +32,7 @@ const customNameConfig: Config = {
 
 interface Props extends RouteComponentProps {
   match: any;
+  classes: any;
 }
 
 interface State {
@@ -36,6 +44,7 @@ interface State {
   username: string;
   videoQueue: Video[];
   playerState: PlayerState;
+  modal: ModalType;
 }
 
 class Room extends React.Component<Props, State> {
@@ -52,7 +61,8 @@ class Room extends React.Component<Props, State> {
       messages: [],
       username: "",
       videoQueue: [],
-      playerState: PlayerState.UNSTARTED
+      playerState: PlayerState.UNSTARTED,
+      modal: ModalType.NONE
     };
     this.handleOnPause = this.handleOnPause.bind(this);
     this.handleOnPlay = this.handleOnPlay.bind(this);
@@ -64,6 +74,7 @@ class Room extends React.Component<Props, State> {
     this.addToQueue = this.addToQueue.bind(this);
     this.removeFromQueue = this.removeFromQueue.bind(this);
     this.setUsernameAndEmit = this.setUsernameAndEmit.bind(this);
+    this.setModalState = this.setModalState.bind(this);
   }
 
   handleOnPause(event: { target: any; data: number }) {
@@ -208,12 +219,21 @@ class Room extends React.Component<Props, State> {
     }
   }
 
+  setModalState(): void {
+    if (typeof this.props.location.state === "undefined") {
+      this.setState({
+        modal: ModalType.CREATE_USERNAME
+      });
+    }
+  }
+
   async componentDidMount() {
     const { id } = this.props.match.params;
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
     });
     this.setUsernameAndEmit();
+    this.setModalState();
 
     try {
       const res: AxiosResponse<RoomData> = await axios.get("http://localhost:8080/api/rooms/" + id);
@@ -240,6 +260,7 @@ class Room extends React.Component<Props, State> {
   }
 
   render() {
+    const { classes } = this.props;
     const defaultOptions = {
       loop: true,
       autoplay: true,
@@ -281,9 +302,61 @@ class Room extends React.Component<Props, State> {
         {invalidRoomId}
         {showLoadingIndicator}
         <Chat messages={this.state.messages} sendMessage={this.handleSendMessage} />
+        <Modal
+          disableAutoFocus={true}
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={this.state.modal == ModalType.CREATE_USERNAME}
+          onClose={() => {
+            this.setState({
+              modal: ModalType.NONE
+            });
+          }}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500
+          }}
+        >
+          <Fade in={this.state.modal == ModalType.CREATE_USERNAME}>
+            <div className={classes.paper}>
+              <Username />
+            </div>
+          </Fade>
+        </Modal>
       </div>
     );
   }
 }
 
-export default Room;
+const materialUiStyles = {
+  root: {
+    background: "#000000",
+    height: "292px",
+    width: "212px",
+    marginRight: "50px",
+    marginLeft: "50px",
+    border: "2px solid #051633",
+    borderRadius: "10px",
+    opacity: "1 !important"
+  },
+  textPrimary: {
+    color: "white"
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  paper: {
+    backgroundColor: "white",
+    border: "1px solid #000",
+    width: "905px",
+    height: "400px",
+    borderRadius: "20px",
+    outline: "none"
+  }
+};
+
+export default withStyles(materialUiStyles)(Room);
