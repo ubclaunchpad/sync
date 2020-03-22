@@ -15,6 +15,7 @@ interface VideoChatProps {
   classes: any,
   users: string[],
   socket: SocketIOClient.Socket,
+  username?: any
 }
 
 interface VideoChatState {
@@ -31,6 +32,7 @@ interface VideoChatState {
   peerConnected: boolean,
   videoTrack: any,
   audioTrack: any,
+  inviteFromName: any,
 }
 
 interface PeerType {
@@ -63,7 +65,8 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
       peer: null,
       peerVideo: null,
       inVideoChat: false,
-      name: "",
+      name: props.username,
+      inviteFromName: '',
       videoChatSet: [],
       videoChatId: null,
       openInviteModal: false,
@@ -158,12 +161,13 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
   openInviteModal = (invite: any) => {
     console.log('inviteFrom: ' + invite.sender);
-    this.setState({ inviteFrom: invite.sender });
+    this.setState({ inviteFrom: invite.sender, inviteFromName: invite.name });
     this.setState({ openInviteModal: true });
   }
 
   sendInvite = (receiverId: string) => {
-    let invite = { sender: this.socket.id, receiver: receiverId }
+    const name = this.state.name && this.state.name;
+    let invite = { sender: this.socket.id, receiver: receiverId, name: name }
     this.socket.emit('SEND_INVITE', invite);
   }
 
@@ -174,8 +178,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   }
 
   acceptVideoChatInvite = () => {
-    // let invObj = { sentBy: this.state.name, to: name }
-    let accept = { sender: this.socket.id, receiver: this.state.inviteFrom }
+    let accept = { sender: this.socket.id, receiver: this.state.inviteFrom };
     this.socket.emit('ACCEPT_INVITE', accept);
     this.setState({ openInviteModal: false });
   }
@@ -312,7 +315,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
         >
           <Fade in={this.state.openInviteModal}>
             <div className={classes.paper}>
-              <h1>Video Chat invite from {this.state.inviteFrom}</h1>
+              <h1>Video Chat invite from {this.state.inviteFromName}</h1>
               <button onClick={this.acceptVideoChatInvite}>Accept</button>
               <button onClick={this.declineVideoChatInvite}>Decline</button>
             </div>
