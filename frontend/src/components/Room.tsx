@@ -18,7 +18,7 @@ import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
 import { Modal, Backdrop, Fade, withStyles } from "@material-ui/core";
 import Username from "./Username";
-import VideoChat from './VideoChat';
+import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
 
 enum ModalType {
@@ -47,7 +47,7 @@ interface State {
   videoQueue: Video[];
   playerState: PlayerState;
   modal: ModalType;
-  users: string[];
+  // users: string[];
   newUsers: any;
 }
 
@@ -67,6 +67,7 @@ class Room extends React.Component<Props, State> {
       videoQueue: [],
       playerState: PlayerState.UNSTARTED,
       newUsers: {},
+      modal: ModalType.NONE
     };
     this.handleOnPause = this.handleOnPause.bind(this);
     this.handleOnPlay = this.handleOnPlay.bind(this);
@@ -88,18 +89,17 @@ class Room extends React.Component<Props, State> {
     if (Object.keys(this.state.newUsers).length > 0) {
       users.map(user => {
         if (!(user in this.state.newUsers)) {
-          let newState = this.state.newUsers;
-          newState[user] = null
+          const newState = this.state.newUsers;
+          newState[user] = null;
           this.setState({ newUsers: newState });
         }
-      })
+      });
       this.socket.emit(Event.GET_ALL_USERNAMES);
-    }
-    else {
-      let userObj: any = {};
-      users.map((userId) => {
+    } else {
+      const userObj: any = {};
+      users.map(userId => {
         userObj[userId] = null;
-      })
+      });
       this.setState({ newUsers: userObj });
       this.socket.emit(Event.GET_ALL_USERNAMES);
     }
@@ -228,7 +228,7 @@ class Room extends React.Component<Props, State> {
     }
   }
   handleSetUsername(user: any) {
-    let users = this.state.newUsers;
+    const users = this.state.newUsers;
     users[user.id] = user.name;
     this.setState({ newUsers: users });
   }
@@ -259,8 +259,8 @@ class Room extends React.Component<Props, State> {
       this.socket.emit(Event.JOIN_ROOM, id);
       this.setUsernameAndEmit();
       this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);
-      this.socket.on('CLIENTS', (clients: string[]) => {
-        this.handleSetUsers(clients)
+      this.socket.on("CLIENTS", (clients: string[]) => {
+        this.handleSetUsers(clients);
       });
       this.socket.on(Event.GET_ALL_USERNAMES, (user: any) => {
         this.handleSetUsername(user);
@@ -356,7 +356,6 @@ class Room extends React.Component<Props, State> {
             </div>
           </Fade>
         </Modal>
-        {/* </div > */}
         {username && <VideoChat username={username} users={this.state.newUsers} socket={this.socket} />}
       </div>
     );
