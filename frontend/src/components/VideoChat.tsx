@@ -296,7 +296,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
         {this.state.inVideoChat &&
           <React.Fragment>
-            <h1>Video Chat: + {this.state.videoChatId}</h1>
+            {/* <h1>Video Chat: + {this.state.videoChatId}</h1> */}
             <video ref={this.videoRef} autoPlay></video>
             <video ref={this.peerVideoRef} autoPlay></video>
           </React.Fragment>
