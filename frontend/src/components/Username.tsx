@@ -33,6 +33,7 @@ class Username extends React.Component<Props, State> {
 
   handleEnterPressed = (event: React.KeyboardEvent) => {
     // TODO?
+    console.log("motherufuckerbithc");
   };
 
   handleCreateUsername() {
