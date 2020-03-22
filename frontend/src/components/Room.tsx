@@ -252,7 +252,7 @@ class Room extends React.Component<Props, State> {
 
     return (
       <div className="container">
-        <Share roomUrl={"http://localhost:3000/rooms/" + id} />
+        <Share roomUrl={window.location.href} />
         {videoPlayer}
         {invalidRoomId}
         {showLoadingIndicator}
