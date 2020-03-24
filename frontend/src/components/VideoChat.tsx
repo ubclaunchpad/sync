@@ -15,24 +15,24 @@ interface VideoChatProps {
   classes: any;
   users: string[];
   socket: SocketIOClient.Socket;
-  username?: any;
+  username?: string;
 }
 
 interface VideoChatState {
   gotAnswer: boolean;
-  stream: any;
-  peer: any;
+  stream: MediaStream | undefined;
+  peer: Peer.Instance | null;
   peerVideo: any;
   inVideoChat: boolean;
-  name: string;
+  name: string | undefined;
   videoChatSet: string[];
   videoChatId: any;
   openInviteModal: boolean;
   inviteFrom: string;
   peerConnected: boolean;
-  videoTrack: any;
-  audioTrack: any;
-  inviteFromName: any;
+  videoTrack: MediaStreamTrack | null;
+  audioTrack: MediaStreamTrack | null;
+  inviteFromName: string;
 }
 
 interface PeerType {
@@ -61,7 +61,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     this.state = {
       peerConnected: false,
       gotAnswer: false,
-      stream: null,
+      stream: undefined,
       peer: null,
       peerVideo: null,
       inVideoChat: false,
@@ -126,15 +126,15 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   };
 
   stopMyVideoChat = () => {
-    this.state.videoTrack.stop();
-    this.state.audioTrack.stop();
+    this.state.videoTrack?.stop();
+    this.state.audioTrack?.stop();
     this.setState({
       videoTrack: null,
       audioTrack: null,
       inVideoChat: false,
       peerConnected: false,
       gotAnswer: false,
-      stream: null,
+      stream: undefined,
       peer: null,
       peerVideo: null,
       videoChatSet: [],
@@ -172,8 +172,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   };
 
   setVideoChatSet = (arr: string[]) => {
-    // console.log('set: ' + set.entries(set));
-    console.log("arr: " + arr);
     this.setState({ videoChatSet: arr });
   };
 
@@ -189,7 +187,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   };
 
   //Used to initialize a peer, define a new peer and return it
-  init = (type: any): Peer.Instance => {
+  init = (type: PeerTypes): Peer.Instance => {
     //type tells us if init == true means sends offer, if init is false, wont send offer, wait for offer, send answer
     const socket = this.socket;
     const peer = new Peer({
@@ -197,6 +195,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
       stream: this.state.stream && this.state.stream,
       trickle: false
     });
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const copyThis = this;
 
     const peerNode = this.peerVideoRef.current;
@@ -232,7 +231,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     const gotAnswer = this.state.gotAnswer;
     const socket = this.socket;
     const videoChatId = this.state.videoChatId;
-    const peer = this.init("init");
+    const peer = this.init(PeerTypes.init);
     peer.on("signal", function(data) {
       if (!gotAnswer) {
         //TODO: somehow include id in this emit offer
@@ -244,7 +243,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   };
 
   frontAnswer = (offer: any): void => {
-    const peer = this.init("notInit");
+    const peer = this.init(PeerTypes.notInit);
     const socket = this.socket;
     const videoChatId = this.state.videoChatId;
     //this doesnt run automatically, have to call signal
@@ -266,7 +265,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   signalAnswer = (answer: any): void => {
     this.setState({ gotAnswer: true });
     const peer = this.state.peer;
-    peer.signal(answer);
+    peer?.signal(answer);
   };
 
   createVideo = (stream: any): void => {
