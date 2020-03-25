@@ -4,7 +4,6 @@ import { Route, BrowserRouter as Router } from "react-router-dom";
 import Room from "./components/Room";
 import Home from "./components/Home";
 import Browse from "./components/Browse";
-import VideoChat from "./components/VideoChat";
 import "./styles/index.css";
 
 const App = (
@@ -13,7 +12,6 @@ const App = (
       <Route exact path="/" component={Home} />
       <Route exact path="/rooms/:id" component={Room} />
       <Route exact path="/rooms" component={Browse} />
-      <Route exact path="/video" component={VideoChat} />
     </div>
   </Router>
 );

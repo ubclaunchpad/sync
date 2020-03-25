@@ -196,13 +196,13 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
       trickle: false
     });
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const copyThis = this;
+    // const copyThis = this;
 
     const peerNode = this.peerVideoRef.current;
-    peer.on("stream", function(stream) {
+    peer.on("stream", stream => {
       //when we get stream from other user, create new video
-      copyThis.setState({ peerConnected: true });
-      console.log("copythis.peerconnected: " + copyThis.state.peerConnected);
+      this.setState({ peerConnected: true });
+      console.log("copythis.peerconnected: " + this.state.peerConnected);
       // // createVideo(stream)
       // const peerNode = this.peerVideoRef.current;
       if (peerNode) {
@@ -212,16 +212,16 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     peer.on("close", () => {
       //when peer is closed, destroy video
       alert("PEER CLOSED");
-      copyThis.setState({ peerConnected: false });
-      copyThis.setState({ inVideoChat: false });
-      console.log("copythis.peerconnected: " + copyThis.state.peerConnected);
+      this.setState({ peerConnected: false });
+      this.setState({ inVideoChat: false });
+      console.log("copythis.peerconnected: " + this.state.peerConnected);
       // socket.emit('close');
       peer.destroy(); //Everything is cleaned up,
     });
 
     peer.on("error", err => {
       // alert(err);
-      copyThis.setState({ inVideoChat: false });
+      this.setState({ inVideoChat: false });
     });
     return peer; //Return our peer
   };
