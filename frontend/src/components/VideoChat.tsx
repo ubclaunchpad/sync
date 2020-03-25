@@ -100,7 +100,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     });
 
     this.socket.on("SEND_VIDEOCHATID", (videoChatIdObj: any) => {
-      this.setVideoChatId(videoChatIdObj.id);
+      this.setVideoChatIdAndSetInVideoChat(videoChatIdObj.id);
     });
   }
 
@@ -122,7 +122,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
           audioTrack: stream.getTracks()[0]
         });
       })
-      .catch(() => console.log("Permission Not Given")); //If permission not given, display error
+      .catch(() => console.log("Permission Not Given"));
   };
 
   stopMyVideoChat = () => {
@@ -146,7 +146,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     //On receipt, they should stop stopVideoChat
   };
 
-  setVideoChatId = (id: any) => {
+  setVideoChatIdAndSetInVideoChat = (id: any) => {
     this.setState({ videoChatId: id });
     this.socket.emit("VIDEO_CHAT", this.state.videoChatId);
     this.setInVideoChat();
@@ -155,7 +155,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   sendVideoChatId = (accept: any) => {
     const videoChatId = uuidv1();
     const videoChatIdObj = { id: videoChatId, receiver: accept.sender };
-    this.setVideoChatId(videoChatIdObj.id);
+    this.setVideoChatIdAndSetInVideoChat(videoChatIdObj.id);
     this.socket.emit("SEND_VIDEOCHATID", videoChatIdObj);
   };
 
@@ -188,45 +188,34 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
   //Used to initialize a peer, define a new peer and return it
   init = (type: PeerTypes): Peer.Instance => {
-    //type tells us if init == true means sends offer, if init is false, wont send offer, wait for offer, send answer
     const socket = this.socket;
     const peer = new Peer({
       initiator: type === PeerTypes.init ? true : false,
       stream: this.state.stream && this.state.stream,
       trickle: false
     });
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    // const copyThis = this;
 
     const peerNode = this.peerVideoRef.current;
     peer.on("stream", stream => {
-      //when we get stream from other user, create new video
       this.setState({ peerConnected: true });
       console.log("copythis.peerconnected: " + this.state.peerConnected);
-      // // createVideo(stream)
-      // const peerNode = this.peerVideoRef.current;
       if (peerNode) {
         peerNode.srcObject = stream;
       }
     });
     peer.on("close", () => {
-      //when peer is closed, destroy video
-      alert("PEER CLOSED");
       this.setState({ peerConnected: false });
       this.setState({ inVideoChat: false });
       console.log("copythis.peerconnected: " + this.state.peerConnected);
-      // socket.emit('close');
-      peer.destroy(); //Everything is cleaned up,
+      peer.destroy();
     });
 
     peer.on("error", err => {
-      // alert(err);
       this.setState({ inVideoChat: false });
     });
-    return peer; //Return our peer
+    return peer;
   };
 
-  //for peer of type init
   makePeer = (): void => {
     const gotAnswer = this.state.gotAnswer;
     const socket = this.socket;
@@ -234,7 +223,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     const peer = this.init(PeerTypes.init);
     peer.on("signal", function(data) {
       if (!gotAnswer) {
-        //TODO: somehow include id in this emit offer
         const offerObj = { data: data, videoChatId: videoChatId };
         socket.emit("Offer", offerObj);
       }
@@ -246,16 +234,10 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     const peer = this.init(PeerTypes.notInit);
     const socket = this.socket;
     const videoChatId = this.state.videoChatId;
-    //this doesnt run automatically, have to call signal
     peer.on("signal", data => {
-      //means we have gotten our offer
-      //we want to imitate with even Answer
-      //TODO: Include id in this emit
       const answerObj = { data: data, videoChatId: videoChatId };
       socket.emit("Answer", answerObj);
-      // socket.emit('Answer', data);
     });
-    //pass offer to signal, generate answer to backend, which will send to other user
     peer.signal(offer);
   };
 
@@ -300,7 +282,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
         {this.state.inVideoChat && (
           <React.Fragment>
-            {/* <h1>Video Chat: + {this.state.videoChatId}</h1> */}
             <video ref={this.videoRef} autoPlay></video>
             <video ref={this.peerVideoRef} autoPlay></video>
           </React.Fragment>

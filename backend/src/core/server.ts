@@ -43,7 +43,6 @@ export default class Server {
     const videoChats: any = {};
     io.on(Event.CONNECT, socket => {
       logger.debug(`Socket ${socket.id} connected.`);
-      logger.info(`Socket ${socket.id} connected.`);
       socket.on(Event.JOIN_ROOM, roomId => {
         new RoomSocketHandler(this.database, io, socket, roomId).initialize();
       });
@@ -65,23 +64,19 @@ export default class Server {
       });
 
       socket.on("newVideoChatPeer", (videoChatId: any) => {
+        //If videoChatId isnt in videoChats object
         if (!(videoChatId in videoChats)) {
           videoChats[videoChatId] = { numClients: 0, clientNum: 0 };
         }
 
+        //We only want the second peer to emit a CreatePeer event to the first peer
         if (videoChats[videoChatId]["numClients"] < 2) {
           if (videoChats[videoChatId]["numClients"] == 1) {
             socket.to(videoChatId).emit("CreatePeer");
           }
-        } else {
-          //Already a session going on
-          //TODO: Remove this??
-          socket.emit("SessionActive");
         }
+        //Increments number of clients in video chat
         videoChats[videoChatId]["numClients"]++;
-        if (videoChats[videoChatId]["clientNum"] < 2) {
-          videoChats[videoChatId]["clientNum"]++;
-        }
       });
 
       socket.on("Offer", (offerObj: any) => {
