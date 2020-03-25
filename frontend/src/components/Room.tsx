@@ -48,7 +48,7 @@ interface State {
   playerState: PlayerState;
   modal: ModalType;
   // users: string[];
-  newUsers: any;
+  users: any;
 }
 
 class Room extends React.Component<Props, State> {
@@ -66,7 +66,7 @@ class Room extends React.Component<Props, State> {
       username: "",
       videoQueue: [],
       playerState: PlayerState.UNSTARTED,
-      newUsers: {},
+      users: {},
       modal: ModalType.NONE
     };
     this.handleOnPause = this.handleOnPause.bind(this);
@@ -86,12 +86,12 @@ class Room extends React.Component<Props, State> {
   //If users were previously set, just update this.state.newUsers
   //If initializing users, set all username values to null
   handleSetUsers(users: string[]) {
-    if (Object.keys(this.state.newUsers).length > 0) {
+    if (Object.keys(this.state.users).length > 0) {
       users.map(user => {
-        if (!(user in this.state.newUsers)) {
-          const newState = this.state.newUsers;
+        if (!(user in this.state.users)) {
+          const newState = this.state.users;
           newState[user] = null;
-          this.setState({ newUsers: newState });
+          this.setState({ users: newState });
         }
       });
       this.socket.emit(Event.GET_ALL_USERNAMES);
@@ -100,7 +100,7 @@ class Room extends React.Component<Props, State> {
       users.map(userId => {
         userObj[userId] = null;
       });
-      this.setState({ newUsers: userObj });
+      this.setState({ users: userObj });
       this.socket.emit(Event.GET_ALL_USERNAMES);
     }
   }
@@ -228,9 +228,9 @@ class Room extends React.Component<Props, State> {
     }
   }
   handleSetUsername(user: any) {
-    const users = this.state.newUsers;
+    const users = this.state.users;
     users[user.id] = user.name;
-    this.setState({ newUsers: users });
+    this.setState({ users: users });
   }
 
   changeUsernameAndEmit(givenUsername: string): void {
@@ -295,7 +295,7 @@ class Room extends React.Component<Props, State> {
 
   render() {
     const { classes } = this.props;
-    const username = this.state.username && this.state.username;
+    const username = this.state.username;
     const defaultOptions = {
       loop: true,
       autoplay: true,
@@ -356,7 +356,7 @@ class Room extends React.Component<Props, State> {
             </div>
           </Fade>
         </Modal>
-        {username && <VideoChat username={username} users={this.state.newUsers} socket={this.socket} />}
+        {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
       </div>
     );
   }
