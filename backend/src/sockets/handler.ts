@@ -36,6 +36,17 @@ class RoomSocketHandler {
         message: "A new user has joined the room!"
       };
       this.socket.to(this.roomId).emit(Event.MESSAGE, newJoin);
+
+      this.io
+        .of("/")
+        .in(this.roomId)
+        .clients((error: any, clients: any) => {
+          if (error) {
+            throw error;
+          }
+          this.io.in(this.roomId).emit("CLIENTS", clients);
+        });
+
       for (const [event, handler] of Object.entries(handlers)) {
         if (handler) {
           this.socket.on(event, async data => {
@@ -57,13 +68,20 @@ class RoomSocketHandler {
       [Event.REQUEST_ADD_TO_QUEUE]: (videoUrl: string): Promise<void> => this.tryAddToQueue(videoUrl),
       [Event.REQUEST_VIDEO_STATE]: (): Promise<void> => this.getVideoState(),
       [Event.UPDATE_VIDEO_STATE]: (request: UpdateVideoStateRequest): Promise<void> => this.updateVideoState(request),
-      [Event.VIDEO_ENDED]: (): Promise<void> => this.handleVideoEnded()
+      [Event.VIDEO_ENDED]: (): Promise<void> => this.handleVideoEnded(),
+      [Event.CREATE_USERNAME]: (username: string): Promise<void> => this.createUsername(username),
+      [Event.GET_ALL_USERNAMES]: (): Promise<void> => this.getAllUsernames()
     };
   }
 
   private createUsername(username: string): Promise<void> {
     this.socket.username = username;
     logger.info(`socket username set to ${this.socket.username}`);
+    return Promise.resolve();
+  }
+
+  private getAllUsernames(): Promise<void> {
+    this.socket.to(this.roomId).emit(Event.GET_ALL_USERNAMES, { id: this.socket.id, name: this.socket.username });
     return Promise.resolve();
   }
 
