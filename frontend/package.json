@@ -33,6 +33,7 @@
     "react-youtube": "^7.9.0",
     "simple-peer": "^9.6.2",
     "socket.io-client": "^2.3.0",
+    "typeface-roboto": "0.0.75",
     "typescript": "^3.8.3",
     "unique-names-generator": "^4.2.0",
     "uuid": "^7.0.1"
