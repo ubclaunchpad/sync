@@ -1,14 +1,11 @@
 import React, { FunctionComponent, useState, useEffect, ChangeEvent } from "react";
 import List from "@material-ui/core/List";
 import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
-import Paper from "@material-ui/core/Paper";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import Message from "../models/message";
-import Typography from "@material-ui/core/Typography";
 import ScrollableFeed from "react-scrollable-feed";
 
 const styles = {
