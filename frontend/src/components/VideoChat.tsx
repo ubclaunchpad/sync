@@ -287,9 +287,10 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
         {this.state.inVideoChat && (
           <React.Fragment>
-            <CardMedia style={{ width: "300px" }}>
+            {/* Commenting this out means you will no longer see yourself */}
+            {/* <CardMedia style={{ width: "300px" }}>
               <video style={{ objectFit: "contain", width: "300px" }} ref={this.videoRef} autoPlay></video>
-            </CardMedia>
+            </CardMedia> */}
             <CardMedia style={{ width: "300px" }}>
               <video style={{ objectFit: "contain", width: "300px" }} ref={this.peerVideoRef} autoPlay></video>
             </CardMedia>
