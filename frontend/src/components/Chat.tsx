@@ -6,7 +6,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import Message from "../models/message";
-import ScrollableFeed from "react-scrollable-feed";
+// import ScrollableFeed from "react-scrollable-feed";
 
 const styles = {
   chatBox: {
@@ -37,7 +37,6 @@ class Chat extends React.Component<Props, State> {
     };
     this.onChange = this.onChange.bind(this);
     this.enterPressed = this.enterPressed.bind(this);
-    this.scrollToBottom = this.scrollToBottom.bind(this);
   }
   messagesEnd = React.createRef();
 
@@ -55,16 +54,6 @@ class Chat extends React.Component<Props, State> {
       this.setState({ message: "" });
     }
   };
-
-  scrollToBottom = () => {};
-
-  componentDidMount() {
-    this.scrollToBottom();
-  }
-
-  componentDidUpdate() {
-    this.scrollToBottom();
-  }
 
   renderChat = (classes: any) => {
     const chat = [];
@@ -135,7 +124,7 @@ class Chat extends React.Component<Props, State> {
               }}
               title="CHAT"
             />
-            <ScrollableFeed className={classes.messages}>{this.renderChat(classes)}</ScrollableFeed>
+            <div className={classes.messages}>{this.renderChat(classes)}</div>
           </Card>
           {chatField}
         </Card>
