@@ -9,6 +9,8 @@ import TextField from "@material-ui/core/TextField";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import Message from "../models/message";
 import Typography from "@material-ui/core/Typography";
+import ScrollableFeed from "react-scrollable-feed";
+
 const styles = {
   chatBox: {
     border: "1px solid white",
@@ -38,7 +40,9 @@ class Chat extends React.Component<Props, State> {
     };
     this.onChange = this.onChange.bind(this);
     this.enterPressed = this.enterPressed.bind(this);
+    this.scrollToBottom = this.scrollToBottom.bind(this);
   }
+  messagesEnd = React.createRef();
 
   onChange = (event: ChangeEvent<HTMLInputElement>) => {
     this.setState({ message: event.currentTarget.value });
@@ -54,6 +58,16 @@ class Chat extends React.Component<Props, State> {
       this.setState({ message: "" });
     }
   };
+
+  scrollToBottom = () => {};
+
+  componentDidMount() {
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
 
   renderChat = (classes: any) => {
     const chat = [];
@@ -89,6 +103,8 @@ class Chat extends React.Component<Props, State> {
     }
   };
 
+  messagesEndRef = React.createRef();
+
   render() {
     const { classes } = this.props;
     const chatField = (
@@ -96,7 +112,6 @@ class Chat extends React.Component<Props, State> {
         <TextField
           multiline
           rowsMax="5"
-          // placeholder="Type your message..."
           fullWidth={true}
           InputProps={{ className: classes.textField }}
           InputLabelProps={{ className: classes.textField }}
@@ -123,7 +138,7 @@ class Chat extends React.Component<Props, State> {
               }}
               title="CHAT"
             />
-            <div className={classes.messages}>{this.renderChat(classes)}</div>
+            <ScrollableFeed className={classes.messages}>{this.renderChat(classes)}</ScrollableFeed>
           </Card>
           {chatField}
         </Card>
@@ -153,7 +168,15 @@ const materialUiStyles = createStyles({
   messages: {
     overflowX: "auto",
     overflowWrap: "break-word",
-    height: "70%"
+    height: "70%",
+    "&::-webkit-scrollbar": {
+      width: "0.4em"
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(255,255,255,.1)",
+      outline: "1px solid slategrey",
+      borderRadius: 3
+    }
   },
   userMessageLabel: {
     paddingRight: 10,
