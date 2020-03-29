@@ -48,7 +48,9 @@ class Chat extends React.Component<Props, State> {
     event.preventDefault();
     const code = event.keyCode || event.which;
     if (code === 13) {
-      this.props.sendMessage(this.state.message);
+      if (this.state.message) {
+        this.props.sendMessage(this.state.message);
+      }
       this.setState({ message: "" });
     }
   };
@@ -92,11 +94,15 @@ class Chat extends React.Component<Props, State> {
     const chatField = (
       <div className={classes.footer}>
         <TextField
+          multiline
+          rowsMax="5"
+          // placeholder="Type your message..."
+          fullWidth={true}
           InputProps={{ className: classes.textField }}
           InputLabelProps={{ className: classes.textField }}
           label={
             <span>
-              <span className={classes.userInputLabel}>{this.props.username}</span>: Type your message...
+              <span className={classes.userInputLabel}>{this.props.username + ":"}</span> Type your message...
             </span>
           }
           onChange={this.onChange}
@@ -104,20 +110,21 @@ class Chat extends React.Component<Props, State> {
           value={this.state.message}
           variant="filled"
         />
-        <Divider variant="middle" />
       </div>
     );
 
     return (
       <div style={{ paddingLeft: "2vw" }}>
         <Card className={classes.chatContainer}>
-          <CardHeader
-            classes={{
-              title: classes.chatHeader
-            }}
-            title="CHAT"
-          />
-          {this.renderChat(classes)}
+          <Card className={classes.chatContainer}>
+            <CardHeader
+              classes={{
+                title: classes.chatHeader
+              }}
+              title="CHAT"
+            />
+            <div className={classes.messages}>{this.renderChat(classes)}</div>
+          </Card>
           {chatField}
         </Card>
       </div>
@@ -128,6 +135,9 @@ class Chat extends React.Component<Props, State> {
 const materialUiStyles = createStyles({
   textField: {
     "& input + fieldset": {
+      "&::placeholder": {
+        color: "white"
+      },
       borderWidth: 2,
       paddingTop: "5px"
     },
@@ -140,6 +150,11 @@ const materialUiStyles = createStyles({
     fontSize: 20,
     color: "rgba(255, 255, 255, 0.9)"
   },
+  messages: {
+    overflowX: "auto",
+    overflowWrap: "break-word",
+    height: "70%"
+  },
   userMessageLabel: {
     paddingRight: 10,
     paddingLeft: 16,
@@ -151,7 +166,8 @@ const materialUiStyles = createStyles({
   },
   footer: {
     position: "absolute",
-    bottom: 0
+    bottom: 0,
+    width: "100%"
   },
   userInputLabel: {
     position: "relative",
@@ -159,7 +175,8 @@ const materialUiStyles = createStyles({
     fontStyle: "normal",
     fontWeight: 500,
     fontSize: 20,
-    color: "rgba(98, 239, 249, 0.8)"
+    color: "rgba(98, 239, 249, 0.8)",
+    paddingRight: 15
   },
   chatContainer: {
     position: "relative",
@@ -173,7 +190,8 @@ const materialUiStyles = createStyles({
     fontStyle: "normal",
     fontWeight: 500,
     fontSize: 24,
-    color: "rgba(255, 255, 255, 0.4)"
+    color: "rgba(255, 255, 255, 0.4)",
+    maxHeight: 15
   }
 });
 
