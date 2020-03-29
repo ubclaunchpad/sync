@@ -4,13 +4,13 @@ import io from "socket.io-client";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import { ListItem, ListItemText } from "@material-ui/core";
+import { List, ListItem, ListItemText, ListItemIcon, Divider } from "@material-ui/core";
 import { v1 as uuidv1 } from "uuid";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Fade from "@material-ui/core/Fade";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVideo } from "@fortawesome/free-solid-svg-icons";
 interface VideoChatProps {
   classes: any;
   users: string[];
@@ -262,16 +262,21 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     const { classes, users } = this.props;
     return (
       <React.Fragment>
-        <h1>Video Chat</h1>
         {!this.state.inVideoChat && (
           <React.Fragment>
-            <List component="nav">
+            <List style={{ width: "300px", background: "#030B1E" }} component="nav">
+              <h1 style={{ padding: "0 16px", color: "#ffffff" }}>Video Chat</h1>
               {Object.entries(users).map(user => {
                 if (user[1]) {
                   return (
                     <React.Fragment>
-                      <ListItemText primary={user[1]} />{" "}
-                      <button onClick={() => this.sendInvite(user[0])}>Video Chat</button>
+                      <ListItem>
+                        <ListItemText style={{ color: "#ffffff" }} primary={user[1]} />
+                        <ListItemIcon onClick={() => this.sendInvite(user[0])} style={{ color: "#ffffff" }}>
+                          <FontAwesomeIcon icon={faVideo} />
+                        </ListItemIcon>
+                      </ListItem>
+                      <Divider style={{ backgroundColor: "#ffffff" }} light />
                     </React.Fragment>
                   );
                 }
