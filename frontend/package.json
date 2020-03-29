@@ -33,7 +33,6 @@
     "react-lottie": "^1.2.3",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
-    "react-scrollable-feed": "^1.1.2",
     "react-youtube": "^7.9.0",
     "simple-peer": "^9.6.2",
     "socket.io-client": "^2.3.0",
