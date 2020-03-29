@@ -3,9 +3,12 @@ import List from "@material-ui/core/List";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import Message from "../models/message";
+import Typography from "@material-ui/core/Typography";
 const styles = {
   chatBox: {
     border: "1px solid white",
@@ -20,6 +23,7 @@ interface Props {
   classes: any;
   sendMessage: Function;
   messages: Message[];
+  username: string;
 }
 
 interface State {
@@ -44,17 +48,19 @@ class Chat extends React.Component<Props, State> {
     event.preventDefault();
     const code = event.keyCode || event.which;
     if (code === 13) {
-      this.props.sendMessage(this.state.message);
+      if (this.state.message) {
+        this.props.sendMessage(this.state.message);
+      }
       this.setState({ message: "" });
     }
   };
 
-  renderChat = () => {
+  renderChat = (classes: any) => {
     const chat = [];
     let count = 0;
     const setUser = (message: Message) => {
       if (message.user) {
-        return message.user + ": ";
+        return message.user + ":";
       } else {
         return "";
       }
@@ -63,8 +69,15 @@ class Chat extends React.Component<Props, State> {
     for (const m of this.props.messages) {
       chat.push(
         <span>
-          <ListItemText style={{ paddingLeft: "10px" }} key={count} primary={setUser(m) + m.message} />
-          <Divider variant="middle" />
+          <ListItemText
+            className={classes.message}
+            key={count}
+            primary={
+              <span>
+                <span className={classes.userMessageLabel}>{setUser(m)}</span> {m.message}
+              </span>
+            }
+          />
         </span>
       );
       count++;
@@ -78,24 +91,42 @@ class Chat extends React.Component<Props, State> {
 
   render() {
     const { classes } = this.props;
-
     const chatField = (
-      <div style={{ paddingTop: "1%", borderWidth: 2, borderColor: "green !important" }}>
+      <div className={classes.footer}>
         <TextField
+          multiline
+          rowsMax="5"
+          // placeholder="Type your message..."
+          fullWidth={true}
           InputProps={{ className: classes.textField }}
           InputLabelProps={{ className: classes.textField }}
-          label="Send a Message!"
+          label={
+            <span>
+              <span className={classes.userInputLabel}>{this.props.username + ":"}</span> Type your message...
+            </span>
+          }
           onChange={this.onChange}
           onKeyUp={this.enterPressed}
           value={this.state.message}
-          variant="outlined"
+          variant="filled"
         />
       </div>
     );
+
     return (
       <div style={{ paddingLeft: "2vw" }}>
-        <Paper style={{ height: "30vh", overflow: "auto", width: "50vw" }}>{this.renderChat()}</Paper>
-        {chatField}
+        <Card className={classes.chatContainer}>
+          <Card className={classes.chatContainer}>
+            <CardHeader
+              classes={{
+                title: classes.chatHeader
+              }}
+              title="CHAT"
+            />
+            <div className={classes.messages}>{this.renderChat(classes)}</div>
+          </Card>
+          {chatField}
+        </Card>
       </div>
     );
   }
@@ -104,11 +135,63 @@ class Chat extends React.Component<Props, State> {
 const materialUiStyles = createStyles({
   textField: {
     "& input + fieldset": {
-      borderColor: "green !important",
+      "&::placeholder": {
+        color: "white"
+      },
       borderWidth: 2,
       paddingTop: "5px"
     },
     color: "white"
+  },
+  message: {
+    fontFamily: "Roboto, sans-serif",
+    fontStyle: "normal",
+    fontWeight: "normal",
+    fontSize: 20,
+    color: "rgba(255, 255, 255, 0.9)"
+  },
+  messages: {
+    overflowX: "auto",
+    overflowWrap: "break-word",
+    height: "70%"
+  },
+  userMessageLabel: {
+    paddingRight: 10,
+    paddingLeft: 16,
+    fontFamily: "Roboto, sans-serif",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: 20,
+    color: "rgba(255, 255, 255, 0.8)"
+  },
+  footer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%"
+  },
+  userInputLabel: {
+    position: "relative",
+    fontFamily: "Roboto, sans-serif",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: 20,
+    color: "rgba(98, 239, 249, 0.8)",
+    paddingRight: 15
+  },
+  chatContainer: {
+    position: "relative",
+    height: "30vh",
+    overflow: "auto",
+    width: "40vw",
+    background: "rgba(255, 255, 255, 0.05)"
+  },
+  chatHeader: {
+    fontFamily: "Roboto, sans-serif",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: 24,
+    color: "rgba(255, 255, 255, 0.4)",
+    maxHeight: 15
   }
 });
 

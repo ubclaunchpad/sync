@@ -5,6 +5,7 @@ import Room from "./components/Room";
 import Home from "./components/Home";
 import Browse from "./components/Browse";
 import "./styles/index.css";
+import "typeface-roboto";
 
 const App = (
   <Router>
