@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
-import { List, ListItem, ListItemText, ListItemIcon, Divider } from "@material-ui/core";
+import { List, ListItem, ListItemText, ListItemIcon, Divider, CardMedia } from "@material-ui/core";
 import { v1 as uuidv1 } from "uuid";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
@@ -270,13 +270,13 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
                 if (user[1]) {
                   return (
                     <React.Fragment>
-                      <ListItem>
+                      <ListItem divider>
                         <ListItemText style={{ color: "#ffffff" }} primary={user[1]} />
                         <ListItemIcon onClick={() => this.sendInvite(user[0])} style={{ color: "#ffffff" }}>
                           <FontAwesomeIcon icon={faVideo} />
                         </ListItemIcon>
                       </ListItem>
-                      <Divider style={{ backgroundColor: "#ffffff" }} light />
+                      <Divider style={{ padding: "0 16px", backgroundColor: "#ffffff" }} light />
                     </React.Fragment>
                   );
                 }
@@ -287,12 +287,17 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
         {this.state.inVideoChat && (
           <React.Fragment>
-            <video ref={this.videoRef} autoPlay></video>
-            <video ref={this.peerVideoRef} autoPlay></video>
+            <CardMedia style={{ width: "300px" }}>
+              <video style={{ objectFit: "contain", width: "300px" }} ref={this.videoRef} autoPlay></video>
+            </CardMedia>
+            <CardMedia style={{ width: "300px" }}>
+              <video style={{ objectFit: "contain", width: "300px" }} ref={this.peerVideoRef} autoPlay></video>
+            </CardMedia>
+            <Button onClick={() => this.stopMyVideoChat()} variant="contained" color="secondary">
+              Leave
+            </Button>
           </React.Fragment>
         )}
-
-        <button onClick={() => this.stopMyVideoChat()}>Leave</button>
 
         <Modal
           disableAutoFocus={true}
