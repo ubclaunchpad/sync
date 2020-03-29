@@ -4,13 +4,13 @@ import io from "socket.io-client";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import { ListItem, ListItemText } from "@material-ui/core";
+import { List, ListItem, ListItemText, ListItemIcon, Divider, CardMedia } from "@material-ui/core";
 import { v1 as uuidv1 } from "uuid";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Fade from "@material-ui/core/Fade";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVideo } from "@fortawesome/free-solid-svg-icons";
 interface VideoChatProps {
   classes: any;
   users: string[];
@@ -262,16 +262,21 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     const { classes, users } = this.props;
     return (
       <React.Fragment>
-        <h1>Video Chat</h1>
         {!this.state.inVideoChat && (
           <React.Fragment>
-            <List component="nav">
+            <List className={classes.list} component="nav">
+              <h1 style={{ padding: "0 16px", color: "#ffffff" }}>Video Chat</h1>
               {Object.entries(users).map(user => {
                 if (user[1]) {
                   return (
                     <React.Fragment>
-                      <ListItemText primary={user[1]} />{" "}
-                      <button onClick={() => this.sendInvite(user[0])}>Video Chat</button>
+                      <ListItem className={classes.listItem} divider>
+                        <ListItemText primary={user[1]} />
+                        <ListItemIcon className={classes.listItemIcon} onClick={() => this.sendInvite(user[0])}>
+                          <FontAwesomeIcon icon={faVideo} />
+                        </ListItemIcon>
+                      </ListItem>
+                      <Divider className={classes.divider} light />
                     </React.Fragment>
                   );
                 }
@@ -282,12 +287,18 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
         {this.state.inVideoChat && (
           <React.Fragment>
-            <video ref={this.videoRef} autoPlay></video>
-            <video ref={this.peerVideoRef} autoPlay></video>
+            {/* Commenting this out means you will no longer see yourself */}
+            {/* <CardMedia style={{ width: "300px" }}>
+              <video style={{ objectFit: "contain", width: "300px" }} ref={this.videoRef} autoPlay></video>
+            </CardMedia> */}
+            <CardMedia className={classes.cardMedia}>
+              <video style={{ objectFit: "contain", width: "300px" }} ref={this.peerVideoRef} autoPlay></video>
+            </CardMedia>
+            <Button onClick={() => this.stopMyVideoChat()} variant="contained" color="secondary">
+              Leave
+            </Button>
           </React.Fragment>
         )}
-
-        <button onClick={() => this.stopMyVideoChat()}>Leave</button>
 
         <Modal
           disableAutoFocus={true}
@@ -337,6 +348,22 @@ const materialUiStyles = {
     height: "400px",
     borderRadius: "20px",
     outline: "none"
+  },
+  list: {
+    width: "300px",
+    background: "#030B1E"
+  },
+  listItem: {
+    color: "#ffffff"
+  },
+  listItemIcon: {
+    color: "#ffffff"
+  },
+  divider: {
+    backgroundColor: "#ffffff"
+  },
+  cardMedia: {
+    width: "300px"
   }
 };
 
