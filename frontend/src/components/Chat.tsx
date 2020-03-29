@@ -6,17 +6,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import Message from "../models/message";
-// import ScrollableFeed from "react-scrollable-feed";
-
-const styles = {
-  chatBox: {
-    border: "1px solid white",
-    borderRadius: "10%",
-    color: "white",
-    width: "50vw",
-    height: "50vh"
-  }
-};
+import ScrollableFeed from "react-scrollable-feed";
 
 interface Props {
   classes: any;
@@ -38,7 +28,6 @@ class Chat extends React.Component<Props, State> {
     this.onChange = this.onChange.bind(this);
     this.enterPressed = this.enterPressed.bind(this);
   }
-  messagesEnd = React.createRef();
 
   onChange = (event: ChangeEvent<HTMLInputElement>) => {
     this.setState({ message: event.currentTarget.value });
@@ -89,8 +78,6 @@ class Chat extends React.Component<Props, State> {
     }
   };
 
-  messagesEndRef = React.createRef();
-
   render() {
     const { classes } = this.props;
     const chatField = (
@@ -124,7 +111,7 @@ class Chat extends React.Component<Props, State> {
               }}
               title="CHAT"
             />
-            <div className={classes.messages}>{this.renderChat(classes)}</div>
+            <ScrollableFeed className={classes.messages}>{this.renderChat(classes)}</ScrollableFeed>
           </Card>
           {chatField}
         </Card>
