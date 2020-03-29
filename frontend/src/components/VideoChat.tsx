@@ -264,19 +264,19 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
       <React.Fragment>
         {!this.state.inVideoChat && (
           <React.Fragment>
-            <List style={{ width: "300px", background: "#030B1E" }} component="nav">
+            <List className={classes.list} component="nav">
               <h1 style={{ padding: "0 16px", color: "#ffffff" }}>Video Chat</h1>
               {Object.entries(users).map(user => {
                 if (user[1]) {
                   return (
                     <React.Fragment>
-                      <ListItem divider>
-                        <ListItemText style={{ color: "#ffffff" }} primary={user[1]} />
-                        <ListItemIcon onClick={() => this.sendInvite(user[0])} style={{ color: "#ffffff" }}>
+                      <ListItem className={classes.listItem} divider>
+                        <ListItemText primary={user[1]} />
+                        <ListItemIcon className={classes.listItemIcon} onClick={() => this.sendInvite(user[0])}>
                           <FontAwesomeIcon icon={faVideo} />
                         </ListItemIcon>
                       </ListItem>
-                      <Divider style={{ padding: "0 16px", backgroundColor: "#ffffff" }} light />
+                      <Divider className={classes.divider} light />
                     </React.Fragment>
                   );
                 }
@@ -291,7 +291,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
             {/* <CardMedia style={{ width: "300px" }}>
               <video style={{ objectFit: "contain", width: "300px" }} ref={this.videoRef} autoPlay></video>
             </CardMedia> */}
-            <CardMedia style={{ width: "300px" }}>
+            <CardMedia className={classes.cardMedia}>
               <video style={{ objectFit: "contain", width: "300px" }} ref={this.peerVideoRef} autoPlay></video>
             </CardMedia>
             <Button onClick={() => this.stopMyVideoChat()} variant="contained" color="secondary">
@@ -348,6 +348,22 @@ const materialUiStyles = {
     height: "400px",
     borderRadius: "20px",
     outline: "none"
+  },
+  list: {
+    width: "300px",
+    background: "#030B1E"
+  },
+  listItem: {
+    color: "#ffffff"
+  },
+  listItemIcon: {
+    color: "#ffffff"
+  },
+  divider: {
+    backgroundColor: "#ffffff"
+  },
+  cardMedia: {
+    width: "300px"
   }
 };
 
