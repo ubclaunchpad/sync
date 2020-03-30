@@ -334,7 +334,7 @@ class Room extends React.Component<Props, State> {
         {videoPlayer}
         {invalidRoomId}
         {showLoadingIndicator}
-        <Container style={{ background: "#030B1E", width: "50vw" }}>
+        <Container style={{ background: "#030B1E", width: "40vw" }}>
           {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
           <Chat username={this.state.username} messages={this.state.messages} sendMessage={this.handleSendMessage} />
         </Container>
