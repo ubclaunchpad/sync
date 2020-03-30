@@ -265,7 +265,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
         {!this.state.inVideoChat && (
           <React.Fragment>
             <List className={classes.list} component="nav">
-              <h1 style={{ padding: "0 16px", color: "#ffffff" }}>Video Chat</h1>
+              <h1 className={classes.videoChatHeader}>VIDEO CHAT</h1>
               {Object.entries(users).map(user => {
                 if (user[1]) {
                   return (
@@ -286,18 +286,18 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
         )}
 
         {this.state.inVideoChat && (
-          <React.Fragment>
+          <div className={classes.videoChat}>
             {/* Commenting this out means you will no longer see yourself */}
             {/* <CardMedia style={{ width: "300px" }}>
               <video style={{ objectFit: "contain", width: "300px" }} ref={this.videoRef} autoPlay></video>
             </CardMedia> */}
             <CardMedia className={classes.cardMedia}>
-              <video style={{ objectFit: "contain", width: "300px" }} ref={this.peerVideoRef} autoPlay></video>
+              <video style={{ objectFit: "contain", width: "45vw" }} ref={this.peerVideoRef} autoPlay></video>
             </CardMedia>
             <Button onClick={() => this.stopMyVideoChat()} variant="contained" color="secondary">
               Leave
             </Button>
-          </React.Fragment>
+          </div>
         )}
 
         <Modal
@@ -350,8 +350,8 @@ const materialUiStyles = {
     outline: "none"
   },
   list: {
-    width: "300px",
-    background: "#030B1E"
+    background: "rgba(255, 255, 255, 0.05)",
+    marginBottom: "2em"
   },
   listItem: {
     color: "#ffffff"
@@ -364,6 +364,19 @@ const materialUiStyles = {
   },
   cardMedia: {
     width: "300px"
+  },
+  videoChatHeader: {
+    fontFamily: "Roboto, sans-serif",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: 24,
+    color: "rgba(255, 255, 255, 0.4)",
+    maxHeight: 15,
+    paddingLeft: "16px",
+    paddingRight: "16px"
+  },
+  videoChat: {
+    marginBottom: "2em"
   }
 };
 
