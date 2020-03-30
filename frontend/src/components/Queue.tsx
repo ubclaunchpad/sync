@@ -1,5 +1,14 @@
 import React from "react";
-import { List, ListItem, ListItemText, TextField, ListItemSecondaryAction, IconButton } from "@material-ui/core";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+  ListItemSecondaryAction,
+  IconButton,
+  Typography,
+  Divider
+} from "@material-ui/core";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
@@ -63,39 +72,52 @@ class Queue extends React.Component<Props, State> {
 
     const error = this.state.error;
     return (
-      <List component="nav" className={classes.list}>
-        <ListItem>
-          <TextField
-            error={error}
-            InputProps={{ className: classes.textField }}
-            InputLabelProps={{ className: classes.textField }}
-            label="YouTube URL"
-            variant="outlined"
-            onChange={event => this.setState({ newVideoUrl: event.target.value })}
-            onKeyDown={this.handleOnKeyDown}
-            value={this.state.newVideoUrl}
-          />
-          <ListItemSecondaryAction>
-            <IconButton edge="end" aria-label="add" onClick={this.requestAddToQueue}>
-              <AddIcon style={{ color: "white" }} />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
-        {this.props.videos.map((video, i) => (
-          <ListItem key={i}>
-            <ListItemText primary={video.title} />
+      <div>
+        <Typography className={classes.listTitle} variant="h5">
+          Queue
+        </Typography>
+        <List component="nav" className={classes.list}>
+          {this.props.videos.map((video, i) => (
+            <>
+              <ListItem key={i}>
+                <Typography className={classes.listNumber}>{i + 1}</Typography>
+                <ListItemText
+                  primary={<Typography className={classes.videoTitle}>{video.title}</Typography>}
+                  secondary={<Typography className={classes.videoSubtitle}>5:00 | Cowan</Typography>}
+                />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    aria-label="remove"
+                    onClick={() => this.props.socket.emit(Event.REMOVE_FROM_QUEUE, video.id)}
+                  >
+                    <RemoveIcon style={{ color: "white" }} />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+              <Divider variant="fullWidth" component="li" className={classes.listDivider} />
+            </>
+          ))}
+
+          <ListItem>
+            <TextField
+              error={error}
+              InputProps={{ className: classes.textField }}
+              InputLabelProps={{ className: classes.textField }}
+              label="YouTube URL"
+              variant="outlined"
+              onChange={event => this.setState({ newVideoUrl: event.target.value })}
+              onKeyDown={this.handleOnKeyDown}
+              value={this.state.newVideoUrl}
+            />
             <ListItemSecondaryAction>
-              <IconButton
-                edge="end"
-                aria-label="remove"
-                onClick={() => this.props.socket.emit(Event.REMOVE_FROM_QUEUE, video.id)}
-              >
-                <RemoveIcon style={{ color: "white" }} />
+              <IconButton edge="end" aria-label="add" onClick={this.requestAddToQueue}>
+                <AddIcon style={{ color: "white" }} />
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
-        ))}
-      </List>
+        </List>
+      </div>
     );
   }
 }
@@ -110,6 +132,32 @@ const materialUiStyles = createStyles({
       borderWidth: 2
     },
     color: "white"
+  },
+  listTitle: {
+    fontFamily: "Roboto, sans-serif",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: 24,
+    color: "rgba(255, 255, 255, 0.4)",
+    maxHeight: 15,
+    "text-transform": "uppercase",
+    padding: "15px"
+  },
+  videoTitle: {
+    color: "white",
+    fontSize: 18
+  },
+  videoSubtitle: {
+    color: "white",
+    fontSize: 15
+  },
+  listDivider: {
+    "background-color": "rgba(255, 255, 255, 0.4)"
+  },
+  listNumber: {
+    color: "white",
+    fontSize: 26,
+    paddingRight: "25px"
   }
 });
 
