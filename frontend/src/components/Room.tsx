@@ -21,6 +21,7 @@ import { Modal, Backdrop, Fade, withStyles } from "@material-ui/core";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
+import Box from "@material-ui/core/Box";
 
 enum ModalType {
   NONE = 0,
@@ -331,10 +332,17 @@ class Room extends React.Component<Props, State> {
     return (
       <div className="container">
         <Share roomUrl={window.location.href} />
-        {videoPlayer}
+        <Box display="flex" p={1}>
+          <Box p={1} flexGrow={1}>
+            {videoPlayer}
+          </Box>
+          <Box p={1}>
+            {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
+            <Chat username={this.state.username} messages={this.state.messages} sendMessage={this.handleSendMessage} />
+          </Box>
+        </Box>
         {invalidRoomId}
         {showLoadingIndicator}
-        <Chat username={this.state.username} messages={this.state.messages} sendMessage={this.handleSendMessage} />
         <Modal
           disableAutoFocus={true}
           aria-labelledby="transition-modal-title"
@@ -358,7 +366,6 @@ class Room extends React.Component<Props, State> {
             </div>
           </Fade>
         </Modal>
-        {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
       </div>
     );
   }
