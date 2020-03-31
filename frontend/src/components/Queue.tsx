@@ -3,17 +3,22 @@ import {
   List,
   ListItem,
   ListItemText,
-  TextField,
   ListItemSecondaryAction,
   IconButton,
   Typography,
-  Divider
+  Divider,
+  SvgIcon,
+  InputAdornment
 } from "@material-ui/core";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import Video from "../models/video";
 import Event from "../sockets/event";
+import QueueAdd from "../images/queue-add.svg";
+import QueueDelete from "../images/queue-delete.svg";
+import QueueTextBoxIcon from "../images/queue-text-box-icon.svg";
+import TextField from "@material-ui/core/TextField";
 
 interface Props {
   classes: any;
@@ -102,7 +107,7 @@ class Queue extends React.Component<Props, State> {
                     aria-label="remove"
                     onClick={() => this.props.socket.emit(Event.REMOVE_FROM_QUEUE, video.id)}
                   >
-                    <RemoveIcon style={{ color: "white" }} />
+                    <img src={QueueDelete} />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
@@ -113,17 +118,26 @@ class Queue extends React.Component<Props, State> {
           <ListItem>
             <TextField
               error={error}
-              InputProps={{ className: classes.textField }}
+              InputProps={{
+                className: classes.textField,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <img src={QueueTextBoxIcon} width="20px" height="16px" style={{ margin: "3px" }}></img>
+                  </InputAdornment>
+                )
+              }}
               InputLabelProps={{ className: classes.textField }}
-              label="YouTube URL"
-              variant="outlined"
+              placeholder="Paste YouTube link here..."
               onChange={event => this.setState({ newVideoUrl: event.target.value })}
               onKeyDown={this.handleOnKeyDown}
               value={this.state.newVideoUrl}
+              size="medium"
+              fullWidth
+              style={{ margin: "8px" }}
             />
             <ListItemSecondaryAction>
               <IconButton edge="end" aria-label="add" onClick={this.requestAddToQueue}>
-                <AddIcon style={{ color: "white" }} />
+                <img src={QueueAdd} />
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
@@ -138,11 +152,8 @@ const materialUiStyles = createStyles({
     color: "white"
   },
   textField: {
-    "& input + fieldset": {
-      borderColor: "green",
-      borderWidth: 2
-    },
-    color: "white"
+    color: "white",
+    background: "rgba(255, 255, 255, 0.08)"
   },
   listTitle: {
     fontFamily: "Roboto, sans-serif",
