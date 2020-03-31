@@ -109,9 +109,17 @@ class RoomSocketHandler {
       const videoInfo = qs.parse(videoInfoResponse.data);
       const playerResponse = JSON.parse(videoInfo["player_response"] as string);
       const videoTitle = playerResponse.videoDetails.title;
+      const channel = playerResponse.videoDetails.author;
+      const lengthInSeconds = parseInt(playerResponse.videoDetails.lengthSeconds);
       logger.info(`Video found: ${videoTitle}`);
 
-      const video: Video = { id: uniqid(), title: videoTitle, youtubeId: youtubeId };
+      const video: Video = {
+        id: uniqid(),
+        title: videoTitle,
+        youtubeId: youtubeId,
+        channel,
+        lengthInSeconds
+      };
 
       const room = await this.database.getRoom(this.roomId);
       if (room.playerState === PlayerState.ENDED) {

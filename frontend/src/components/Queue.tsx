@@ -67,6 +67,13 @@ class Queue extends React.Component<Props, State> {
     }
   }
 
+  getLengthTimecode(lengthInSeconds: number): string {
+    const seconds = lengthInSeconds % 60;
+    const singleDigit = seconds <= 9;
+
+    return `${Math.floor(lengthInSeconds / 60)}:${singleDigit ? "0" : ""}${lengthInSeconds % 60}`;
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -83,7 +90,11 @@ class Queue extends React.Component<Props, State> {
                 <Typography className={classes.listNumber}>{i + 1}</Typography>
                 <ListItemText
                   primary={<Typography className={classes.videoTitle}>{video.title}</Typography>}
-                  secondary={<Typography className={classes.videoSubtitle}>5:00 | Cowan</Typography>}
+                  secondary={
+                    <Typography className={classes.videoSubtitle}>
+                      {this.getLengthTimecode(video.lengthInSeconds)} | {video.channel}
+                    </Typography>
+                  }
                 />
                 <ListItemSecondaryAction>
                   <IconButton
