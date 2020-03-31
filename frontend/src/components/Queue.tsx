@@ -131,7 +131,6 @@ class Queue extends React.Component<Props, State> {
               onChange={event => this.setState({ newVideoUrl: event.target.value })}
               onKeyDown={this.handleOnKeyDown}
               value={this.state.newVideoUrl}
-              size="medium"
               fullWidth
               style={{ margin: "8px" }}
             />
