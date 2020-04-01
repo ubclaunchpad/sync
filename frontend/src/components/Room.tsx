@@ -259,7 +259,7 @@ class Room extends React.Component<Props, State> {
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
       this.setUsernameAndEmit();
-      this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);
+      //this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);
       this.socket.on("CLIENTS", (clients: string[]) => {
         this.handleSetUsers(clients);
       });
