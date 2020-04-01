@@ -17,7 +17,7 @@ import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-gene
 import RoomData from "../models/room";
 import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
-import { Modal, Backdrop, Fade, withStyles, Container } from "@material-ui/core";
+import { Modal, Backdrop, Fade, withStyles, Container, Grid } from "@material-ui/core";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
@@ -309,7 +309,6 @@ class Room extends React.Component<Props, State> {
     const videoPlayer =
       this.state.isLoaded && this.state.isValid ? (
         <React.Fragment>
-          <h1 style={{ color: "white" }}>{this.state.name || "Room" + id}</h1>
           <Player
             videoId={this.state.currVideoId}
             events={{
@@ -330,6 +329,23 @@ class Room extends React.Component<Props, State> {
 
     return (
       <div className="container">
+        <Grid container spacing={3}>
+          <Grid item xs>
+            <h1 className="roomSyncTitle testredcolor">
+              SYNC
+              <span>
+                <img className="syncRoomLogo" src={playButton} alt="platbutton"></img>
+              </span>
+            </h1>
+          </Grid>
+          <Grid item xs={6} style={{ textAlign: "center" }}>
+            <h3 className="roomTitle testgreencolor">{this.state.name || "Room" + id}</h3>
+          </Grid>
+          <Grid item xs>
+            {/* empty here to keep spacing */}
+          </Grid>
+        </Grid>
+
         <Share roomUrl={window.location.href} />
         {videoPlayer}
         {invalidRoomId}
