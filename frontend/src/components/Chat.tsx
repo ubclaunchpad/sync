@@ -102,7 +102,7 @@ class Chat extends React.Component<Props, State> {
     );
 
     return (
-      <div style={{ paddingLeft: "2vw" }}>
+      <div>
         <Card className={classes.chatContainer}>
           <Card className={classes.chatContainer}>
             <CardHeader
@@ -178,7 +178,6 @@ const materialUiStyles = createStyles({
     position: "relative",
     height: "30vh",
     overflow: "auto",
-    width: "40vw",
     background: "rgba(255, 255, 255, 0.05)"
   },
   chatHeader: {

@@ -17,7 +17,7 @@ import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-gene
 import RoomData from "../models/room";
 import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
-import { Modal, Backdrop, Fade, withStyles } from "@material-ui/core";
+import { Modal, Backdrop, Fade, withStyles, Container } from "@material-ui/core";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
@@ -334,7 +334,10 @@ class Room extends React.Component<Props, State> {
         {videoPlayer}
         {invalidRoomId}
         {showLoadingIndicator}
-        <Chat username={this.state.username} messages={this.state.messages} sendMessage={this.handleSendMessage} />
+        <Container style={{ background: "#030B1E", width: "40vw" }}>
+          {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
+          <Chat username={this.state.username} messages={this.state.messages} sendMessage={this.handleSendMessage} />
+        </Container>
         <Modal
           disableAutoFocus={true}
           aria-labelledby="transition-modal-title"
@@ -358,7 +361,6 @@ class Room extends React.Component<Props, State> {
             </div>
           </Fade>
         </Modal>
-        {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
       </div>
     );
   }

@@ -1,10 +1,24 @@
 import React from "react";
-import { List, ListItem, ListItemText, TextField, ListItemSecondaryAction, IconButton } from "@material-ui/core";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+  Typography,
+  Divider,
+  SvgIcon,
+  InputAdornment
+} from "@material-ui/core";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import Video from "../models/video";
 import Event from "../sockets/event";
+import QueueAdd from "../images/queue-add.svg";
+import QueueDelete from "../images/queue-delete.svg";
+import QueueTextBoxIcon from "../images/queue-text-box-icon.svg";
+import TextField from "@material-ui/core/TextField";
 
 interface Props {
   classes: any;
@@ -58,44 +72,76 @@ class Queue extends React.Component<Props, State> {
     }
   }
 
+  getLengthTimecode(lengthInSeconds: number): string {
+    const seconds = lengthInSeconds % 60;
+    const singleDigit = seconds <= 9;
+
+    return `${Math.floor(lengthInSeconds / 60)}:${singleDigit ? "0" : ""}${lengthInSeconds % 60}`;
+  }
+
   render() {
     const { classes } = this.props;
 
     const error = this.state.error;
     return (
-      <List component="nav" className={classes.list}>
-        <ListItem>
-          <TextField
-            error={error}
-            InputProps={{ className: classes.textField }}
-            InputLabelProps={{ className: classes.textField }}
-            label="YouTube URL"
-            variant="outlined"
-            onChange={event => this.setState({ newVideoUrl: event.target.value })}
-            onKeyDown={this.handleOnKeyDown}
-            value={this.state.newVideoUrl}
-          />
-          <ListItemSecondaryAction>
-            <IconButton edge="end" aria-label="add" onClick={this.requestAddToQueue}>
-              <AddIcon style={{ color: "white" }} />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
-        {this.props.videos.map((video, i) => (
-          <ListItem key={i}>
-            <ListItemText primary={video.title} />
+      <div>
+        <Typography className={classes.listTitle} variant="h5">
+          Queue
+        </Typography>
+        <List component="nav" className={classes.list}>
+          {this.props.videos.map((video, i) => (
+            <>
+              <ListItem key={i}>
+                <Typography className={classes.listNumber}>{i + 1}</Typography>
+                <ListItemText
+                  primary={<Typography className={classes.videoTitle}>{video.title}</Typography>}
+                  secondary={
+                    <Typography className={classes.videoSubtitle}>
+                      {this.getLengthTimecode(video.lengthInSeconds)} | {video.channel}
+                    </Typography>
+                  }
+                />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    aria-label="remove"
+                    onClick={() => this.props.socket.emit(Event.REMOVE_FROM_QUEUE, video.id)}
+                  >
+                    <img src={QueueDelete} />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+              <Divider variant="fullWidth" component="li" className={classes.listDivider} />
+            </>
+          ))}
+
+          <ListItem>
+            <TextField
+              error={error}
+              InputProps={{
+                className: classes.textField,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <img src={QueueTextBoxIcon} width="20px" height="16px" style={{ margin: "3px" }}></img>
+                  </InputAdornment>
+                )
+              }}
+              InputLabelProps={{ className: classes.textField }}
+              placeholder="Paste YouTube link here..."
+              onChange={event => this.setState({ newVideoUrl: event.target.value })}
+              onKeyDown={this.handleOnKeyDown}
+              value={this.state.newVideoUrl}
+              fullWidth
+              style={{ margin: "8px" }}
+            />
             <ListItemSecondaryAction>
-              <IconButton
-                edge="end"
-                aria-label="remove"
-                onClick={() => this.props.socket.emit(Event.REMOVE_FROM_QUEUE, video.id)}
-              >
-                <RemoveIcon style={{ color: "white" }} />
+              <IconButton edge="end" aria-label="add" onClick={this.requestAddToQueue}>
+                <img src={QueueAdd} />
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
-        ))}
-      </List>
+        </List>
+      </div>
     );
   }
 }
@@ -105,11 +151,34 @@ const materialUiStyles = createStyles({
     color: "white"
   },
   textField: {
-    "& input + fieldset": {
-      borderColor: "green",
-      borderWidth: 2
-    },
-    color: "white"
+    color: "white",
+    background: "rgba(255, 255, 255, 0.08)"
+  },
+  listTitle: {
+    fontFamily: "Roboto, sans-serif",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: 24,
+    color: "rgba(255, 255, 255, 0.4)",
+    maxHeight: 15,
+    "text-transform": "uppercase",
+    padding: "15px"
+  },
+  videoTitle: {
+    color: "white",
+    fontSize: 18
+  },
+  videoSubtitle: {
+    color: "white",
+    fontSize: 15
+  },
+  listDivider: {
+    "background-color": "rgba(255, 255, 255, 0.4)"
+  },
+  listNumber: {
+    color: "white",
+    fontSize: 26,
+    paddingRight: "25px"
   }
 });
 
