@@ -122,8 +122,11 @@ class RoomSocketHandler {
       };
 
       const room = await this.database.getRoom(this.roomId);
+      console.log(room.currVideoTitle);
+
       if (room.playerState === PlayerState.ENDED) {
         room.currVideoId = video.youtubeId;
+        room.currVideoTitle = video.title;
       } else {
         room.videoQueue.push(video);
       }
@@ -182,6 +185,7 @@ class RoomSocketHandler {
     room.playerState = PlayerState.ENDED;
     if (room.videoQueue.length > 0) {
       room.currVideoId = room.videoQueue[0].youtubeId;
+      room.currVideoTitle = room.videoQueue[0].title;
       room.videoQueue.shift();
     }
     await this.database.setRoom(this.roomId, room);

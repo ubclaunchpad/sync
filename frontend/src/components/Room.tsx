@@ -21,7 +21,7 @@ import { Modal, Backdrop, Fade, withStyles, Container } from "@material-ui/core"
 import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
-
+import getYoutubeTitle from "get-youtube-title";
 enum ModalType {
   NONE = 0,
   CREATE_USERNAME = 1
@@ -42,6 +42,7 @@ interface State {
   isValid: boolean;
   isLoaded: boolean;
   name: string;
+  currVideoTitle: string;
   currVideoId: string;
   messages: Message[];
   username: string;
@@ -63,6 +64,7 @@ class Room extends React.Component<Props, State> {
       isLoaded: false,
       name: "",
       currVideoId: "",
+      currVideoTitle: "",
       messages: [],
       username: "",
       videoQueue: [],
@@ -178,6 +180,7 @@ class Room extends React.Component<Props, State> {
     this.socket.on(Event.UPDATE_ROOM, (room: RoomInfo) => {
       this.setState({
         currVideoId: room.currVideoId,
+        currVideoTitle: room.currVideoTitle,
         videoQueue: room.videoQueue
       });
     });
@@ -273,10 +276,15 @@ class Room extends React.Component<Props, State> {
       if (res && res.status === 200) {
         this.setState({
           currVideoId: res.data.currVideoId,
+          currVideoTitle: res.data.currVideoTitle,
           isLoaded: true,
           isValid: true,
           name: res.data.name,
           videoQueue: res.data.videoQueue
+        });
+        getYoutubeTitle(this.state.currVideoId, (err: any, title: any) => {
+          this.setState({ currVideoTitle: title });
+          console.log(title);
         });
       } else {
         this.setState({
@@ -308,6 +316,8 @@ class Room extends React.Component<Props, State> {
       this.state.isLoaded && this.state.isValid ? (
         <React.Fragment>
           <h1 style={{ color: "white" }}>{this.state.name || "Room" + id}</h1>
+          <h2 style={{ color: "white" }}>{this.state.currVideoTitle || "TITLE"}</h2>
+
           <Player
             videoId={this.state.currVideoId}
             events={{
