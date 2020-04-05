@@ -103,7 +103,7 @@ class Chat extends React.Component<Props, State> {
 
     return (
       <div>
-        <Card className={classes.chatContainer}>
+        <Card className={classes.parentContainer}>
           <Card className={classes.chatContainer}>
             <CardHeader
               classes={{
@@ -176,6 +176,13 @@ const materialUiStyles = createStyles({
   },
   chatContainer: {
     position: "relative",
+    height: "30vh",
+    overflow: "auto",
+    background: "rgba(255, 255, 255, 0.05)"
+  },
+  parentContainer: {
+    position: "relative",
+    height: "100vh",
     overflow: "auto",
     background: "rgba(255, 255, 255, 0.05)"
   },
