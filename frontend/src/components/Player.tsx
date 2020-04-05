@@ -41,7 +41,11 @@ class Player extends React.Component<YT.PlayerOptions> {
   }
 
   render() {
-    return <div id="player"></div>;
+    return (
+      <div className="player-container">
+        <div id="player"></div>
+      </div>
+    );
   }
 }
 
