@@ -1,16 +1,33 @@
 import React from "react";
 import axios from "axios";
 
-import Button from "@material-ui/core/Button";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
+// import Button from "@material-ui/core/Button";
+// import Table from "@material-ui/core/Table";
+// import TableBody from "@material-ui/core/TableBody";
+// import TableCell from "@material-ui/core/TableCell";
+// import TableHead from "@material-ui/core/TableHead";
+// import TableRow from "@material-ui/core/TableRow";
+// import Paper from "@material-ui/core/Paper";
 import Grow from "@material-ui/core/Grow";
 
-import getYoutubeTitle from "get-youtube-title";
+import { createStyles, withStyles } from "@material-ui/core";
+// import Card from "@material-ui/core/Card";
+// import CardActionArea from "@material-ui/core/CardActionArea";
+// import CardActions from "@material-ui/core/CardActions";
+// import CardContent from "@material-ui/core/CardContent";
+// import CardMedia from "@material-ui/core/CardMedia";
+// // import Button from '@material-ui/core/Button';
+// import Typography from "@material-ui/core/Typography";
+
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+import GridListTileBar from "@material-ui/core/GridListTileBar";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import IconButton from "@material-ui/core/IconButton";
+import InfoIcon from "@material-ui/icons/Info";
+import logo from "../images/logo.png";
+
+import "../styles/Browse.css";
 
 interface Props {
   classes: any;
@@ -19,87 +36,101 @@ interface Props {
 interface State {
   roomList: any;
   vidTitle: any;
+  width: any;
+  height: any;
 }
+
+const materialUiStyles = createStyles({
+  // root: {
+  //   maxWidth: 345
+  // },
+  // media: {
+  //   height: 140
+  // },
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    overflow: "hidden"
+    // backgroundColor: theme.palette.background.paper,
+  },
+  gridList: {
+    width: 500,
+    height: 450
+  },
+  icon: {
+    color: "rgba(255, 255, 255, 0.54)"
+  }
+});
 
 export class Browse extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       roomList: [],
-      vidTitle: {}
+      vidTitle: {},
+      width: window.innerWidth,
+      height: window.innerHeight
     };
-    this.renderRoom = this.renderRoom.bind(this);
+    this.mediaCard = this.mediaCard.bind(this);
   }
 
   async componentDidMount() {
     try {
       const res = await axios.get("http://localhost:8080/api/rooms");
-      const numrooms = Object.keys(res.data).length;
-      let numParsed = 0;
-      for (const key in res.data) {
-        getYoutubeTitle(res.data[key].currVideoId, (err: any, title: any) => {
-          this.state.vidTitle[res.data[key].currVideoId] = title;
-          numParsed++;
-          if (numParsed === numrooms) {
-            this.setState({
-              roomList: res.data
-            });
-          }
-        });
-      }
+      this.setState({
+        roomList: res.data
+      });
+      window.addEventListener("resize", () => {
+        this.setState({ width: window.innerWidth, height: window.innerHeight });
+      });
     } catch (err) {
       console.log(err);
     }
   }
 
-  renderRoom(room: any, key: any) {
+  mediaCard(room: any, key: any) {
     console.log(this.state);
+    const { classes } = this.props;
     const roomId = key.split(":")[1];
     return (
       <Grow in={true} timeout="auto" key={key}>
-        <TableRow hover key={key}>
-          <TableCell>
-            <img
-              alt={key}
-              src={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`}
-              onClick={event => (window.location.href = "/rooms/" + roomId)}
-            ></img>
-          </TableCell>
-          <TableCell>{this.state["vidTitle"][room.currVideoId]}</TableCell>
-          <TableCell>{room.name}</TableCell>
-          <TableCell>{roomId}</TableCell>
-          <TableCell>
-            <Button onClick={event => (window.location.href = "/rooms/" + roomId)}>Go to Room</Button>
-          </TableCell>
-        </TableRow>
+        <GridListTile
+          key={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`}
+          onClick={event => (window.location.href = "/rooms/" + roomId)}
+        >
+          <img src={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`} alt={room.name} />
+          <GridListTileBar
+            title={room.name}
+            subtitle={<span>Room ID: {roomId}</span>}
+            actionIcon={
+              <IconButton aria-label={`info about ${room.name}`} className={classes.icon}>
+                <InfoIcon />
+              </IconButton>
+            }
+          />
+        </GridListTile>
       </Grow>
     );
   }
 
   render() {
     return (
-      <div className="roomList">
-        <Paper>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Video Playing</TableCell>
-                <TableCell>Video Name</TableCell>
-                <TableCell>Room Name</TableCell>
-                <TableCell>Room Key</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.keys(this.state.roomList).map(key => {
-                return this.renderRoom(this.state.roomList[key], key);
-              })}
-            </TableBody>
-          </Table>
-        </Paper>
+      <div className="browse">
+        <div className="title">
+          <img className="logo" src={logo}></img>
+          <h2 className="heading">DISCOVER ROOMS</h2>
+        </div>
+        <div className="roomList">
+          <GridList cols={Math.ceil(this.state.width / 400)} spacing={30}>
+            {Object.keys(this.state.roomList).map(key => {
+              return this.mediaCard(this.state.roomList[key], key);
+            })}
+          </GridList>
+        </div>
       </div>
     );
   }
 }
 
-export default Browse;
+export default withStyles(materialUiStyles)(Browse);
