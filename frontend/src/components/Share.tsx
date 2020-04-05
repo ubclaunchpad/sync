@@ -27,39 +27,40 @@ class Share extends React.Component<Props, State> {
     const twitterURL = `https://twitter.com/intent/tweet?text=${shareText + "%0D" + this.props.roomUrl}`;
     const { classes } = this.props;
     return (
-      <Paper className={classes.container}>
+      <React.Fragment>
         <Tooltip title="Share to Facebook">
           <IconButton target="_blank" href={facebookURL}>
-            <Facebook></Facebook>
+            <Facebook style={{ color: "white" }}></Facebook>
           </IconButton>
         </Tooltip>
         <Tooltip title="Share to Reddit">
           <IconButton target="_blank" href={redditURL}>
-            <Reddit></Reddit>
+            <Reddit style={{ color: "white" }}></Reddit>
           </IconButton>
         </Tooltip>
         <Tooltip title="Share to Twitter">
           <IconButton target="_blank" href={twitterURL}>
-            <Twitter></Twitter>
+            <Twitter style={{ color: "white" }}></Twitter>
           </IconButton>
         </Tooltip>
         <Tooltip title="Copy Room URL">
           <IconButton onClick={() => copy(this.props.roomUrl)}>
-            <FileCopy></FileCopy>
+            <FileCopy style={{ color: "white" }}></FileCopy>
           </IconButton>
         </Tooltip>
-      </Paper>
+      </React.Fragment>
     );
   }
 }
 
 const materialUiStyles = createStyles({
   container: {
+    display: "inline-flex",
     justifyContent: "center",
     position: "relative",
-    width: "33%",
+    width: "100%",
     zIndex: 2,
-    margin: "0 auto"
+    margin: "auto"
   }
 });
 

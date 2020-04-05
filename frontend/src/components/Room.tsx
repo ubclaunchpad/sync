@@ -339,7 +339,7 @@ class Room extends React.Component<Props, State> {
       <div className="container">
         <Grid container spacing={3}>
           <Grid item xs>
-            <h1 className="roomSyncTitle testredcolor">
+            <h1 className="roomSyncTitle">
               SYNC
               <span>
                 <img className="syncRoomLogo" src={playButton} alt="playbutton"></img>
@@ -347,20 +347,22 @@ class Room extends React.Component<Props, State> {
             </h1>
           </Grid>
           <Grid item xs={5} style={{ textAlign: "center" }}>
-            <h3 className="roomTitle testgreencolor">{this.state.name || "Room" + id}</h3>
+            <h3 className="roomTitle">{this.state.name || "Room" + id}</h3>
             <h2 style={{ color: "white" }}>{this.state.currVideoTitle || "TITLE"}</h2>
           </Grid>
-          <Grid item xs>
+          <Grid item xs className="shareContainer">
             {/* empty here to keep spacing */}
-            <Share roomUrl={window.location.href} />
+            <div className="shareDiv">
+              <Share roomUrl={window.location.href} />
+            </div>
           </Grid>
         </Grid>
 
         <Grid container spacing={3} justify="center">
-          <Grid item xs={7} className="testgreencolor">
+          <Grid item xs={7}>
             {videoPlayer}
           </Grid>
-          <Grid item xs={4} className="testredcolor">
+          <Grid item xs={4}>
             <Container style={{ background: "#030B1E", width: "40vw" }}>
               {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
               <Chat
