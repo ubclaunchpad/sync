@@ -1,23 +1,12 @@
 import React, { FunctionComponent, useState, useEffect, ChangeEvent } from "react";
 import List from "@material-ui/core/List";
 import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
-import Paper from "@material-ui/core/Paper";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import Message from "../models/message";
-import Typography from "@material-ui/core/Typography";
-const styles = {
-  chatBox: {
-    border: "1px solid white",
-    borderRadius: "10%",
-    color: "white",
-    width: "50vw",
-    height: "50vh"
-  }
-};
+import ScrollableFeed from "react-scrollable-feed";
 
 interface Props {
   classes: any;
@@ -96,7 +85,6 @@ class Chat extends React.Component<Props, State> {
         <TextField
           multiline
           rowsMax="5"
-          // placeholder="Type your message..."
           fullWidth={true}
           InputProps={{ className: classes.textField }}
           InputLabelProps={{ className: classes.textField }}
@@ -115,7 +103,7 @@ class Chat extends React.Component<Props, State> {
 
     return (
       <div>
-        <Card className={classes.chatContainer}>
+        <Card className={classes.parentContainer}>
           <Card className={classes.chatContainer}>
             <CardHeader
               classes={{
@@ -123,7 +111,7 @@ class Chat extends React.Component<Props, State> {
               }}
               title="CHAT"
             />
-            <div className={classes.messages}>{this.renderChat(classes)}</div>
+            <ScrollableFeed className={classes.messages}>{this.renderChat(classes)}</ScrollableFeed>
           </Card>
           {chatField}
         </Card>
@@ -153,7 +141,15 @@ const materialUiStyles = createStyles({
   messages: {
     overflowX: "auto",
     overflowWrap: "break-word",
-    height: "70%"
+    height: "70%",
+    "&::-webkit-scrollbar": {
+      width: "0.4em"
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(255,255,255,.1)",
+      outline: "1px solid slategrey",
+      borderRadius: 3
+    }
   },
   userMessageLabel: {
     paddingRight: 10,
@@ -181,6 +177,12 @@ const materialUiStyles = createStyles({
   chatContainer: {
     position: "relative",
     height: "30vh",
+    overflow: "auto",
+    background: "rgba(255, 255, 255, 0.05)"
+  },
+  parentContainer: {
+    position: "relative",
+    height: "100vh",
     overflow: "auto",
     background: "rgba(255, 255, 255, 0.05)"
   },
