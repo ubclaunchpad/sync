@@ -21,8 +21,12 @@ import { Modal, Backdrop, Fade, withStyles, Container, Grid } from "@material-ui
 import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
+<<<<<<< HEAD
 import playButton from "../assets/playButton.svg";
 
+=======
+import getYoutubeTitle from "get-youtube-title";
+>>>>>>> 22e2a82bcea1009a34adf5ad3f05b332e4a56e79
 enum ModalType {
   NONE = 0,
   CREATE_USERNAME = 1
@@ -43,6 +47,7 @@ interface State {
   isValid: boolean;
   isLoaded: boolean;
   name: string;
+  currVideoTitle: string;
   currVideoId: string;
   messages: Message[];
   username: string;
@@ -64,6 +69,7 @@ class Room extends React.Component<Props, State> {
       isLoaded: false,
       name: "",
       currVideoId: "",
+      currVideoTitle: "",
       messages: [],
       username: "",
       videoQueue: [],
@@ -179,6 +185,7 @@ class Room extends React.Component<Props, State> {
     this.socket.on(Event.UPDATE_ROOM, (room: RoomInfo) => {
       this.setState({
         currVideoId: room.currVideoId,
+        currVideoTitle: room.currVideoTitle,
         videoQueue: room.videoQueue
       });
     });
@@ -259,8 +266,6 @@ class Room extends React.Component<Props, State> {
     const { id } = this.props.match.params;
     this.socket.on(Event.CONNECT, () => {
       this.socket.emit(Event.JOIN_ROOM, id);
-      this.setUsernameAndEmit();
-      //this.socket.emit(Event.CREATE_USERNAME, this.props.location.state.username);
       this.socket.on("CLIENTS", (clients: string[]) => {
         this.handleSetUsers(clients);
       });
@@ -276,10 +281,15 @@ class Room extends React.Component<Props, State> {
       if (res && res.status === 200) {
         this.setState({
           currVideoId: res.data.currVideoId,
+          currVideoTitle: res.data.currVideoTitle,
           isLoaded: true,
           isValid: true,
           name: res.data.name,
           videoQueue: res.data.videoQueue
+        });
+        getYoutubeTitle(this.state.currVideoId, (err: any, title: any) => {
+          this.setState({ currVideoTitle: title });
+          console.log(title);
         });
       } else {
         this.setState({
@@ -341,6 +351,7 @@ class Room extends React.Component<Props, State> {
           </Grid>
           <Grid item xs={5} style={{ textAlign: "center" }}>
             <h3 className="roomTitle testgreencolor">{this.state.name || "Room" + id}</h3>
+            <h2 style={{ color: "white" }}>{this.state.currVideoTitle || "TITLE"}</h2>
           </Grid>
           <Grid item xs>
             {/* empty here to keep spacing */}

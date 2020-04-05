@@ -287,12 +287,8 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
         {this.state.inVideoChat && (
           <div className={classes.videoChat}>
-            {/* Commenting this out means you will no longer see yourself */}
-            {/* <CardMedia style={{ width: "300px" }}>
-              <video style={{ objectFit: "contain", width: "300px" }} ref={this.videoRef} autoPlay></video>
-            </CardMedia> */}
             <CardMedia className={classes.cardMedia}>
-              <video style={{ objectFit: "contain", width: "45vw" }} ref={this.peerVideoRef} autoPlay></video>
+              <video style={{ objectFit: "contain", width: "36vw" }} ref={this.peerVideoRef} autoPlay></video>
             </CardMedia>
             <Button onClick={() => this.stopMyVideoChat()} variant="contained" color="secondary">
               Leave
