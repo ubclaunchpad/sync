@@ -176,7 +176,6 @@ const materialUiStyles = createStyles({
   },
   chatContainer: {
     position: "relative",
-    height: "30vh",
     overflow: "auto",
     background: "rgba(255, 255, 255, 0.05)"
   },
