@@ -21,7 +21,7 @@ import { Modal, Backdrop, Fade, withStyles, Container, Grid } from "@material-ui
 import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
-import playButton from "../assets/playButton.svg";
+import playButton from "../images/playButton.svg";
 import getYoutubeTitle from "get-youtube-title";
 
 enum ModalType {
