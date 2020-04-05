@@ -12,6 +12,20 @@ body {
   margin: 50px 50px 0px 50px;
 }
 
+.tile img{
+  opacity: 0.7;
+  transition: 0.3s;
+}
+
+.tile {
+  cursor: pointer;
+}
+
+.tile:hover img{
+  filter: brightness(120%);
+  opacity: 1
+}
+
 .logo {
   height: 100px;
   margin-left: 20px;
