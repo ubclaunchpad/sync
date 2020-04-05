@@ -1,4 +1,5 @@
 import React from "react";
+import { withStyles } from "@material-ui/core";
 
 declare global {
   interface Window {
@@ -41,7 +42,11 @@ class Player extends React.Component<YT.PlayerOptions> {
   }
 
   render() {
-    return <div id="player"></div>;
+    return (
+      <div className="player-container">
+        <div id="player"></div>
+      </div>
+    );
   }
 }
 
