@@ -1,5 +1,4 @@
 import React from "react";
-import { withStyles } from "@material-ui/core";
 
 declare global {
   interface Window {
