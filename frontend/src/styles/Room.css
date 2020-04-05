@@ -41,6 +41,17 @@
   background-color: blue;
 }
 
+.shareContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.shareDiv {
+  display: flex;
+  position: absolute;
+  top: 13px;
+}
+
 /* player-container and player are used in Player.tsx to make the player fill its parent */
 .player-container {
   position: relative;
