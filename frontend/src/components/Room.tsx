@@ -21,6 +21,7 @@ import { Modal, Backdrop, Fade, withStyles, Container, Grid } from "@material-ui
 import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
+import playButton from "../assets/playButton.svg";
 
 enum ModalType {
   NONE = 0,
@@ -334,26 +335,37 @@ class Room extends React.Component<Props, State> {
             <h1 className="roomSyncTitle testredcolor">
               SYNC
               <span>
-                <img className="syncRoomLogo" src={playButton} alt="platbutton"></img>
+                <img className="syncRoomLogo" src={playButton} alt="playbutton"></img>
               </span>
             </h1>
           </Grid>
-          <Grid item xs={6} style={{ textAlign: "center" }}>
+          <Grid item xs={5} style={{ textAlign: "center" }}>
             <h3 className="roomTitle testgreencolor">{this.state.name || "Room" + id}</h3>
           </Grid>
           <Grid item xs>
             {/* empty here to keep spacing */}
+            <Share roomUrl={window.location.href} />
           </Grid>
         </Grid>
 
-        <Share roomUrl={window.location.href} />
-        {videoPlayer}
+        <Grid container spacing={3} justify="center">
+          <Grid item xs={7} className="testgreencolor">
+            {videoPlayer}
+          </Grid>
+          <Grid item xs={4} className="testredcolor">
+            <Container style={{ background: "#030B1E", width: "40vw" }}>
+              {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
+              <Chat
+                username={this.state.username}
+                messages={this.state.messages}
+                sendMessage={this.handleSendMessage}
+              />
+            </Container>
+          </Grid>
+        </Grid>
         {invalidRoomId}
         {showLoadingIndicator}
-        <Container style={{ background: "#030B1E", width: "40vw" }}>
-          {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
-          <Chat username={this.state.username} messages={this.state.messages} sendMessage={this.handleSendMessage} />
-        </Container>
+
         <Modal
           disableAutoFocus={true}
           aria-labelledby="transition-modal-title"
