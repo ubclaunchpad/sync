@@ -1,0 +1,23 @@
+body {
+  background-color: black;
+}
+
+.browse {
+  color: white;
+  font-family: sans-serif;
+  height: 100%;
+}
+
+.title {
+  margin: 50px 50px 0px 50px;
+}
+
+.logo {
+  height: 100px;
+  margin-left: 20px;
+  margin-bottom: 30px;
+}
+
+.roomList {
+  margin: 0px 50px 10px 50px
+}
