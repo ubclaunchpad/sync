@@ -17,11 +17,13 @@ import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-gene
 import RoomData from "../models/room";
 import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
-import { Modal, Backdrop, Fade, withStyles, Container } from "@material-ui/core";
+import { Modal, Backdrop, Fade, withStyles, Container, Grid } from "@material-ui/core";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
+import playButton from "../images/playButton.svg";
 import getYoutubeTitle from "get-youtube-title";
+
 enum ModalType {
   NONE = 0,
   CREATE_USERNAME = 1
@@ -315,9 +317,6 @@ class Room extends React.Component<Props, State> {
     const videoPlayer =
       this.state.isLoaded && this.state.isValid ? (
         <React.Fragment>
-          <h1 style={{ color: "white" }}>{this.state.name || "Room" + id}</h1>
-          <h2 style={{ color: "white" }}>{this.state.currVideoTitle || "TITLE"}</h2>
-
           <Player
             videoId={this.state.currVideoId}
             events={{
@@ -338,14 +337,45 @@ class Room extends React.Component<Props, State> {
 
     return (
       <div className="container">
-        <Share roomUrl={window.location.href} />
-        {videoPlayer}
+        <Grid container spacing={3}>
+          <Grid item xs>
+            <h1 className="roomSyncTitle">
+              SYNC
+              <span>
+                <img className="syncRoomLogo" src={playButton} alt="playbutton"></img>
+              </span>
+            </h1>
+          </Grid>
+          <Grid item xs={5} style={{ textAlign: "center" }}>
+            <h3 className="roomTitle">{this.state.name || "Room" + id}</h3>
+            <h2 style={{ color: "white" }}>{this.state.currVideoTitle || "TITLE"}</h2>
+          </Grid>
+          <Grid item xs className="shareContainer">
+            {/* empty here to keep spacing */}
+            <div className="shareDiv">
+              <Share roomUrl={window.location.href} />
+            </div>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={3} justify="center">
+          <Grid item xs={7}>
+            {videoPlayer}
+          </Grid>
+          <Grid item xs={4}>
+            <Container style={{ background: "#030B1E", width: "40vw" }}>
+              {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
+              <Chat
+                username={this.state.username}
+                messages={this.state.messages}
+                sendMessage={this.handleSendMessage}
+              />
+            </Container>
+          </Grid>
+        </Grid>
         {invalidRoomId}
         {showLoadingIndicator}
-        <Container style={{ background: "#030B1E", width: "40vw" }}>
-          {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
-          <Chat username={this.state.username} messages={this.state.messages} sendMessage={this.handleSendMessage} />
-        </Container>
+
         <Modal
           disableAutoFocus={true}
           aria-labelledby="transition-modal-title"
