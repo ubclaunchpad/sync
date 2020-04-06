@@ -182,7 +182,7 @@ const materialUiStyles = createStyles({
   },
   parentContainer: {
     position: "relative",
-    height: "100vh",
+    height: "100%",
     overflow: "auto",
     background: "rgba(255, 255, 255, 0.05)"
   },
