@@ -11,6 +11,9 @@ import Modal from "@material-ui/core/Modal";
 import Fade from "@material-ui/core/Fade";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVideo } from "@fortawesome/free-solid-svg-icons";
+import Container from "@material-ui/core/Container";
+import Typography from "@material-ui/core/Typography";
+
 interface VideoChatProps {
   classes: any;
   users: string[];
@@ -307,9 +310,17 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
         >
           <Fade in={this.state.openInviteModal}>
             <div className={classes.paper}>
-              <h1>Video Chat invite from {this.state.inviteFromName}</h1>
-              <button onClick={this.acceptVideoChatInvite}>Accept</button>
-              <button onClick={this.declineVideoChatInvite}>Decline</button>
+              <Typography gutterBottom align="center" variant="h6">
+                Video chat invite from {this.state.inviteFromName}
+              </Typography>
+              <Container style={{ textAlign: "center" }}>
+                <Button className={classes.inviteButtons} onClick={this.acceptVideoChatInvite}>
+                  Accept
+                </Button>
+                <Button className={classes.inviteButtons} onClick={this.declineVideoChatInvite}>
+                  Decline
+                </Button>
+              </Container>
             </div>
           </Fade>
         </Modal>
@@ -338,16 +349,17 @@ const materialUiStyles = {
     justifyContent: "center"
   },
   paper: {
-    backgroundColor: "white",
+    background: "rgba(34,34,34,0.85)",
     border: "1px solid #000",
-    width: "905px",
-    height: "400px",
+    padding: "3em",
     borderRadius: "20px",
-    outline: "none"
+    outline: "none",
+    color: "white"
   },
   list: {
     background: "rgba(255, 255, 255, 0.05)",
-    marginBottom: "2em"
+    marginBottom: "2em",
+    minHeight: "30vh"
   },
   listItem: {
     color: "#ffffff"
@@ -373,6 +385,13 @@ const materialUiStyles = {
   },
   videoChat: {
     marginBottom: "2em"
+  },
+  inviteButtons: {
+    backgroundColor: "white",
+    margin: "1em 1em",
+    "&:hover": {
+      backgroundColor: "white"
+    }
   }
 };
 
