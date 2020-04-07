@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import Database from "./database";
 import uniqid from "uniqid";
+import fetchVideoInfo from "youtube-info";
 
 export default class API {
   public router: Router;
@@ -18,6 +19,20 @@ export default class API {
     this.router.get("/rooms/:id", this.getRoom.bind(this));
     this.router.delete("/rooms/:id", this.deleteRoom.bind(this));
     this.router.post("/rooms", this.createRoom.bind(this));
+    this.router.get("/youtubeinfo/:id", this.getYoutubeInfo.bind(this));
+  }
+
+  private async getYoutubeInfo(req: Request, res: Response): Promise<void> {
+    try {
+      console.log(req.params);
+      fetchVideoInfo(req.params.id, function(err: any, videoInfo: any) {
+        if (err) throw new Error(err);
+        console.log(videoInfo.title);
+        res.send(videoInfo.title);
+      });
+    } catch (err) {
+      res.status(500).send("Error: Couldn't create room.");
+    }
   }
 
   private getStatus(req: Request, res: Response): void {
