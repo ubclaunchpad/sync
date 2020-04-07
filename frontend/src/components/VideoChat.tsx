@@ -269,10 +269,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     }
   };
 
-  saveUserName = (username: string) => {
-    this.setState({ name: username });
-  };
-
   render() {
     const { classes, users } = this.props;
     return (
