@@ -1,1 +1,1 @@
-declare module "get-youtube-title";
+declare module "youtube-info";
