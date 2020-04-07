@@ -5,10 +5,8 @@ import Grow from "@material-ui/core/Grow";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
-import IconButton from "@material-ui/core/IconButton";
-import InfoIcon from "@material-ui/icons/Info";
 import logo from "../images/logo.png";
-
+import fetchVideoInfo from "youtube-info";
 import "../styles/Browse.css";
 
 interface Props {
@@ -34,12 +32,27 @@ export class Browse extends React.Component<Props, State> {
     this.mediaCard = this.mediaCard.bind(this);
   }
 
+  // var fetchVideoInfo = require('youtube-info');
+  // fetchVideoInfo('{videoId}').then(function (videoInfo) {
+  //   console.log(videoInfo);
+  // });
+
   async componentDidMount() {
     try {
       const res = await axios.get("http://localhost:8080/api/rooms");
-      this.setState({
-        roomList: res.data
-      });
+      const numrooms = Object.keys(res.data).length;
+      let numParsed = 0;
+      for (const key in res.data) {
+        fetchVideoInfo(res.data[key].currVideoId).then((title: any) => {
+          this.state.vidTitle[res.data[key].currVideoId] = title;
+          numParsed++;
+          if (numParsed === numrooms) {
+            this.setState({
+              roomList: res.data
+            });
+          }
+        });
+      }
       window.addEventListener("resize", () => {
         this.setState({ width: window.innerWidth, height: window.innerHeight });
       });
@@ -49,7 +62,6 @@ export class Browse extends React.Component<Props, State> {
   }
 
   mediaCard(room: any, key: any) {
-    console.log(this.state);
     const { classes } = this.props;
     const roomId = key.split(":")[1];
     return (
