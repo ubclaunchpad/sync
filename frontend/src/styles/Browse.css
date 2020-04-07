@@ -35,3 +35,12 @@ body {
 .roomList {
   margin: 0px 50px 10px 50px
 }
+
+.MuiGridListTileBar-title{
+  font-weight: bold;
+}
+
+.MuiGridListTileBar-subtitle{
+  font-weight: bold;
+  color: rgb(200, 200, 200)
+}

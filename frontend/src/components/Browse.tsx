@@ -5,10 +5,7 @@ import Grow from "@material-ui/core/Grow";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
-import IconButton from "@material-ui/core/IconButton";
-import InfoIcon from "@material-ui/icons/Info";
 import logo from "../images/logo.png";
-
 import "../styles/Browse.css";
 
 interface Props {
@@ -37,6 +34,12 @@ export class Browse extends React.Component<Props, State> {
   async componentDidMount() {
     try {
       const res = await axios.get("http://localhost:8080/api/rooms");
+      for (const key in res.data) {
+        axios.get("http://localhost:8080/api/youtubeinfo/" + res.data[key].currVideoId).then((title: any) => {
+          this.state.vidTitle[res.data[key].currVideoId] = title.data;
+          this.setState({ vidTitle: this.state.vidTitle });
+        });
+      }
       this.setState({
         roomList: res.data
       });
@@ -49,9 +52,9 @@ export class Browse extends React.Component<Props, State> {
   }
 
   mediaCard(room: any, key: any) {
-    console.log(this.state);
     const { classes } = this.props;
     const roomId = key.split(":")[1];
+    console.log(roomId, this.state.vidTitle);
     return (
       <Grow in={true} timeout="auto" key={key}>
         <GridListTile
@@ -60,13 +63,21 @@ export class Browse extends React.Component<Props, State> {
           onClick={event => (window.location.href = "/rooms/" + roomId)}
         >
           <img src={`https://img.youtube.com/vi/${room.currVideoId}/hqdefault.jpg`} alt={room.name} />
-          <GridListTileBar title={room.name} />
+          <GridListTileBar
+            subtitle={
+              this.state.vidTitle[room.currVideoId] !== undefined
+                ? "Playing: " + this.state.vidTitle[room.currVideoId]
+                : "Retrieving Title ... "
+            }
+            title={room.name}
+          />
         </GridListTile>
       </Grow>
     );
   }
 
   render() {
+    console.log("rendering");
     return (
       <div className="browse">
         <div className="title">
