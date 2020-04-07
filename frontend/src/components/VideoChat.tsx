@@ -68,7 +68,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
       peer: null,
       peerVideo: null,
       inVideoChat: false,
-      name: props.username,
+      name: "",
       inviteFromName: "",
       videoChatSet: [],
       videoChatId: null,
@@ -88,6 +88,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   }
 
   componentDidMount() {
+    const { username } = this.props;
     this.videoRef?.current?.addEventListener("ended", () => console.log("ended"));
     this.peerVideoRef?.current?.addEventListener("ended", () => console.log("ended"));
     this.socket.on("BackOffer", this.frontAnswer);
@@ -105,6 +106,13 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     this.socket.on("SEND_VIDEOCHATID", (videoChatIdObj: any) => {
       this.setVideoChatIdAndSetInVideoChat(videoChatIdObj.id);
     });
+    this.setState({ name: username });
+  }
+
+  componentDidUpdate(prevProps: VideoChatProps) {
+    if (this.props.username !== prevProps.username) {
+      this.setState({ name: this.props.username });
+    }
   }
 
   setInVideoChat = () => {

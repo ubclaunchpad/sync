@@ -247,6 +247,7 @@ class Room extends React.Component<Props, State> {
       },
       () => {
         this.socket.emit(Event.CREATE_USERNAME, this.state.username);
+        this.socket.emit(Event.GET_ALL_USERNAMES);
       }
     );
   }
