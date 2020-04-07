@@ -59,8 +59,8 @@ export class Browse extends React.Component<Props, State> {
           key={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`}
           onClick={event => (window.location.href = "/rooms/" + roomId)}
         >
-          <img src={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`} alt={room.name} />
-          <GridListTileBar title={room.name} subtitle={<span>Room ID: {roomId}</span>} />
+          <img src={`https://img.youtube.com/vi/${room.currVideoId}/hqdefault.jpg`} alt={room.name} />
+          <GridListTileBar title={room.name} />
         </GridListTile>
       </Grow>
     );
