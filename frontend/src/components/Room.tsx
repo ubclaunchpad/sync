@@ -22,7 +22,6 @@ import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
 import playButton from "../images/playButton.svg";
-import fetchVideoInfo from "youtube-info";
 
 enum ModalType {
   NONE = 0,
