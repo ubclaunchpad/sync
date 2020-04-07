@@ -22,7 +22,6 @@ import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
 import playButton from "../images/playButton.svg";
-import getYoutubeTitle from "get-youtube-title";
 
 enum ModalType {
   NONE = 0,
@@ -285,8 +284,8 @@ class Room extends React.Component<Props, State> {
           name: res.data.name,
           videoQueue: res.data.videoQueue
         });
-        getYoutubeTitle(this.state.currVideoId, (err: any, title: any) => {
-          this.setState({ currVideoTitle: title });
+        axios.get("http://localhost:8080/api/youtubeinfo/" + res.data.currVideoId).then((title: any) => {
+          this.setState({ currVideoTitle: title.data });
           console.log(title);
         });
       } else {
