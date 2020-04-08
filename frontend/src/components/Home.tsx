@@ -113,7 +113,7 @@ class Home extends React.Component<Props, State> {
             }}
           >
             <Fade in={this.state.modal === ModalType.JOIN}>
-              <div>
+              <div className={classes.paper}>
                 <Join />
               </div>
             </Fade>

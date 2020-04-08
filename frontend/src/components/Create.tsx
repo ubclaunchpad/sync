@@ -94,7 +94,7 @@ class Create extends React.Component<Props, State> {
     return (
       <Container className={classes.container}>
         {this.redirectIfRoomCreated()}
-        <Typography align="center" variant="h4">
+        <Typography style={{ marginTop: "0.5em" }} align="center" variant="h5">
           Create Room
         </Typography>
         <div style={{ marginTop: "20px" }}>
@@ -185,8 +185,7 @@ const materialUiStyles = createStyles({
       backgroundColor: "#001953"
     },
     marginTop: "100px",
-    height: "60px",
-    width: "260px"
+    padding: "0.5em 2em"
   },
   input: {
     color: "#FFFFFF !important"
