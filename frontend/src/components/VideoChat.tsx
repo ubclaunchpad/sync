@@ -396,10 +396,12 @@ const materialUiStyles = {
   },
   inviteButtons: {
     backgroundColor: "white",
-    margin: "1em 1em",
+    color: "#001953",
     "&:hover": {
-      backgroundColor: "white"
-    }
+      backgroundColor: "#001953",
+      color: "white"
+    },
+    margin: "1em 1em"
   }
 };
 

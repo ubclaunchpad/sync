@@ -137,7 +137,8 @@ const materialUiStyles = createStyles({
     borderRadius: "5px",
     color: "#001953",
     "&:hover": {
-      backgroundColor: "#001953"
+      backgroundColor: "#001953",
+      color: "white"
     },
     marginTop: "75px",
     padding: "0.5em 2em"
