@@ -4,6 +4,9 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { withStyles, createStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
+import "../styles/Create.css";
+import { Typography } from "@material-ui/core";
+import Container from "@material-ui/core/Container";
 
 interface Props {
   classes: any;
@@ -89,9 +92,11 @@ class Create extends React.Component<Props, State> {
   render() {
     const { classes } = this.props;
     return (
-      <div style={{ textAlign: "center" }}>
+      <Container className={classes.container}>
         {this.redirectIfRoomCreated()}
-        <h1>Create Room</h1>
+        <Typography align="center" variant="h4">
+          Create Room
+        </Typography>
         <div style={{ marginTop: "20px" }}>
           <TextField
             onChange={this.handleNameFieldChange}
@@ -101,6 +106,12 @@ class Create extends React.Component<Props, State> {
             label="Room Name"
             margin="normal"
             variant="outlined"
+            InputLabelProps={{
+              className: classes.inputLabel
+            }}
+            InputProps={{
+              className: classes.MuiInputBaseRoot
+            }}
           />
           <TextField
             onChange={this.handleUrlFieldChange}
@@ -110,6 +121,12 @@ class Create extends React.Component<Props, State> {
             label="Video URL"
             margin="normal"
             variant="outlined"
+            InputLabelProps={{
+              className: classes.inputLabel
+            }}
+            InputProps={{
+              className: classes.MuiInputBaseRoot
+            }}
           />
           <TextField
             onChange={this.handleUsernameFieldChange}
@@ -119,6 +136,12 @@ class Create extends React.Component<Props, State> {
             label="Username (Optional)"
             margin="normal"
             variant="outlined"
+            InputLabelProps={{
+              className: classes.inputLabel
+            }}
+            InputProps={{
+              className: classes.MuiInputBaseRoot
+            }}
           />
         </div>
         {this.state.errorMsg ? <p style={{ color: "red" }}>{this.state.errorMsg}</p> : ""}
@@ -130,26 +153,34 @@ class Create extends React.Component<Props, State> {
         >
           Create
         </Button>
-      </div>
+      </Container>
     );
   }
 }
 
 const materialUiStyles = createStyles({
   container: {
-    display: "flex",
-    flexWrap: "wrap"
+    textAlign: "center",
+    color: "#FFFFFF"
   },
   textField: {
     marginLeft: "0",
     marginRight: "0",
-    width: "500px"
+    width: "500px",
+    background: "rgba(255, 255, 255, 0.08)",
+    "& .MuiOutlinedInput-root": {
+      "&.Mui-focused fieldset": {
+        borderColor: "#FFFFFF",
+        borderWidth: "2px",
+        color: "#FFFFFF"
+      }
+    }
   },
   button: {
-    background: "#001953",
+    background: "#FFFFFF",
     boxSizing: "border-box",
     borderRadius: "5px",
-    color: "white",
+    color: "#001953",
     "&:hover": {
       backgroundColor: "#001953"
     },
@@ -158,7 +189,16 @@ const materialUiStyles = createStyles({
     width: "260px"
   },
   input: {
-    display: "none"
+    color: "#FFFFFF !important"
+  },
+  MuiInputBaseRoot: {
+    color: "#FFFFFF"
+  },
+  inputLabel: {
+    color: "#FFFFFF",
+    "&.Mui-focused": {
+      color: "#FFFFFF"
+    }
   }
 });
 
