@@ -424,12 +424,12 @@ const materialUiStyles = {
     justifyContent: "center"
   },
   paper: {
-    backgroundColor: "white",
+    background: "rgba(34,34,34,0.99)",
     border: "1px solid #000",
-    width: "905px",
-    height: "400px",
+    maxWidth: "700px",
     borderRadius: "20px",
-    outline: "none"
+    outline: "none",
+    padding: "2em"
   }
 };
 
