@@ -299,7 +299,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
         {this.state.inVideoChat && (
           <div className={classes.videoChat}>
             <CardMedia className={classes.cardMedia}>
-              <video style={{ objectFit: "contain", width: "36vw" }} ref={this.peerVideoRef} autoPlay></video>
+              <video style={{ objectFit: "contain", width: "30vw" }} ref={this.peerVideoRef} autoPlay></video>
             </CardMedia>
             <Button onClick={() => this.stopMyVideoChat()} variant="contained" color="secondary">
               Leave
