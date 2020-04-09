@@ -363,7 +363,7 @@ class Room extends React.Component<Props, State> {
             {videoPlayer}
           </Grid>
           <Grid item xs={4}>
-            <Container style={{ background: "#030B1E", width: "40vw" }}>
+            <Container style={{ background: "#030B1E" }}>
               {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
               <Chat
                 username={this.state.username}
