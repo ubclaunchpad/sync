@@ -348,7 +348,7 @@ class Room extends React.Component<Props, State> {
           </Grid>
           <Grid item xs={5} style={{ textAlign: "center" }}>
             <h3 className="roomTitle">{this.state.name || "Room" + id}</h3>
-            <h2 style={{ color: "white" }}>{this.state.currVideoTitle || "TITLE"}</h2>
+            <h3 style={{ color: "white" }}>{this.state.currVideoTitle || "TITLE"}</h3>
           </Grid>
           <Grid item xs className="shareContainer">
             {/* empty here to keep spacing */}
