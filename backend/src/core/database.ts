@@ -6,11 +6,11 @@ import RoomList from "../models/roomlist";
 export default class Database {
   private client: redis.RedisClient;
 
-  constructor(port: number, host?: string) {
-    if (host) {
-      this.client = redis.createClient(port, host);
+  constructor(uri?: string) {
+    if (uri) {
+      this.client = redis.createClient(uri);
     } else {
-      this.client = redis.createClient(port);
+      this.client = redis.createClient();
     }
 
     this.initListeners();

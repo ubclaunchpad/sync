@@ -5,7 +5,7 @@ services:
       context: backend
       dockerfile: Dockerfile
     environment:
-      - DB_HOST=db
+      - REDIS_URL=db
     depends_on:
       - db
     ports:
