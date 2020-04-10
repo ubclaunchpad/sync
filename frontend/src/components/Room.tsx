@@ -56,10 +56,12 @@ interface State {
 
 class Room extends React.Component<Props, State> {
   private socket: SocketIOClient.Socket;
+  private api: string;
 
   constructor(props: Props) {
     super(props);
-    this.socket = io.connect("http://localhost:8080/");
+    this.api = process.env.REACT_APP_API_URL || "http://localhost:8080";
+    this.socket = io.connect(this.api);
     this.state = {
       isValid: false,
       isLoaded: false,
@@ -274,7 +276,7 @@ class Room extends React.Component<Props, State> {
     this.setModalState();
 
     try {
-      const res: AxiosResponse<RoomData> = await axios.get("http://localhost:8080/api/rooms/" + id);
+      const res: AxiosResponse<RoomData> = await axios.get(`${this.api}/api/rooms/` + id);
       if (res && res.status === 200) {
         this.setState({
           currVideoId: res.data.currVideoId,
@@ -284,7 +286,7 @@ class Room extends React.Component<Props, State> {
           name: res.data.name,
           videoQueue: res.data.videoQueue
         });
-        axios.get("http://localhost:8080/api/youtubeinfo/" + res.data.currVideoId).then((title: any) => {
+        axios.get(`${this.api}/api/youtubeinfo/` + res.data.currVideoId).then((title: any) => {
           this.setState({ currVideoTitle: title.data });
           console.log(title);
         });

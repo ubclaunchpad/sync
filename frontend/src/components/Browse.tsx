@@ -20,6 +20,8 @@ interface State {
 }
 
 export class Browse extends React.Component<Props, State> {
+  private api: string;
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -29,13 +31,14 @@ export class Browse extends React.Component<Props, State> {
       height: window.innerHeight
     };
     this.mediaCard = this.mediaCard.bind(this);
+    this.api = process.env.REACT_APP_API_URL || "http://localhost:8080";
   }
 
   async componentDidMount() {
     try {
-      const res = await axios.get("http://localhost:8080/api/rooms");
+      const res = await axios.get(`${this.api}/api/rooms`);
       for (const key in res.data) {
-        axios.get("http://localhost:8080/api/youtubeinfo/" + res.data[key].currVideoId).then((title: any) => {
+        axios.get(`${this.api}/api/youtubeinfo/` + res.data[key].currVideoId).then((title: any) => {
           this.state.vidTitle[res.data[key].currVideoId] = title.data;
           this.setState({ vidTitle: this.state.vidTitle });
         });
