@@ -30,22 +30,22 @@ class Share extends React.Component<Props, State> {
       <React.Fragment>
         <Tooltip title="Share to Facebook">
           <IconButton target="_blank" href={facebookURL}>
-            <Facebook style={{ color: "white" }}></Facebook>
+            <Facebook style={{ color: "rgb(33, 120, 232)" }}></Facebook>
           </IconButton>
         </Tooltip>
         <Tooltip title="Share to Reddit">
           <IconButton target="_blank" href={redditURL}>
-            <Reddit style={{ color: "white" }}></Reddit>
+            <Reddit style={{ color: "rgb(246, 69, 29)" }}></Reddit>
           </IconButton>
         </Tooltip>
         <Tooltip title="Share to Twitter">
           <IconButton target="_blank" href={twitterURL}>
-            <Twitter style={{ color: "white" }}></Twitter>
+            <Twitter style={{ color: "rgb(41, 159, 232)" }}></Twitter>
           </IconButton>
         </Tooltip>
         <Tooltip title="Copy Room URL">
           <IconButton onClick={() => copy(this.props.roomUrl)}>
-            <FileCopy style={{ color: "white" }}></FileCopy>
+            <FileCopy style={{ color: "rgb(246, 246, 246)" }}></FileCopy>
           </IconButton>
         </Tooltip>
       </React.Fragment>
