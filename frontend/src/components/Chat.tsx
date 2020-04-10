@@ -63,7 +63,10 @@ class Chat extends React.Component<Props, State> {
             key={count}
             primary={
               <span>
-                <span className={classes.userMessageLabel}>{setUser(m)}</span> {m.message}
+                <div style={{ paddingLeft: 16 }}>
+                  <span className={classes.userMessageLabel}>{setUser(m)}</span>
+                  {" " + m.message}
+                </div>
               </span>
             }
           />
@@ -83,16 +86,14 @@ class Chat extends React.Component<Props, State> {
     const chatField = (
       <div className={classes.footer}>
         <TextField
+          // className={classes.chatbox}
           multiline
           rowsMax="5"
           fullWidth={true}
           InputProps={{ className: classes.textField }}
-          InputLabelProps={{ className: classes.textField }}
-          label={
-            <span>
-              <span className={classes.userInputLabel}>{this.props.username + ":"}</span> Type your message...
-            </span>
-          }
+          InputLabelProps={{ className: `${classes.textField} ${classes.userInputLabel}` }}
+          label={this.props.username + ":"}
+          placeholder="Type your message..."
           onChange={this.onChange}
           onKeyUp={this.enterPressed}
           value={this.state.message}
@@ -102,17 +103,17 @@ class Chat extends React.Component<Props, State> {
     );
 
     return (
-      <div>
-        <Card className={classes.parentContainer}>
-          <Card className={classes.chatContainer}>
-            <CardHeader
-              classes={{
-                title: classes.chatHeader
-              }}
-              title="CHAT"
-            />
-            <ScrollableFeed className={classes.messages}>{this.renderChat(classes)}</ScrollableFeed>
-          </Card>
+      <div style={{ width: "100%", height: "100%" }}>
+        <Card className={classes.chatContainer}>
+          <CardHeader
+            classes={{
+              title: classes.chatHeader
+            }}
+            title="CHAT"
+          />
+          <ScrollableFeed forceScroll className={classes.messages}>
+            {this.renderChat(classes)}
+          </ScrollableFeed>
           {chatField}
         </Card>
       </div>
@@ -121,13 +122,15 @@ class Chat extends React.Component<Props, State> {
 }
 
 const materialUiStyles = createStyles({
+  chatbox: {
+    color: "white"
+  },
   textField: {
     "& input + fieldset": {
       "&::placeholder": {
         color: "white"
       },
-      borderWidth: 2,
-      paddingTop: "5px"
+      borderWidth: 2
     },
     color: "white"
   },
@@ -141,7 +144,7 @@ const materialUiStyles = createStyles({
   messages: {
     overflowX: "auto",
     overflowWrap: "break-word",
-    height: "70%",
+    height: "60%",
     "&::-webkit-scrollbar": {
       width: "0.4em"
     },
@@ -153,7 +156,6 @@ const materialUiStyles = createStyles({
   },
   userMessageLabel: {
     paddingRight: 10,
-    paddingLeft: 16,
     fontFamily: "Roboto, sans-serif",
     fontStyle: "normal",
     fontWeight: 500,
@@ -162,7 +164,7 @@ const materialUiStyles = createStyles({
   },
   footer: {
     position: "absolute",
-    bottom: 0,
+    bottom: "0",
     width: "100%"
   },
   userInputLabel: {
@@ -176,13 +178,7 @@ const materialUiStyles = createStyles({
   },
   chatContainer: {
     position: "relative",
-    height: "30vh",
-    overflow: "auto",
-    background: "rgba(255, 255, 255, 0.05)"
-  },
-  parentContainer: {
-    position: "relative",
-    height: "100%",
+    height: "42vh",
     overflow: "auto",
     background: "rgba(255, 255, 255, 0.05)"
   },
