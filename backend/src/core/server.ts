@@ -20,7 +20,7 @@ export default class Server {
     this.port = port || 8080;
     this.app = express();
     this.httpServer = http.createServer(this.app);
-    this.database = new Database(6379, process.env.DB_HOST);
+    this.database = new Database(process.env.REDIS_URL);
     this.app.use((req, res, next) => {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
