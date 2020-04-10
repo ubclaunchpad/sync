@@ -2,10 +2,12 @@
   "name": "sync-backend",
   "version": "0.1.0",
   "scripts": {
+    "dev": "npm run build && node build/index.js",
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node build/index.js",
-    "lint": "eslint --ext ts ."
+    "lint": "eslint --ext ts .",
+    "publishheroku": "cd ../ && git subtree push --prefix backend heroku-thesyncapi master || true"
   },
   "dependencies": {
     "@types/body-parser": "^1.17.1",
