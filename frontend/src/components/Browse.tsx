@@ -84,7 +84,9 @@ export class Browse extends React.Component<Props, State> {
     return (
       <div className="browse">
         <div className="title">
-          <img className="logo" src={logo}></img>
+          <Link href="/">
+            <img className="logo" src={logo}></img>
+          </Link>
           <h2 className="heading">DISCOVER ROOMS</h2>
         </div>
         <div className="roomList">
