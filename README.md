@@ -1,7 +1,7 @@
 # Sync
 [![Build Status](https://travis-ci.com/ubclaunchpad/sync.svg?branch=master)](https://travis-ci.com/ubclaunchpad/sync)
 
-Sync is a synchronous YouTube streaming app for you watch videos with friends interactively. You can chat and video call with friends. Create playlists in your rooms for endless viewing.
+Sync is a synchronous YouTube streaming app for you to watch, share, and talk about videos with your friends. Chat and video call your friends, and create endless playlists to watch videos together.
 
 ## Dependencies
 - [Node.js](https://nodejs.org/)
