@@ -17,7 +17,7 @@ import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-gene
 import RoomData from "../models/room";
 import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
-import { Modal, Backdrop, Fade, withStyles, Container, Grid } from "@material-ui/core";
+import { Modal, Backdrop, Fade, withStyles, Container, Grid, Link } from "@material-ui/core";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
@@ -341,12 +341,14 @@ class Room extends React.Component<Props, State> {
       <div className="container">
         <Grid container spacing={3}>
           <Grid item xs>
-            <h1 className="roomSyncTitle">
-              SYNC
-              <span>
-                <img className="syncRoomLogo" src={playButton} alt="playbutton"></img>
-              </span>
-            </h1>
+            <Link href="/">
+              <h1 className="roomSyncTitle">
+                SYNC
+                <span>
+                  <img className="syncRoomLogo" src={playButton} alt="playbutton"></img>
+                </span>
+              </h1>
+            </Link>
           </Grid>
           <Grid item xs={5} style={{ textAlign: "center" }}>
             <h3 className="roomTitle">{this.state.name || "Room" + id}</h3>

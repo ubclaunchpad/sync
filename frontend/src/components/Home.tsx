@@ -1,18 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import Create from "./Create";
 import Join from "./Join";
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import Link from "@material-ui/core/Link";
 import { withStyles } from "@material-ui/core";
 import logo from "../images/logo.png";
 import createIcon from "../images/icon-create.svg";
 import browseIcon from "../images/icon-browse.svg";
 import joinIcon from "../images/icon-join.svg";
 import "../styles/Home.css";
-import Typography from "@material-ui/core/Typography";
 
 enum ModalType {
   NONE = 0,
@@ -43,7 +42,9 @@ class Home extends React.Component<Props, State> {
         <div className="overlay">
           <div className="navContainer">
             <div className="navLeft">
-              <img className="logo" src={logo}></img>
+              <Link href="/">
+                <img className="logo" src={logo}></img>
+              </Link>
             </div>
           </div>
 
@@ -67,17 +68,14 @@ class Home extends React.Component<Props, State> {
               <div>Join Room</div>
             </div>
           </Button>
-          <Button
-            classes={{ root: classes.root, textPrimary: classes.textPrimary }}
-            component={Link}
-            to="/rooms"
-            color="primary"
-          >
-            <div>
-              <img src={browseIcon}></img>
-              <div>Browse Rooms</div>
-            </div>
-          </Button>
+          <Link href="/rooms">
+            <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} color="primary">
+              <div>
+                <img src={browseIcon}></img>
+                <div>Browse Rooms</div>
+              </div>
+            </Button>
+          </Link>
 
           <Modal
             disableAutoFocus={true}
