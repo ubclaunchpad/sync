@@ -7,10 +7,11 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Link from "@material-ui/core/Link";
 import { withStyles } from "@material-ui/core";
-import logo from "../images/logo.png";
-import createIcon from "../images/icon-create.svg";
-import browseIcon from "../images/icon-browse.svg";
-import joinIcon from "../images/icon-join.svg";
+import logo from "../assets/logo.png";
+import createIcon from "../assets/icon-create.svg";
+import browseIcon from "../assets/icon-browse.svg";
+import joinIcon from "../assets/icon-join.svg";
+import bgVid from "../assets/background.mp4";
 import "../styles/Home.css";
 
 enum ModalType {
@@ -39,6 +40,9 @@ class Home extends React.Component<Props, State> {
     const { classes } = this.props;
     return (
       <div className="home">
+        <video autoPlay muted loop className="bgVid">
+          <source src={bgVid} type="video/mp4" />
+        </video>
         <div className="overlay">
           <div className="navContainer">
             <div className="navLeft">

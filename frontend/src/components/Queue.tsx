@@ -15,9 +15,9 @@ import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import Video from "../models/video";
 import Event from "../sockets/event";
-import QueueAdd from "../images/queue-add.svg";
-import QueueDelete from "../images/queue-delete.svg";
-import QueueTextBoxIcon from "../images/queue-text-box-icon.svg";
+import QueueAdd from "../assets/queue-add.svg";
+import QueueDelete from "../assets/queue-delete.svg";
+import QueueTextBoxIcon from "../assets/queue-text-box-icon.svg";
 import TextField from "@material-ui/core/TextField";
 
 interface Props {

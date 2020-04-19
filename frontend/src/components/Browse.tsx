@@ -5,7 +5,7 @@ import Grow from "@material-ui/core/Grow";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
-import logo from "../images/logo.png";
+import logo from "../assets/logo.png";
 import "../styles/Browse.css";
 
 interface Props {

@@ -20,6 +20,6 @@
     "jsx": "react"
   },
   "include": [
-    "src", "globals.d.ts"
+    "src"
   ]
 }
