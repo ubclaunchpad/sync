@@ -41,6 +41,7 @@ class Home extends React.Component<Props, State> {
     return (
       <div className="home">
         <video autoPlay muted loop className="bgVid">
+          {/* source: https://www.pexels.com/video/3570814/ */}
           <source src={bgVid} type="video/mp4" />
         </video>
         <div className="overlay">
