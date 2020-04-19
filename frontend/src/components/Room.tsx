@@ -21,7 +21,7 @@ import { Modal, Backdrop, Fade, withStyles, Container, Grid, Link } from "@mater
 import Username from "./Username";
 import VideoChat from "./VideoChat";
 import { runInThisContext } from "vm";
-import playButton from "../images/playButton.svg";
+import playButton from "../assets/playButton.svg";
 
 enum ModalType {
   NONE = 0,
