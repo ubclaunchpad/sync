@@ -46,9 +46,8 @@
     "uuid": "^7.0.1"
   },
   "scripts": {
-    "dev": "react-scripts start",
-    "start": "node app.js",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext ts,tsx .",
