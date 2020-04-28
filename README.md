@@ -1,7 +1,17 @@
-# Sync
-[![Build Status](https://travis-ci.com/ubclaunchpad/sync.svg?branch=master)](https://travis-ci.com/ubclaunchpad/sync)
+<h1 align="center">Sync</h1>
 
-Sync is a synchronous YouTube streaming app for you to watch, share, and talk about videos with your friends. Chat and video call your friends, and create endless playlists to watch videos together.
+<p align="center">
+  <a href="https://travis-ci.com/ubclaunchpad/sync">
+    <img src="https://travis-ci.com/ubclaunchpad/sync.svg?branch=master"
+      alt="Build Status" />
+  </a>
+  <a href="https://app.netlify.com/sites/syncapp/deploys">
+    <img src="https://api.netlify.com/api/v1/badges/1c192024-ff2e-47ff-8254-6640e809360c/deploy-status"
+      alt="Netlify Status" />
+  </a>
+</p>
+
+Sync is a synchronous YouTube streaming app for you to watch, share, and talk about videos with your friends. Create stream rooms with your friends. Chat and video call your friends and create endless playlists to watch videos together.
 
 ## Dependencies
 - [Node.js](https://nodejs.org/)
@@ -13,11 +23,12 @@ Sync is a synchronous YouTube streaming app for you to watch, share, and talk ab
 ### Locally
 #### Frontend
 - `npm install` to install all dependencies 
-- `npm run dev` to build & start the React app
+- `npm start` to build & start the React app
 
 #### Backend
+- ensure Redis server is running
 - `npm install` to install all dependencies
-- `npm run dev` to build & start the Node.js server
+- `npm start` to build & start the Node.js server
  
 ### Docker
 - `docker-compose up` to spin up the frontend, backend, and Redis containers

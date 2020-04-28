@@ -2,7 +2,6 @@
   "name": "sync-backend",
   "version": "0.1.0",
   "scripts": {
-    "dev": "npm run build && node build/index.js",
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node build/index.js",
