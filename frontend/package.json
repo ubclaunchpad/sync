@@ -47,12 +47,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint --ext ts,tsx .",
-    "postinstall": "npm run build",
-    "publishheroku": "cd ../ && git subtree push --prefix frontend heroku-thesyncapp master || true"
+    "lint": "eslint --ext ts,tsx ."
   },
   "eslintConfig": {
     "extends": "react-app"
