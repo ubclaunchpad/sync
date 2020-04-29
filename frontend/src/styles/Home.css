@@ -48,3 +48,13 @@
   width: 100%;
   margin-bottom: 24px;
 }
+
+.footer .subtext {
+  color: #fff;
+}
+
+.footer .subtext a {
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+}
