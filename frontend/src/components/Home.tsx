@@ -121,6 +121,11 @@ class Home extends React.Component<Props, State> {
               </div>
             </Fade>
           </Modal>
+          <div className="footer">
+            <a href="https://www.netlify.com">
+              <img src="https://www.netlify.com/img/global/badges/netlify-dark.svg" alt="Deploys by Netlify" />
+            </a>
+          </div>
         </div>
       </div>
     );
