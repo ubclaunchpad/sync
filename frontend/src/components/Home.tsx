@@ -121,6 +121,18 @@ class Home extends React.Component<Props, State> {
               </div>
             </Fade>
           </Modal>
+          <div className="footer">
+            <p className="subtext">
+              A{" "}
+              <a href="https://ubclaunchpad.com" target="_blank" rel="noopener noreferrer">
+                UBC Launch Pad
+              </a>{" "}
+              project. Powered by{" "}
+              <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
+                Netlify.
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     );
