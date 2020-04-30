@@ -1,0 +1,27 @@
+name: Checks
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    env:
+      CI: false
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with: { node-version: 12.x }
+      - name: Backend Checks
+        run: |
+          npm install
+          npm run lint
+          npm run build
+        working-directory: ./backend
+      - name: Frontend Checks
+        run: |
+          npm install
+          npm run lint
+          npm run build
+        working-directory: ./frontend
