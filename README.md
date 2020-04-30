@@ -1,9 +1,9 @@
 <h1 align="center">Sync</h1>
 
 <p align="center">
-  <a href="https://travis-ci.com/ubclaunchpad/sync">
-    <img src="https://travis-ci.com/ubclaunchpad/sync.svg?branch=master"
-      alt="Build Status" />
+  <a href="https://github.com/ubclaunchpad/sync/actions?workflow=Checks">
+    <img src="https://github.com/ubclaunchpad/sync/workflows/Checks/badge.svg"
+      alt="Checks Status" />
   </a>
   <a href="https://app.netlify.com/sites/syncapp/deploys">
     <img src="https://api.netlify.com/api/v1/badges/1c192024-ff2e-47ff-8254-6640e809360c/deploy-status"
