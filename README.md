@@ -5,8 +5,8 @@
     <img src="https://github.com/ubclaunchpad/sync/workflows/Checks/badge.svg"
       alt="Checks Status" />
   </a>
-  <a href="https://app.netlify.com/sites/syncapp/deploys">
-    <img src="https://api.netlify.com/api/v1/badges/1c192024-ff2e-47ff-8254-6640e809360c/deploy-status"
+  <a href="https://app.netlify.com/sites/ubclaunchpad-sync/deploys">
+    <img src="https://api.netlify.com/api/v1/badges/d9fa8627-6e3d-4ab9-91ac-859bdb63f5b8/deploy-status"
       alt="Netlify Status" />
   </a>
 </p>
