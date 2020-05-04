@@ -106,6 +106,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     this.socket.on("SEND_VIDEOCHATID", (videoChatIdObj: any) => {
       this.setVideoChatIdAndSetInVideoChat(videoChatIdObj.id);
     });
+    this.socket.on("LEAVE_VIDEO_CHAT", () => this.stopMyVideoChat(false));
     this.setState({ name: username });
   }
 
@@ -136,9 +137,12 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
       .catch(() => console.log("Permission Not Given"));
   };
 
-  stopMyVideoChat = () => {
+  stopMyVideoChat = (emit: boolean) => {
     this.state.videoTrack?.stop();
     this.state.audioTrack?.stop();
+    if (emit) {
+      this.socket.emit("LEAVE_VIDEO_CHAT", this.state.videoChatId);
+    }
     this.setState({
       videoTrack: null,
       audioTrack: null,
@@ -171,7 +175,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   };
 
   openInviteModal = (invite: any) => {
-    console.log("inviteFrom: " + invite.sender);
     this.setState({ inviteFrom: invite.sender, inviteFromName: invite.name });
     this.setState({ openInviteModal: true });
   };
@@ -209,7 +212,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     const peerNode = this.peerVideoRef.current;
     peer.on("stream", stream => {
       this.setState({ peerConnected: true });
-      console.log("copythis.peerconnected: " + this.state.peerConnected);
       if (peerNode) {
         peerNode.srcObject = stream;
       }
@@ -217,7 +219,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     peer.on("close", () => {
       this.setState({ peerConnected: false });
       this.setState({ inVideoChat: false });
-      console.log("copythis.peerconnected: " + this.state.peerConnected);
       peer.destroy();
     });
 
@@ -301,7 +302,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
             <CardMedia className={classes.cardMedia}>
               <video style={{ objectFit: "contain", width: "30vw" }} ref={this.peerVideoRef} autoPlay></video>
             </CardMedia>
-            <Button onClick={() => this.stopMyVideoChat()} variant="contained" color="secondary">
+            <Button onClick={() => this.stopMyVideoChat(true)} variant="contained" color="secondary">
               Leave
             </Button>
           </div>
