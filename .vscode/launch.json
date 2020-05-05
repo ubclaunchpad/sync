@@ -9,7 +9,7 @@
       "webRoot": "${workspaceFolder}/frontend"
     },
     {
-      "name": "Launch Debugger (Backend)",
+      "name": "Launch & Debug (Backend)",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
