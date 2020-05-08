@@ -83,8 +83,8 @@ class RoomSocketHandler {
         if (error) {
           throw error;
         }
+        logger.debug(`Socket ${socket.id} left room.`);
         if (clients.length === 0) {
-          logger.debug(`Socket ${socket.id} left room.`);
           this.database.deleteRoom(this.roomId);
         }
       });
