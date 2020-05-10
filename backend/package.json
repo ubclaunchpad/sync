@@ -51,7 +51,8 @@
       "@typescript-eslint/no-unused-vars": "off"
     },
     "ignorePatterns": [
-      "build/*"
+      "build/*",
+      "node_modules/*"
     ]
   },
   "prettier": {

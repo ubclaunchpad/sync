@@ -72,7 +72,8 @@
       }
     },
     "ignorePatterns": [
-      "build/*"
+      "build/*",
+      "node_modules/*"
     ]
   },
   "prettier": {
