@@ -20,7 +20,6 @@ import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
 import { Modal, Backdrop, Fade, withStyles, Container, Grid, Link } from "@material-ui/core";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
-import { runInThisContext } from "vm";
 import playButton from "../assets/playButton.svg";
 
 enum ModalType {
@@ -34,7 +33,7 @@ const customNameConfig: Config = {
   length: 2
 };
 
-interface Props extends RouteComponentProps {
+interface Props extends RouteComponentProps<any, {}, { username: string }> {
   match: any;
   classes: any;
 }
@@ -50,7 +49,6 @@ interface State {
   videoQueue: Video[];
   playerState: PlayerState;
   modal: ModalType;
-  // users: string[];
   users: any;
 }
 
