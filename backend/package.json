@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "ts-node-dev --inspect -- src/index.ts",
-    "build": "tsc",
     "start": "node build/index.js",
+    "build": "tsc",
     "lint": "eslint --ext ts .",
     "deploy": "cd ../ && git subtree push --prefix backend heroku-thesyncapi master"
   },
