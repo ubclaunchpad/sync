@@ -63,6 +63,10 @@ export default class Server {
         socket.join(id);
       });
 
+      socket.on("LEAVE_VIDEO_CHAT", videoChatId => {
+        socket.to(videoChatId).emit("LEAVE_VIDEO_CHAT");
+      });
+
       socket.on("newVideoChatPeer", (videoChatId: any) => {
         //If videoChatId isnt in videoChats object
         if (!(videoChatId in videoChats)) {
