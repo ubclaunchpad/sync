@@ -70,8 +70,26 @@ class RoomSocketHandler {
       [Event.UPDATE_VIDEO_STATE]: (request: UpdateVideoStateRequest): Promise<void> => this.updateVideoState(request),
       [Event.VIDEO_ENDED]: (): Promise<void> => this.handleVideoEnded(),
       [Event.CREATE_USERNAME]: (username: string): Promise<void> => this.createUsername(username),
-      [Event.GET_ALL_USERNAMES]: (): Promise<void> => this.getAllUsernames()
+      [Event.GET_ALL_USERNAMES]: (): Promise<void> => this.getAllUsernames(),
+      [Event.DISCONNECT]: (socket: ExtendedSocket): Promise<void> => this.leaveRoom(socket)
     };
+  }
+
+  private leaveRoom(socket: ExtendedSocket): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.io.sockets.in(this.roomId).clients(async (error: any, clients: string[]) => {
+        if (error) {
+          logger.debug(`${error}`);
+        } else if (clients.length === 0) {
+          const room = await this.database.getRoom(this.roomId);
+          if (!room.default) {
+            this.database.deleteRoom(this.roomId);
+          }
+        }
+        logger.debug(`Socket ${socket.id} left room ${this.roomId}.`);
+        resolve();
+      });
+    });
   }
 
   private createUsername(username: string): Promise<void> {

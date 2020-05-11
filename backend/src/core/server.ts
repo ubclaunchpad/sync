@@ -90,10 +90,6 @@ export default class Server {
       socket.on("Answer", (answerObj: any) => {
         socket.to(answerObj.videoChatId).emit("BackAnswer", answerObj.data);
       });
-
-      socket.on(Event.DISCONNECT, (socket) => {
-        logger.debug(`Socket ${socket.id} disconnected.`);
-      });
     });
   }
 }
