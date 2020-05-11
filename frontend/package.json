@@ -1,58 +1,88 @@
 {
   "name": "sync-frontend",
-  "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "dev": "react-scripts start",
+    "dev:docker": "react-scripts --max_old_space_size=4096 start",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "lint": "eslint --ext ts,tsx ."
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
-    "@material-ui/core": "^4.5.1",
-    "@material-ui/icons": "^4.5.1",
-    "@types/jest": "24.0.19",
-    "@types/node": "12.7.12",
-    "@types/react": "16.9.6",
-    "@types/react-dom": "16.9.2",
-    "@types/react-lottie": "^1.2.3",
-    "@types/react-router-dom": "^5.1.0",
-    "@types/react-youtube": "^7.6.2",
+    "@material-ui/core": "^4.9.13",
+    "@material-ui/icons": "^4.9.1",
+    "@types/node": "13.13.5",
+    "@types/react": "16.9.34",
+    "@types/react-dom": "16.9.7",
+    "@types/react-lottie": "^1.2.4",
+    "@types/react-router-dom": "^5.1.5",
     "@types/simple-peer": "^9.6.0",
     "@types/socket.io-client": "^1.4.32",
-    "@types/uuid": "^7.0.0",
+    "@types/uuid": "^7.0.3",
     "@types/youtube": "0.0.38",
-    "@typescript-eslint/eslint-plugin": "^2.17.0",
-    "@typescript-eslint/parser": "^2.17.0",
-    "axios": "^0.19.0",
-    "clean": "^4.0.2",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
+    "axios": "^0.19.2",
     "clipboard-copy": "^3.1.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.9.0",
-    "eslint-plugin-prettier": "^3.1.2",
+    "eslint": "^6.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
     "express": "^4.17.1",
-    "express-favicon": "^2.0.1",
-    "prettier": "^1.19.1",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
+    "prettier": "^2.0.5",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "react-lottie": "^1.2.3",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.0",
+    "react-scripts": "^3.4.1",
     "react-scrollable-feed": "^1.1.2",
-    "react-youtube": "^7.9.0",
-    "serve": "^11.3.0",
-    "simple-peer": "^9.6.2",
+    "simple-peer": "^9.7.0",
     "socket.io-client": "^2.3.0",
     "typeface-roboto": "0.0.75",
     "typescript": "^3.8.3",
     "unique-names-generator": "^4.2.0",
-    "uuid": "^7.0.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
-    "test": "react-scripts test",
-    "lint": "eslint --ext ts,tsx ."
+    "uuid": "^8.0.0"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "react-app",
+      "plugin:react/recommended",
+      "plugin:@typescript-eslint/recommended",
+      "prettier/@typescript-eslint",
+      "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "rules": {
+      "no-var": "error",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/explicit-function-return-type": "off"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "ignorePatterns": [
+      "build/*",
+      "node_modules/*"
+    ]
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": false,
+    "printWidth": 120,
+    "tabWidth": 2,
+    "bracketSpacing": true,
+    "trailingComma": "none"
   },
   "browserslist": {
     "production": [

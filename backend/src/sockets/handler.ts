@@ -49,7 +49,7 @@ class RoomSocketHandler {
 
       for (const [event, handler] of Object.entries(handlers)) {
         if (handler) {
-          this.socket.on(event, async data => {
+          this.socket.on(event, async (data) => {
             logger.debug(`Socket ${this.socket.id} sent ${event} with ${JSON.stringify(data)}`);
             await handler(data);
           });
@@ -160,7 +160,7 @@ class RoomSocketHandler {
 
   private async removeFromQueue(id: string): Promise<void> {
     const room: Room = await this.database.getRoom(this.roomId);
-    room.videoQueue = room.videoQueue.filter(video => video.id !== id);
+    room.videoQueue = room.videoQueue.filter((video) => video.id !== id);
 
     await this.database.setRoom(this.roomId, room);
 

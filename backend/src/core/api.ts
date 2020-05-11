@@ -24,7 +24,7 @@ export default class API {
 
   private async getYoutubeInfo(req: Request, res: Response): Promise<void> {
     try {
-      fetchVideoInfo(req.params.id, function(err: any, videoInfo: any) {
+      fetchVideoInfo(req.params.id, function (err: any, videoInfo: any) {
         if (err) throw new Error(err);
         res.send(videoInfo.title);
       });

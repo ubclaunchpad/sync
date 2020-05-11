@@ -13,22 +13,19 @@
 
 Sync is a synchronous YouTube streaming app for you to watch, share, and talk about videos with your friends. Create stream rooms with your friends. Chat and video call your friends and create endless playlists to watch videos together.
 
-## Dependencies
+## Contributing
+
+### Dependencies
+To get started, install the following dependencies: 
 - [Node.js](https://nodejs.org/)
 - [Redis](https://redis.io/)
 - [Docker](https://www.docker.com/) (optional)
 
-## Setup
+### Frontend
+The frontend is a React app in the *frontend* directory. Run `npm install` to install all project dependencies. Run `npm run dev` to start the React development server. The *Launch & Debug Chrome (Frontend)* launch configuration can be used to attach a debugger to the React process and debug from VS Code.
 
-### Locally
-#### Frontend
-- `npm install` to install all dependencies 
-- `npm start` to build & start the React app
-
-#### Backend
-- ensure Redis server is running
-- `npm install` to install all dependencies
-- `npm start` to build & start the Node.js server
+### Backend
+The backend is a Node.js Express server in the *backend* directory. Run `npm install` to install all project dependencies. Before starting the backend, start Redis server. Run `npm run dev` to start the Node.js server. It auto restarts the process on code changes. The *Attach Debugger (Backend)* launch configuration can be used to attach a debugger to the running process. Use the *Launch & Debug (Backend)* launch configuration to launch the Node process and attach a debugger from VS Code.
  
 ### Docker
-- `docker-compose up` to spin up the frontend, backend, and Redis containers
+The development environment can be run all through Docker. Simply run `docker-compose up` to spin up the frontend, backend, and Redis containers.

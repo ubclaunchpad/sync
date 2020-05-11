@@ -128,7 +128,7 @@ class Queue extends React.Component<Props, State> {
               }}
               InputLabelProps={{ className: classes.textField }}
               placeholder="Paste YouTube link here..."
-              onChange={event => this.setState({ newVideoUrl: event.target.value })}
+              onChange={(event) => this.setState({ newVideoUrl: event.target.value })}
               onKeyDown={this.handleOnKeyDown}
               value={this.state.newVideoUrl}
               fullWidth
