@@ -63,7 +63,7 @@ export class Browse extends React.Component<Props, State> {
         <GridListTile
           className="tile"
           key={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`}
-          onClick={event => (window.location.href = "/rooms/" + roomId)}
+          onClick={(event) => (window.location.href = "/rooms/" + roomId)}
         >
           <img src={`https://img.youtube.com/vi/${room.currVideoId}/hqdefault.jpg`} alt={room.name} />
           <GridListTileBar
@@ -91,7 +91,7 @@ export class Browse extends React.Component<Props, State> {
         </div>
         <div className="roomList">
           <GridList cols={Math.ceil(this.state.width / 400)} spacing={30}>
-            {Object.keys(this.state.roomList).map(key => {
+            {Object.keys(this.state.roomList).map((key) => {
               return this.mediaCard(this.state.roomList[key], key);
             })}
           </GridList>

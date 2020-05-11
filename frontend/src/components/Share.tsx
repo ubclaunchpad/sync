@@ -16,10 +16,6 @@ interface State {
 }
 
 class Share extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-  }
-
   render() {
     const shareText = "Come+join+my+Sync+viewing+party!";
     const redditURL = `https://www.reddit.com/submit?url=${this.props.roomUrl}&title=${shareText}`;

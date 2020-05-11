@@ -62,7 +62,7 @@ export default class Database {
   public async getRoomIds(): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       logger.info(`Get room ids`);
-      this.client.keys("room:*", function(err, res) {
+      this.client.keys("room:*", function (err, res) {
         if (err) {
           logger.error(`Couldn't get room ids: ${err}`);
           reject(err);
@@ -96,7 +96,7 @@ export default class Database {
       logger.info("Connected to Redis Server");
     });
 
-    this.client.on("error", err => {
+    this.client.on("error", (err) => {
       logger.error(`Redis Server Error: ${err}`);
     });
   }
