@@ -1,11 +1,12 @@
 version: '3'
 services:
   backend:
-    build:
-      context: backend
-      dockerfile: Dockerfile
+    build: ./backend
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
     environment:
-      - REDIS_URL=db
+      - REDIS_URL=redis://db:6379
     depends_on:
       - db
     ports:
@@ -15,8 +16,10 @@ services:
     image: "redis:alpine"
 
   frontend:
-    build:
-      context: frontend
-      dockerfile: Dockerfile
+    build: ./frontend
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
+    stdin_open: true
     ports:
       - "3000:3000"

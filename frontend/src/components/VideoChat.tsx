@@ -120,7 +120,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     this.setState({ inVideoChat: true });
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true }) // this asks browser for permission to access cam/aud
-      .then(stream => {
+      .then((stream) => {
         this.setState({ stream: stream });
         const node = this.videoRef.current;
         //TODO: Include id in this emit
@@ -210,7 +210,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     });
 
     const peerNode = this.peerVideoRef.current;
-    peer.on("stream", stream => {
+    peer.on("stream", (stream) => {
       this.setState({ peerConnected: true });
       if (peerNode) {
         peerNode.srcObject = stream;
@@ -222,7 +222,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
       peer.destroy();
     });
 
-    peer.on("error", err => {
+    peer.on("error", (err) => {
       this.setState({ inVideoChat: false });
     });
     return peer;
@@ -233,7 +233,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     const socket = this.socket;
     const videoChatId = this.state.videoChatId;
     const peer = this.init(PeerTypes.init);
-    peer.on("signal", function(data) {
+    peer.on("signal", function (data) {
       if (!gotAnswer) {
         const offerObj = { data: data, videoChatId: videoChatId };
         socket.emit("Offer", offerObj);
@@ -246,7 +246,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     const peer = this.init(PeerTypes.notInit);
     const socket = this.socket;
     const videoChatId = this.state.videoChatId;
-    peer.on("signal", data => {
+    peer.on("signal", (data) => {
       const answerObj = { data: data, videoChatId: videoChatId };
       socket.emit("Answer", answerObj);
     });
@@ -278,7 +278,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
           <React.Fragment>
             <List className={classes.list} component="nav">
               <h1 className={classes.videoChatHeader}>VIDEO CHAT</h1>
-              {Object.entries(users).map(user => {
+              {Object.entries(users).map((user) => {
                 if (user[1]) {
                   return (
                     <React.Fragment>
@@ -292,6 +292,7 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
                     </React.Fragment>
                   );
                 }
+                return null;
               })}
             </List>
           </React.Fragment>

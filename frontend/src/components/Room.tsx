@@ -20,7 +20,6 @@ import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
 import { Modal, Backdrop, Fade, withStyles, Container, Grid, Link } from "@material-ui/core";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
-import { runInThisContext } from "vm";
 import playButton from "../assets/playButton.svg";
 
 enum ModalType {
@@ -34,7 +33,7 @@ const customNameConfig: Config = {
   length: 2
 };
 
-interface Props extends RouteComponentProps {
+interface Props extends RouteComponentProps<any, {}, { username: string }> {
   match: any;
   classes: any;
 }
@@ -50,7 +49,6 @@ interface State {
   videoQueue: Video[];
   playerState: PlayerState;
   modal: ModalType;
-  // users: string[];
   users: any;
 }
 
@@ -93,7 +91,7 @@ class Room extends React.Component<Props, State> {
   //If initializing users, set all username values to null
   handleSetUsers(users: string[]) {
     if (Object.keys(this.state.users).length > 0) {
-      users.map(user => {
+      users.map((user) => {
         if (!(user in this.state.users)) {
           const newState = this.state.users;
           newState[user] = null;
@@ -103,7 +101,7 @@ class Room extends React.Component<Props, State> {
       this.socket.emit(Event.GET_ALL_USERNAMES);
     } else {
       const userObj: any = {};
-      users.map(userId => {
+      users.map((userId) => {
         userObj[userId] = null;
       });
       this.setState({ users: userObj });
@@ -147,7 +145,7 @@ class Room extends React.Component<Props, State> {
   }
 
   addMessage = (message: Message) => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       messages: [...prevState.messages, message]
     }));
   };

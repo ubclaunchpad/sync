@@ -1,6 +1,6 @@
 FROM node:alpine
 
-WORKDIR /usr/app
+WORKDIR /app
 
 COPY ./package*.json ./
 
@@ -9,4 +9,5 @@ RUN npm install
 COPY . .
 
 EXPOSE 8080
-CMD [ "npm", "start" ]
+
+CMD [ "npm", "run", "dev:docker" ]

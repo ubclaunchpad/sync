@@ -41,21 +41,21 @@ export default class Server {
   private setupSockets(): void {
     const io = socketIo(this.httpServer);
     const videoChats: any = {};
-    io.on(Event.CONNECT, socket => {
+    io.on(Event.CONNECT, (socket) => {
       logger.debug(`Socket ${socket.id} connected.`);
-      socket.on(Event.JOIN_ROOM, roomId => {
+      socket.on(Event.JOIN_ROOM, (roomId) => {
         new RoomSocketHandler(this.database, io, socket, roomId).initialize();
       });
 
-      socket.on("SEND_INVITE", invite => {
+      socket.on("SEND_INVITE", (invite) => {
         socket.to(invite.receiver).emit("SEND_INVITE", invite);
       });
 
-      socket.on("ACCEPT_INVITE", accept => {
+      socket.on("ACCEPT_INVITE", (accept) => {
         socket.to(accept.receiver).emit("ACCEPT_INVITE", accept);
       });
 
-      socket.on("SEND_VIDEOCHATID", videoChatIdObj => {
+      socket.on("SEND_VIDEOCHATID", (videoChatIdObj) => {
         socket.to(videoChatIdObj.receiver).emit("SEND_VIDEOCHATID", videoChatIdObj);
       });
 
@@ -63,7 +63,7 @@ export default class Server {
         socket.join(id);
       });
 
-      socket.on("LEAVE_VIDEO_CHAT", videoChatId => {
+      socket.on("LEAVE_VIDEO_CHAT", (videoChatId) => {
         socket.to(videoChatId).emit("LEAVE_VIDEO_CHAT");
       });
 
@@ -91,7 +91,7 @@ export default class Server {
         socket.to(answerObj.videoChatId).emit("BackAnswer", answerObj.data);
       });
 
-      socket.on(Event.DISCONNECT, socket => {
+      socket.on(Event.DISCONNECT, (socket) => {
         logger.debug(`Socket ${socket.id} disconnected.`);
       });
     });
