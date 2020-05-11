@@ -85,7 +85,6 @@ export default class Database {
         for (const key of keys) {
           rooms[key] = await this.getRoom(key.split(":")[1]);
         }
-        logger.info(rooms);
         resolve(rooms);
       });
     });

@@ -76,19 +76,20 @@ class RoomSocketHandler {
   }
 
   private leaveRoom(socket: ExtendedSocket): Promise<void> {
-    this.io
-      .of("/")
-      .in(this.roomId)
-      .clients((error: any, clients: string[]) => {
+    return new Promise((resolve, reject) => {
+      this.io.sockets.in(this.roomId).clients(async (error: any, clients: string[]) => {
         if (error) {
-          throw error;
+          logger.debug(`${error}`);
+        } else if (clients.length === 0) {
+          const room = await this.database.getRoom(this.roomId);
+          if (!room.default) {
+            this.database.deleteRoom(this.roomId);
+          }
         }
-        logger.debug(`Socket ${socket.id} left room.`);
-        if (clients.length === 0) {
-          this.database.deleteRoom(this.roomId);
-        }
+        logger.debug(`Socket ${socket.id} left room ${this.roomId}.`);
+        resolve();
       });
-    return Promise.resolve();
+    });
   }
 
   private createUsername(username: string): Promise<void> {
