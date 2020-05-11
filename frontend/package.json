@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "react-scripts start",
+    "dev:docker": "react-scripts --max_old_space_size=4096 start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "lint": "eslint --ext ts,tsx ."
   },

@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "ts-node-dev --inspect -- src/index.ts",
+    "dev:docker": "ts-node-dev --poll --inspect -- src/index.ts",
     "start": "node build/index.js",
     "build": "tsc",
     "lint": "eslint --ext ts .",
