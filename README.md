@@ -10,6 +10,9 @@
       alt="Netlify Status" />
   </a>
 </p>
+<p align="center">
+  <img width="50%" src="https://raw.githubusercontent.com/ubclaunchpad/sync/master/.static/banner.png" />
+</p>
 
 Sync is a synchronous YouTube streaming app for you to watch, share, and talk about videos with your friends. Create stream rooms with your friends. Chat and video call your friends and create endless playlists to watch videos together.
 
