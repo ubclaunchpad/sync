@@ -14,7 +14,8 @@ enum Event {
   UPDATE_ROOM = "update room",
   UPDATE_VIDEO_STATE = "update video state",
   VIDEO_ENDED = "video ended",
-  GET_ALL_USERNAMES = "get all user names"
+  GET_ALL_USERNAMES = "get all user names",
+  REMOVE_USER = "remove user"
 }
 
 export default Event;
