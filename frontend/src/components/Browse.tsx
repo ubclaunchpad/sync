@@ -8,10 +8,6 @@ import GridListTileBar from "@material-ui/core/GridListTileBar";
 import logo from "../assets/logo.png";
 import "../styles/Browse.css";
 
-interface Props {
-  classes: any;
-}
-
 interface State {
   roomList: any;
   vidTitle: any;
@@ -19,10 +15,10 @@ interface State {
   height: any;
 }
 
-export class Browse extends React.Component<Props, State> {
+export class Browse extends React.Component<{}, State> {
   private api: string;
 
-  constructor(props: Props) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       roomList: [],
@@ -38,9 +34,12 @@ export class Browse extends React.Component<Props, State> {
     try {
       const res = await axios.get(`${this.api}/api/rooms`);
       for (const key in res.data) {
-        axios.get(`${this.api}/api/youtubeinfo/` + res.data[key].currVideoId).then((title: any) => {
-          this.state.vidTitle[res.data[key].currVideoId] = title.data;
-          this.setState({ vidTitle: this.state.vidTitle });
+        axios.get(`${this.api}/api/videotitle/` + res.data[key].currVideoId).then((resp) => {
+          this.setState((prevState) => {
+            const vidTitle = Object.assign({}, prevState.vidTitle);
+            vidTitle[res.data[key].currVideoId] = resp.data;
+            return { vidTitle };
+          });
         });
       }
       this.setState({
@@ -55,9 +54,7 @@ export class Browse extends React.Component<Props, State> {
   }
 
   mediaCard(room: any, key: any) {
-    const { classes } = this.props;
     const roomId = key.split(":")[1];
-    console.log(roomId, this.state.vidTitle);
     return (
       <Grow in={true} timeout="auto" key={key}>
         <GridListTile
@@ -80,12 +77,11 @@ export class Browse extends React.Component<Props, State> {
   }
 
   render() {
-    console.log("rendering");
     return (
       <div className="browse">
         <div className="title">
           <Link href="/">
-            <img className="logo" src={logo}></img>
+            <img className="logo" src={logo} alt="logo"></img>
           </Link>
           <h2 className="heading">DISCOVER ROOMS</h2>
         </div>

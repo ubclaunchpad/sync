@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import Database from "./database";
 import uniqid from "uniqid";
-import fetchVideoInfo from "youtube-info";
+import axios from "axios";
 
 export default class API {
   public router: Router;
@@ -19,18 +19,7 @@ export default class API {
     this.router.get("/rooms/:id", this.getRoom.bind(this));
     this.router.delete("/rooms/:id", this.deleteRoom.bind(this));
     this.router.post("/rooms", this.createRoom.bind(this));
-    this.router.get("/youtubeinfo/:id", this.getYoutubeInfo.bind(this));
-  }
-
-  private async getYoutubeInfo(req: Request, res: Response): Promise<void> {
-    try {
-      fetchVideoInfo(req.params.id, function (err: any, videoInfo: any) {
-        if (err) throw new Error(err);
-        res.send(videoInfo.title);
-      });
-    } catch (err) {
-      res.status(500).send("Error: Couldn't create room.");
-    }
+    this.router.get("/videotitle/:id", this.getVideoTitle.bind(this));
   }
 
   private getStatus(req: Request, res: Response): void {
@@ -83,6 +72,17 @@ export default class API {
       res.send(roomId);
     } catch (err) {
       res.status(500).send("Error: Couldn't create room.");
+    }
+  }
+
+  private async getVideoTitle(req: Request, res: Response): Promise<void> {
+    try {
+      const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${req.params.id}&format=json`;
+      const resp = await axios.get(url);
+      res.send(resp.data.title);
+    } catch (err) {
+      console.error(err);
+      res.status(404).send(`Error: Youtube video not found with id ${req.params.id}.`);
     }
   }
 }
