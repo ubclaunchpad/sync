@@ -207,6 +207,12 @@ class Room extends React.Component<Props, State> {
       this.socket.emit(Event.UPDATE_VIDEO_STATE, updateVideoStateRequest);
     });
 
+    this.socket.on(Event.REMOVE_USER, (socketId: string) => {
+      const users = Object.assign({}, this.state.users);
+      delete users[socketId];
+      this.setState({ users });
+    });
+
     this.socket.emit(Event.REQUEST_VIDEO_STATE);
   }
 
@@ -241,7 +247,7 @@ class Room extends React.Component<Props, State> {
   changeUsernameAndEmit(givenUsername: string): void {
     this.setState(
       {
-        username: givenUsername,
+        username: givenUsername ? givenUsername : this.state.username,
         modal: ModalType.NONE
       },
       () => {
