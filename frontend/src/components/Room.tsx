@@ -328,6 +328,11 @@ class Room extends React.Component<Props, State> {
               onStateChange: this.handleOnStateChange,
               onReady: this.handleOnReady
             }}
+            playerVars={{
+              color: "white",
+              rel: 0,
+              modestbranding: 1
+            }}
           />
           <Queue videos={this.state.videoQueue} socket={this.socket} />
         </React.Fragment>
