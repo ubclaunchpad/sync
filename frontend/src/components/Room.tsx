@@ -241,7 +241,7 @@ class Room extends React.Component<Props, State> {
   changeUsernameAndEmit(givenUsername: string): void {
     this.setState(
       {
-        username: givenUsername,
+        username: givenUsername ? givenUsername : this.state.username,
         modal: ModalType.NONE
       },
       () => {
