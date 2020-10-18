@@ -284,9 +284,8 @@ class Room extends React.Component<Props, State> {
           name: res.data.name,
           videoQueue: res.data.videoQueue
         });
-        axios.get(`${this.api}/api/youtubeinfo/` + res.data.currVideoId).then((title: any) => {
-          this.setState({ currVideoTitle: title.data });
-          console.log(title);
+        axios.get(`${this.api}/api/videotitle/` + res.data.currVideoId).then((res) => {
+          this.setState({ currVideoTitle: res.data });
         });
       } else {
         this.setState({
