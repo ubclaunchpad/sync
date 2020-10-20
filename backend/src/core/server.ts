@@ -5,10 +5,8 @@ import socketIo from "socket.io";
 import Database from "./database";
 import API from "./api";
 import Event from "../sockets/event";
-import joinRoom from "../sockets/handler";
 import logger from "../config/logger";
 import RoomSocketHandler from "../sockets/handler";
-import ExtendedSocket from "../models/extendedSocket";
 
 export default class Server {
   private app: express.Application;
