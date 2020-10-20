@@ -1,4 +1,4 @@
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import Event from "./event";
 import axios from "axios";
 import logger from "../config/logger";
