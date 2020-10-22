@@ -6,13 +6,13 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Link from "@material-ui/core/Link";
+import ParticlesBg from "particles-bg";
 import { withStyles } from "@material-ui/core";
 import logo from "../assets/logo.png";
 import createIcon from "../assets/icon-create.svg";
 import browseIcon from "../assets/icon-browse.svg";
 import joinIcon from "../assets/icon-join.svg";
-import bgVid from "../assets/background.mp4";
-import "../styles/Home.css";
+import styles from "../styles/Home";
 
 enum ModalType {
   NONE = 0,
@@ -39,44 +39,30 @@ class Home extends React.Component<Props, State> {
   render() {
     const { classes } = this.props;
     return (
-      <div className="home">
-        <video autoPlay muted loop className="bgVid">
-          {/* source: https://www.pexels.com/video/3570814/ */}
-          <source src={bgVid} type="video/mp4" />
-        </video>
-        <div className="overlay">
-          <div className="navContainer">
-            <div className="navLeft">
-              <Link href="/">
-                <img className="logo" src={logo}></img>
-              </Link>
-            </div>
+      <div className={classes.home}>
+        <ParticlesBg type="circle" bg={true} />
+        <div className={classes.overlay}>
+          <div className={classes.navContainer}>
+            <Link href="/">
+              <img className={classes.logo} src={logo} alt="Logo"></img>
+            </Link>
           </div>
-
-          <Button
-            classes={{ root: classes.root, textPrimary: classes.textPrimary }}
-            onClick={() => this.setState({ modal: ModalType.CREATE })}
-            color="primary"
-          >
+          <Button className={classes.btn} onClick={() => this.setState({ modal: ModalType.CREATE })} color="primary">
             <div>
-              <img src={createIcon}></img>
+              <img src={createIcon} alt="Create Icon"></img>
               <div>Create Room</div>
             </div>
           </Button>
-          <Button
-            classes={{ root: classes.root, textPrimary: classes.textPrimary }}
-            onClick={() => this.setState({ modal: ModalType.JOIN })}
-            color="primary"
-          >
+          <Button className={classes.btn} onClick={() => this.setState({ modal: ModalType.JOIN })} color="primary">
             <div>
-              <img src={joinIcon}></img>
+              <img src={joinIcon} alt="Join Icon"></img>
               <div>Join Room</div>
             </div>
           </Button>
-          <Link href="/rooms">
-            <Button classes={{ root: classes.root, textPrimary: classes.textPrimary }} color="primary">
+          <Link href="/rooms" underline="none">
+            <Button className={classes.btn} color="primary">
               <div>
-                <img src={browseIcon}></img>
+                <img src={browseIcon} alt="Browse Icon"></img>
                 <div>Browse Rooms</div>
               </div>
             </Button>
@@ -121,8 +107,8 @@ class Home extends React.Component<Props, State> {
               </div>
             </Fade>
           </Modal>
-          <div className="footer">
-            <p className="subtext">
+          <div className={classes.footer}>
+            <p>
               A{" "}
               <a href="https://ubclaunchpad.com" target="_blank" rel="noopener noreferrer">
                 UBC Launch Pad
@@ -139,34 +125,4 @@ class Home extends React.Component<Props, State> {
   }
 }
 
-const materialUiStyles = {
-  root: {
-    background: "#000000",
-    height: "292px",
-    width: "212px",
-    marginRight: "50px",
-    marginLeft: "50px",
-    border: "2px solid #051633",
-    borderRadius: "10px",
-    opacity: "1 !important"
-  },
-  textPrimary: {
-    color: "white"
-  },
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  paper: {
-    background: "rgba(34,34,34,0.99)",
-    border: "1px solid #000",
-    maxWidth: "700px",
-    height: "400px",
-    borderRadius: "20px",
-    outline: "none",
-    padding: "2em"
-  }
-};
-
-export default withStyles(materialUiStyles)(Home);
+export default withStyles(styles)(Home);
