@@ -9,11 +9,9 @@ import "typeface-roboto";
 
 const App = (
   <Router>
-    <div>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/rooms/:id" component={Room} />
-      <Route exact path="/rooms" component={Browse} />
-    </div>
+    <Route exact path="/" component={Home} />
+    <Route exact path="/rooms/:id" component={Room} />
+    <Route exact path="/rooms" component={Browse} />
   </Router>
 );
 
