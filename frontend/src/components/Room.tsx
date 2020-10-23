@@ -393,7 +393,7 @@ class Room extends React.Component<Props, State> {
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
           className={classes.modal}
-          open={this.state.modal == ModalType.CREATE_USERNAME}
+          open={this.state.modal === ModalType.CREATE_USERNAME}
           onClose={() => {
             this.setState({
               modal: ModalType.NONE
@@ -405,7 +405,7 @@ class Room extends React.Component<Props, State> {
             timeout: 500
           }}
         >
-          <Fade in={this.state.modal == ModalType.CREATE_USERNAME}>
+          <Fade in={this.state.modal === ModalType.CREATE_USERNAME}>
             <div className={classes.paper}>
               <Username changeUsernameAndEmit={this.changeUsernameAndEmit} />
             </div>
