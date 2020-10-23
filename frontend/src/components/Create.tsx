@@ -57,7 +57,7 @@ class Create extends React.Component<Props, State> {
 
   async handleCreateRoom() {
     // check if state.url leads to a YouTube video
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
     const match = this.state.url.match(regExp);
     if (match && match[2].length === 11) {
       const res = await axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:8080"}/api/rooms`, {
@@ -98,7 +98,7 @@ class Create extends React.Component<Props, State> {
       <Container className={classes.container}>
         {this.redirectIfRoomCreated()}
         <Typography style={{ fontFamily: "Libre Baskerville" }} align="center" variant="h4">
-          Create Room
+          Create A Room
         </Typography>
         <div style={{ margin: "1.2em 0" }}>
           <TextField

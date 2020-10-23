@@ -72,7 +72,7 @@ class Join extends React.Component<Props, State> {
       <Container className={classes.container}>
         {this.redirectIfRoomJoined()}
         <Typography style={{ fontFamily: "Libre Baskerville" }} align="center" variant="h4">
-          Join Room
+          Join A Room
         </Typography>
         <div style={{ margin: "1.2em 0" }}>
           <TextField

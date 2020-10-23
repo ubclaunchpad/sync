@@ -6,7 +6,7 @@ export default (theme: any) =>
       textAlign: "center"
     },
     overlay: {
-      background: "#030B1E",
+      background: "#080D19",
       height: "100vh",
       width: "100vw",
       opacity: "0.88"
