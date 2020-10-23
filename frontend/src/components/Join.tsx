@@ -1,11 +1,12 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
-import { withStyles, createStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import "../styles/Create.css";
-import { Typography } from "@material-ui/core";
+import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
 import Container from "@material-ui/core/Container";
+import Button from "@material-ui/core/Button";
+import { Typography } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import styles from "../styles/Modal";
 
 interface Props {
   classes: any;
@@ -70,91 +71,53 @@ class Join extends React.Component<Props, State> {
     return (
       <Container className={classes.container}>
         {this.redirectIfRoomJoined()}
-        <Typography style={{ marginTop: "0.5em" }} align="center" variant="h5">
+        <Typography style={{ fontFamily: "Libre Baskerville" }} align="center" variant="h4">
           Join Room
         </Typography>
-        <div style={{ marginTop: "50px" }}>
+        <div style={{ margin: "1.2em 0" }}>
           <TextField
+            fullWidth
             onChange={this.handleRoomIdFieldChange}
             onKeyUp={this.handleEnterPressed}
-            id="outlined-basic"
             className={classes.textField}
-            label="Room Id"
+            label="Room ID"
             margin="normal"
             variant="outlined"
             InputLabelProps={{
               className: classes.inputLabel
             }}
             InputProps={{
-              className: classes.MuiInputBaseRoot
+              className: classes.input
             }}
           />
           <TextField
+            fullWidth
             onChange={this.handleUsernameFieldChange}
             onKeyUp={this.handleEnterPressed}
-            id="outlined-basic"
             className={classes.textField}
-            label="Username (Optional)"
+            label="Username (optional)"
             margin="normal"
             variant="outlined"
             InputLabelProps={{
               className: classes.inputLabel
             }}
             InputProps={{
-              className: classes.MuiInputBaseRoot
+              className: classes.input
             }}
           />
         </div>
-        <Button onClick={this.handleJoinRoom} variant="outlined" className={classes.button}>
-          Submit
+        <Button
+          onClick={this.handleJoinRoom}
+          variant="contained"
+          className={classes.button}
+          endIcon={<DoubleArrowIcon />}
+          size="medium"
+        >
+          ENTER
         </Button>
       </Container>
     );
   }
 }
 
-const materialUiStyles = createStyles({
-  container: {
-    textAlign: "center",
-    color: "#FFFFFF"
-  },
-  textField: {
-    marginLeft: "0",
-    marginRight: "0",
-    width: "500px",
-    background: "rgba(255, 255, 255, 0.08)",
-    "& .MuiOutlinedInput-root": {
-      "&.Mui-focused fieldset": {
-        borderColor: "#FFFFFF",
-        borderWidth: "2px",
-        color: "#FFFFFF"
-      }
-    }
-  },
-  button: {
-    background: "#FFFFFF",
-    boxSizing: "border-box",
-    borderRadius: "5px",
-    color: "#001953",
-    "&:hover": {
-      backgroundColor: "#001953",
-      color: "white"
-    },
-    marginTop: "75px",
-    padding: "0.5em 2em"
-  },
-  input: {
-    color: "#FFFFFF !important"
-  },
-  MuiInputBaseRoot: {
-    color: "#FFFFFF"
-  },
-  inputLabel: {
-    color: "#FFFFFF",
-    "&.Mui-focused": {
-      color: "#FFFFFF"
-    }
-  }
-});
-
-export default withStyles(materialUiStyles)(Join);
+export default withStyles(styles)(Join);

@@ -2,11 +2,14 @@ import React from "react";
 import axios from "axios";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { withStyles, createStyles } from "@material-ui/core/styles";
-import { Redirect } from "react-router-dom";
-import "../styles/Create.css";
-import { Typography } from "@material-ui/core";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
+import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
 import Container from "@material-ui/core/Container";
+import { Redirect } from "react-router-dom";
+import { Typography } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import styles from "../styles/Modal";
 
 interface Props {
   classes: any;
@@ -64,7 +67,7 @@ class Create extends React.Component<Props, State> {
       });
       this.setState({ id: res.data, redirect: true });
     } else {
-      this.setState({ errorMsg: "Invalid URL" });
+      this.setState({ errorMsg: "Enter a valid YouTube video URL" });
     }
   }
 
@@ -94,14 +97,14 @@ class Create extends React.Component<Props, State> {
     return (
       <Container className={classes.container}>
         {this.redirectIfRoomCreated()}
-        <Typography style={{ marginTop: "0.5em" }} align="center" variant="h5">
+        <Typography style={{ fontFamily: "Libre Baskerville" }} align="center" variant="h4">
           Create Room
         </Typography>
-        <div style={{ marginTop: "20px" }}>
+        <div style={{ margin: "1.2em 0" }}>
           <TextField
+            fullWidth
             onChange={this.handleNameFieldChange}
             onKeyUp={this.handleEnterPressed}
-            id="outlined-basic"
             className={classes.textField}
             label="Room Name"
             margin="normal"
@@ -110,96 +113,68 @@ class Create extends React.Component<Props, State> {
               className: classes.inputLabel
             }}
             InputProps={{
-              className: classes.MuiInputBaseRoot
+              className: classes.input
             }}
           />
           <TextField
+            fullWidth
             onChange={this.handleUrlFieldChange}
             onKeyUp={this.handleEnterPressed}
-            id="outlined-basic"
             className={classes.textField}
-            label="Video URL"
+            label="YouTube Video URL"
             margin="normal"
             variant="outlined"
             InputLabelProps={{
               className: classes.inputLabel
             }}
             InputProps={{
-              className: classes.MuiInputBaseRoot
+              className: classes.input
             }}
           />
           <TextField
+            fullWidth
             onChange={this.handleUsernameFieldChange}
             onKeyUp={this.handleEnterPressed}
-            id="outlined-basic"
             className={classes.textField}
-            label="Username (Optional)"
+            label="Username (optional)"
             margin="normal"
             variant="outlined"
             InputLabelProps={{
               className: classes.inputLabel
             }}
             InputProps={{
-              className: classes.MuiInputBaseRoot
+              className: classes.input
             }}
           />
         </div>
-        {this.state.errorMsg ? <p style={{ color: "red" }}>{this.state.errorMsg}</p> : ""}
         <Button
           onClick={this.handleCreateRoom}
-          variant="outlined"
+          variant="contained"
           className={classes.button}
-          style={{ marginTop: "35px" }}
+          endIcon={<DoubleArrowIcon />}
+          size="medium"
         >
-          Create
+          ENTER
         </Button>
+        <Snackbar
+          open={this.state.errorMsg !== ""}
+          autoHideDuration={6000}
+          onClose={() => {
+            this.setState({ errorMsg: "" });
+          }}
+        >
+          <Alert
+            onClose={() => {
+              this.setState({ errorMsg: "" });
+            }}
+            severity="error"
+          >
+            {this.state.errorMsg}
+          </Alert>
+        </Snackbar>
       </Container>
     );
   }
 }
 
-const materialUiStyles = createStyles({
-  container: {
-    textAlign: "center",
-    color: "#FFFFFF"
-  },
-  textField: {
-    marginLeft: "0",
-    marginRight: "0",
-    width: "500px",
-    background: "rgba(255, 255, 255, 0.08)",
-    "& .MuiOutlinedInput-root": {
-      "&.Mui-focused fieldset": {
-        borderColor: "#FFFFFF",
-        borderWidth: "2px",
-        color: "#FFFFFF"
-      }
-    }
-  },
-  button: {
-    background: "#FFFFFF",
-    boxSizing: "border-box",
-    borderRadius: "5px",
-    color: "#001953",
-    "&:hover": {
-      backgroundColor: "#001953",
-      color: "white"
-    },
-    marginTop: "100px",
-    padding: "0.5em 2em"
-  },
-  input: {
-    color: "#FFFFFF !important"
-  },
-  MuiInputBaseRoot: {
-    color: "#FFFFFF"
-  },
-  inputLabel: {
-    color: "#FFFFFF",
-    "&.Mui-focused": {
-      color: "#FFFFFF"
-    }
-  }
-});
-
-export default withStyles(materialUiStyles)(Create);
+export default withStyles(styles)(Create);

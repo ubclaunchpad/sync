@@ -65,20 +65,23 @@ export default (theme: any) =>
       justifyContent: "center"
     },
     paper: {
-      background: "rgba(34,34,34,0.99)",
-      border: "1px solid #000",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "rgb(34, 34, 34)",
       maxWidth: "700px",
-      height: "400px",
-      borderRadius: "20px",
       outline: "none",
-      padding: "2em"
+      borderRadius: "10px",
+      padding: "2em",
+      boxShadow: "0px 0px 20px 20px rgb(10 10 10 / 30%)"
     },
     footer: {
       position: "absolute",
       bottom: "0",
       width: "100%",
       marginBottom: "10px",
-      fontSize: "10px",
+      fontSize: "9px",
+      fontFamily: "Libre Baskerville",
       "& p": {
         color: "#fff",
         "& a": {

@@ -6,6 +6,7 @@ import Home from "./components/Home";
 import Browse from "./components/Browse";
 import "./styles/index.css";
 import "typeface-roboto";
+import "typeface-libre-baskerville";
 
 const App = (
   <Router>

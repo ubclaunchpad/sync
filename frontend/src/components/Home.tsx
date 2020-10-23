@@ -4,7 +4,7 @@ import Join from "./Join";
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
-import Fade from "@material-ui/core/Fade";
+import Grow from "@material-ui/core/Grow";
 import Link from "@material-ui/core/Link";
 import ParticlesBg from "particles-bg";
 import { withStyles } from "@material-ui/core";
@@ -81,11 +81,11 @@ class Home extends React.Component<Props, State> {
               timeout: 500
             }}
           >
-            <Fade in={this.state.modal === ModalType.CREATE}>
+            <Grow in={this.state.modal === ModalType.CREATE}>
               <div className={classes.paper}>
                 <Create />
               </div>
-            </Fade>
+            </Grow>
           </Modal>
 
           <Modal
@@ -101,11 +101,11 @@ class Home extends React.Component<Props, State> {
               timeout: 500
             }}
           >
-            <Fade in={this.state.modal === ModalType.JOIN}>
+            <Grow in={this.state.modal === ModalType.JOIN}>
               <div className={classes.paper}>
                 <Join />
               </div>
-            </Fade>
+            </Grow>
           </Modal>
           <div className={classes.footer}>
             <p>
