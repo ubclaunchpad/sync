@@ -1,38 +1,5 @@
-.container {
-  background: #030B1E;
-  min-height: 100vh;
-}
-
-
-.roomTitle {
-  font-family: "Roboto", sans-serif;
-  color:  #FF6666;
-  font-style: normal;
-  font-weight: 1000;
-  font-size: 24px;
-  line-height: 28px;
-}
-
-.roomSyncTitle {
-  font-family: Proxima Nova;
-  font-style: normal;
-  font-weight: bold;
-  text-transform: lowercase;
-  letter-spacing: 0.05em;
-  color: white;
-  font-size: 40px;
-  position: absolute;
-  left: 69px;
-  top: -13px;
-}
-
-.syncRoomLogo {
-  margin-left: 8px;
-}
-
 .shareContainer {
   display: flex;
-  justify-content: center;
 }
 
 .shareDiv {

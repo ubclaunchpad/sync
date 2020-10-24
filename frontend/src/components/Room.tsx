@@ -17,10 +17,10 @@ import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-gene
 import RoomData from "../models/room";
 import VideoState, { PlayerState } from "../models/videoState";
 import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
-import { Modal, Backdrop, Fade, withStyles, Container, Grid, Link } from "@material-ui/core";
+import { Modal, Backdrop, Fade, withStyles, Container, Grid, Link, createStyles } from "@material-ui/core";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
-import playButton from "../assets/playButton.svg";
+import logo from "../assets/logo.png";
 
 enum ModalType {
   NONE = 0,
@@ -91,7 +91,7 @@ class Room extends React.Component<Props, State> {
   //If initializing users, set all username values to null
   handleSetUsers(users: string[]) {
     if (Object.keys(this.state.users).length > 0) {
-      users.map((user) => {
+      users.forEach((user) => {
         if (!(user in this.state.users)) {
           const newState = this.state.users;
           newState[user] = null;
@@ -101,7 +101,7 @@ class Room extends React.Component<Props, State> {
       this.socket.emit(Event.GET_ALL_USERNAMES);
     } else {
       const userObj: any = {};
-      users.map((userId) => {
+      users.forEach((userId) => {
         userObj[userId] = null;
       });
       this.setState({ users: userObj });
@@ -346,24 +346,21 @@ class Room extends React.Component<Props, State> {
     ) : null;
 
     return (
-      <div className="container">
+      <div className={classes.container}>
         <Grid container spacing={3}>
           <Grid item xs>
             <Link href="/">
-              <h1 className="roomSyncTitle">
-                SYNC
-                <span>
-                  <img className="syncRoomLogo" src={playButton} alt="playbutton"></img>
-                </span>
-              </h1>
+              <img className={classes.logo} src={logo} alt="Logo"></img>
             </Link>
           </Grid>
           <Grid item xs={5} style={{ textAlign: "center" }}>
-            <h3 className="roomTitle">{this.state.name || "Room" + id}</h3>
-            <h3 style={{ color: "white" }}>{this.state.currVideoTitle || "TITLE"}</h3>
+            <p className={classes.roomTitle}>{this.state.name || "Room" + id}</p>
+            <p className={classes.videoTitle}>
+              <span style={{ fontWeight: "bold" }}>PLAYING: </span>
+              {this.state.currVideoTitle}
+            </p>
           </Grid>
           <Grid item xs className="shareContainer">
-            {/* empty here to keep spacing */}
             <div className="shareDiv">
               <Share roomUrl={window.location.href} />
             </div>
@@ -416,33 +413,52 @@ class Room extends React.Component<Props, State> {
   }
 }
 
-const materialUiStyles = {
-  root: {
-    background: "#000000",
-    height: "292px",
-    width: "212px",
-    marginRight: "50px",
-    marginLeft: "50px",
-    border: "2px solid #051633",
-    borderRadius: "10px",
-    opacity: "1 !important"
-  },
-  textPrimary: {
-    color: "white"
-  },
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  paper: {
-    background: "rgba(34,34,34,0.99)",
-    border: "1px solid #000",
-    maxWidth: "700px",
-    borderRadius: "20px",
-    outline: "none",
-    padding: "2em"
-  }
-};
+const styles = (theme: any) =>
+  createStyles({
+    container: {
+      background: "#080D19",
+      height: "100vh"
+    },
+    logo: {
+      height: "100px",
+      paddingTop: "15px",
+      paddingLeft: "50px",
+      [theme.breakpoints.down("sm")]: {
+        height: "70px",
+        paddingLeft: "15px"
+      }
+    },
+    roomTitle: {
+      fontFamily: "Libre Baskerville",
+      color: "#FF6666",
+      fontWeight: "bold",
+      fontStyle: "italic",
+      fontSize: "24px",
+      [theme.breakpoints.down("sm")]: {
+        fontSize: "18px",
+        marginTop: "30px"
+      }
+    },
+    videoTitle: {
+      color: "#FFFFFF",
+      fontSize: "16px",
+      [theme.breakpoints.down("sm")]: {
+        display: "none"
+      }
+    },
+    modal: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    },
+    paper: {
+      background: "rgba(34,34,34,0.99)",
+      border: "1px solid #000",
+      maxWidth: "700px",
+      borderRadius: "20px",
+      outline: "none",
+      padding: "2em"
+    }
+  });
 
-export default withStyles(materialUiStyles)(Room);
+export default withStyles(styles)(Room);
