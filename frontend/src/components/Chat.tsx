@@ -57,20 +57,18 @@ class Chat extends React.Component<Props, State> {
 
     for (const m of this.props.messages) {
       chat.push(
-        <span>
-          <ListItemText
-            className={classes.message}
-            key={count}
-            primary={
-              <span>
-                <div style={{ paddingLeft: 16 }}>
-                  <span className={classes.userMessageLabel}>{setUser(m)}</span>
-                  {" " + m.message}
-                </div>
-              </span>
-            }
-          />
-        </span>
+        <ListItemText
+          className={classes.message}
+          key={count}
+          primary={
+            <span>
+              <div style={{ paddingLeft: 16 }}>
+                <span className={classes.userMessageLabel}>{setUser(m)}</span>
+                {" " + m.message}
+              </div>
+            </span>
+          }
+        />
       );
       count++;
     }
