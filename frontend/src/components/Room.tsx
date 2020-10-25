@@ -1,26 +1,32 @@
 import React from "react";
+import { RouteComponentProps } from "react-router-dom";
 import io from "socket.io-client";
 import axios, { AxiosResponse } from "axios";
 import Lottie from "react-lottie";
 import Event from "../sockets/event";
-import "../styles/Room.css";
-import loadingIndicator from "../lotties/loading.json";
 import Player from "./Player";
 import Chat from "./Chat";
 import Share from "./Share";
 import Queue from "./Queue";
-import Video from "../models/video";
-import RoomInfo from "../models/room";
-import { RouteComponentProps } from "react-router-dom";
-import Message from "../models/message";
-import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-generator";
-import RoomData from "../models/room";
-import VideoState, { PlayerState } from "../models/videoState";
-import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
-import { Modal, Backdrop, Fade, withStyles, Container, Grid, Link, createStyles } from "@material-ui/core";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
+import Video from "../models/video";
+import RoomInfo from "../models/room";
+import RoomData from "../models/room";
+import Message from "../models/message";
+import { VideoState, PlayerState } from "../models/videoState";
+import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
+import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-generator";
+import { withStyles, createStyles } from "@material-ui/core";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Grow from "@material-ui/core/Grow";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
+import Link from "@material-ui/core/Link";
+import loadingIndicator from "../lotties/loading.json";
 import logo from "../assets/logo.png";
+import "../styles/Room.css";
 
 enum ModalType {
   NONE = 0,
@@ -387,8 +393,6 @@ class Room extends React.Component<Props, State> {
 
         <Modal
           disableAutoFocus={true}
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
           className={classes.modal}
           open={this.state.modal === ModalType.CREATE_USERNAME}
           onClose={() => {
@@ -402,11 +406,11 @@ class Room extends React.Component<Props, State> {
             timeout: 500
           }}
         >
-          <Fade in={this.state.modal === ModalType.CREATE_USERNAME}>
+          <Grow in={this.state.modal === ModalType.CREATE_USERNAME}>
             <div className={classes.paper}>
               <Username changeUsernameAndEmit={this.changeUsernameAndEmit} />
             </div>
-          </Fade>
+          </Grow>
         </Modal>
       </div>
     );
@@ -452,12 +456,15 @@ const styles = (theme: any) =>
       justifyContent: "center"
     },
     paper: {
-      background: "rgba(34,34,34,0.99)",
-      border: "1px solid #000",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "rgb(34, 34, 34)",
       maxWidth: "700px",
-      borderRadius: "20px",
       outline: "none",
-      padding: "2em"
+      borderRadius: "10px",
+      padding: "2em",
+      boxShadow: "0px 0px 20px 20px rgb(10 10 10 / 30%)"
     }
   });
 

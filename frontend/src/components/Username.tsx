@@ -1,9 +1,11 @@
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { withStyles, createStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
+import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
+import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
+import { withStyles, createStyles } from "@material-ui/core/styles";
+import styles from "../styles/Modal";
 
 interface Props {
   classes: any;
@@ -48,82 +50,39 @@ class Username extends React.Component<Props, State> {
     const { classes } = this.props;
     return (
       <Container className={classes.container}>
-        <Typography style={{ marginTop: "0.5em" }} align="center" variant="h5">
-          Create Username
+        <Typography style={{ fontFamily: "Libre Baskerville" }} align="center" variant="h4">
+          Pick A Username
         </Typography>
-        <div style={{ marginTop: "20px" }}>
+        <div style={{ margin: "1.2em 0" }}>
           <TextField
+            fullWidth
             onChange={this.handleUsernameFieldChange}
             onKeyUp={this.handleEnterPressed}
-            id="outlined-basic"
             className={classes.textField}
-            label="Username (Optional)"
+            label="Username (optional)"
             margin="normal"
             variant="outlined"
             InputLabelProps={{
               className: classes.inputLabel
             }}
             InputProps={{
-              className: classes.MuiInputBaseRoot
+              className: classes.input
             }}
           />
         </div>
         {this.state.errorMsg ? <p style={{ color: "red" }}>{this.state.errorMsg}</p> : ""}
         <Button
           onClick={this.handleCreateUsername}
-          variant="outlined"
+          variant="contained"
           className={classes.button}
-          style={{ marginTop: "35px" }}
+          endIcon={<DoubleArrowIcon />}
+          size="medium"
         >
-          Create
+          ENTER
         </Button>
       </Container>
     );
   }
 }
 
-const materialUiStyles = createStyles({
-  container: {
-    textAlign: "center",
-    color: "#FFFFFF"
-  },
-  textField: {
-    marginLeft: "0",
-    marginRight: "0",
-    width: "500px",
-    background: "rgba(255, 255, 255, 0.08)",
-    "& .MuiOutlinedInput-root": {
-      "&.Mui-focused fieldset": {
-        borderColor: "#FFFFFF",
-        borderWidth: "2px",
-        color: "#FFFFFF"
-      }
-    }
-  },
-  button: {
-    background: "#FFFFFF",
-    boxSizing: "border-box",
-    borderRadius: "5px",
-    color: "#001953",
-    "&:hover": {
-      backgroundColor: "#001953",
-      color: "#FFFFFF"
-    },
-    marginTop: "100px",
-    padding: "0.5em 2em"
-  },
-  input: {
-    color: "#FFFFFF !important"
-  },
-  MuiInputBaseRoot: {
-    color: "#FFFFFF"
-  },
-  inputLabel: {
-    color: "#FFFFFF",
-    "&.Mui-focused": {
-      color: "#FFFFFF"
-    }
-  }
-});
-
-export default withStyles(materialUiStyles)(Username);
+export default withStyles(styles)(Username);

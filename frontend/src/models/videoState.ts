@@ -7,7 +7,7 @@ export enum PlayerState {
   CUED = 5
 }
 
-export default interface VideoState {
+export interface VideoState {
   secondsElapsed: number;
   playerState: PlayerState;
 }
