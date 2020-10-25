@@ -316,6 +316,7 @@ class Room extends React.Component<Props, State> {
   render() {
     const { classes } = this.props;
     const username = this.state.username;
+    const { id } = this.props.match.params;
     const defaultOptions = {
       loop: true,
       autoplay: true,
@@ -324,32 +325,36 @@ class Room extends React.Component<Props, State> {
         preserveAspectRatio: "xMidYMid slice"
       }
     };
-    const { id } = this.props.match.params;
-    const videoPlayer =
-      this.state.isLoaded && this.state.isValid ? (
-        <React.Fragment>
-          <Player
-            videoId={this.state.currVideoId}
-            events={{
-              onStateChange: this.handleOnStateChange,
-              onReady: this.handleOnReady
-            }}
-            playerVars={{
-              color: "white",
-              rel: 0,
-              modestbranding: 1
-            }}
-          />
-          <Queue videos={this.state.videoQueue} socket={this.socket} />
-        </React.Fragment>
-      ) : null;
 
-    const invalidRoomId =
-      this.state.isLoaded && !this.state.isValid ? <h1 style={{ color: "white" }}>Invalid room id :(</h1> : null;
+    if (!this.state.isLoaded) {
+      return <Lottie options={defaultOptions} height={400} width={400} />;
+    }
 
-    const showLoadingIndicator = !this.state.isLoaded ? (
-      <Lottie options={defaultOptions} height={400} width={400} />
-    ) : null;
+    if (this.state.isLoaded && !this.state.isValid) {
+      return (
+        <div className={classes.container} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <h1 style={{ color: "white", margin: "0px" }}>Room does not exist :-(</h1>
+        </div>
+      );
+    }
+
+    const videoPlayer = (
+      <React.Fragment>
+        <Player
+          videoId={this.state.currVideoId}
+          events={{
+            onStateChange: this.handleOnStateChange,
+            onReady: this.handleOnReady
+          }}
+          playerVars={{
+            color: "white",
+            rel: 0,
+            modestbranding: 1
+          }}
+        />
+        <Queue videos={this.state.videoQueue} socket={this.socket} />
+      </React.Fragment>
+    );
 
     return (
       <div className={classes.container}>
@@ -388,8 +393,6 @@ class Room extends React.Component<Props, State> {
             </Container>
           </Grid>
         </Grid>
-        {invalidRoomId}
-        {showLoadingIndicator}
 
         <Modal
           disableAutoFocus={true}
