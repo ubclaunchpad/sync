@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/Player.css";
 
 declare global {
   interface Window {

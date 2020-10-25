@@ -26,7 +26,6 @@ import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import loadingIndicator from "../lotties/loading.json";
 import logo from "../assets/logo.png";
-import "../styles/Room.css";
 
 enum ModalType {
   NONE = 0,
@@ -358,23 +357,21 @@ class Room extends React.Component<Props, State> {
 
     return (
       <div className={classes.container}>
-        <Grid container spacing={3}>
-          <Grid item xs>
+        <Grid container>
+          <Grid item xs={4}>
             <Link href="/">
               <img className={classes.logo} src={logo} alt="Logo"></img>
             </Link>
           </Grid>
-          <Grid item xs={5} style={{ textAlign: "center" }}>
+          <Grid item xs={4} style={{ textAlign: "center" }}>
             <p className={classes.roomTitle}>{this.state.name || "Room" + id}</p>
             <p className={classes.videoTitle}>
               <span style={{ fontWeight: "bold" }}>PLAYING: </span>
               {this.state.currVideoTitle}
             </p>
           </Grid>
-          <Grid item xs className="shareContainer">
-            <div className="shareDiv">
-              <Share roomUrl={window.location.href} />
-            </div>
+          <Grid item xs={4} className={classes.shareContainer} justify="flex-end">
+            <Share roomUrl={window.location.href} />
           </Grid>
         </Grid>
 
@@ -431,7 +428,7 @@ const styles = (theme: any) =>
       paddingTop: "15px",
       paddingLeft: "50px",
       [theme.breakpoints.down("sm")]: {
-        height: "70px",
+        height: "60px",
         paddingLeft: "15px"
       }
     },
@@ -442,8 +439,8 @@ const styles = (theme: any) =>
       fontStyle: "italic",
       fontSize: "24px",
       [theme.breakpoints.down("sm")]: {
-        fontSize: "18px",
-        marginTop: "30px"
+        marginTop: "30px",
+        fontSize: "20px"
       }
     },
     videoTitle: {
@@ -451,6 +448,14 @@ const styles = (theme: any) =>
       fontSize: "16px",
       [theme.breakpoints.down("sm")]: {
         display: "none"
+      }
+    },
+    shareContainer: {
+      textAlign: "right",
+      paddingRight: "40px",
+      paddingTop: "25px ",
+      [theme.breakpoints.down("sm")]: {
+        paddingRight: "5px"
       }
     },
     modal: {
