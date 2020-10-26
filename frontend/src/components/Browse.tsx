@@ -97,40 +97,39 @@ export class Browse extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <ParticlesBg type="circle" bg={true} />
-        <div className={classes.overlay}>
-          <div className={classes.navContainer}>
-            <Link href="/">
-              <img className={classes.logo} src={logo} alt="logo"></img>
-            </Link>
-            <div className={classes.infoContainer}>
-              <h2 className={classes.heading}>DISCOVER ROOMS</h2>
-              <div className={classes.shareBtns}>
-                <Tooltip title="Share to Facebook">
-                  <IconButton target="_blank" href={facebookURL}>
-                    <Facebook style={{ color: "rgb(33, 120, 232)" }}></Facebook>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Share to Reddit">
-                  <IconButton target="_blank" href={redditURL}>
-                    <Reddit style={{ color: "rgb(246, 69, 29)" }}></Reddit>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Share to Twitter">
-                  <IconButton target="_blank" href={twitterURL}>
-                    <Twitter style={{ color: "rgb(41, 159, 232)" }}></Twitter>
-                  </IconButton>
-                </Tooltip>
-              </div>
+        <div className={classes.navContainer}>
+          <Link href="/">
+            <img className={classes.logo} src={logo} alt="logo"></img>
+          </Link>
+          <div className={classes.infoContainer}>
+            <h2 className={classes.heading}>DISCOVER ROOMS</h2>
+            <div className={classes.shareBtns}>
+              <Tooltip title="Share to Facebook">
+                <IconButton target="_blank" href={facebookURL}>
+                  <Facebook style={{ color: "rgb(33, 120, 232)" }}></Facebook>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Share to Reddit">
+                <IconButton target="_blank" href={redditURL}>
+                  <Reddit style={{ color: "rgb(246, 69, 29)" }}></Reddit>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Share to Twitter">
+                <IconButton target="_blank" href={twitterURL}>
+                  <Twitter style={{ color: "rgb(41, 159, 232)" }}></Twitter>
+                </IconButton>
+              </Tooltip>
             </div>
           </div>
-          <div className={classes.roomList}>
-            <GridList cols={Math.ceil(this.state.width / 400)} spacing={30}>
-              {Object.keys(this.state.roomList).map((key) => {
-                return this.mediaCard(this.state.roomList[key], key, classes);
-              })}
-            </GridList>
-          </div>
         </div>
+        <div className={classes.roomList}>
+          <GridList cols={Math.ceil(this.state.width / 400)} spacing={30}>
+            {Object.keys(this.state.roomList).map((key) => {
+              return this.mediaCard(this.state.roomList[key], key, classes);
+            })}
+          </GridList>
+        </div>
+        <div className={classes.overlay}></div>
       </React.Fragment>
     );
   }

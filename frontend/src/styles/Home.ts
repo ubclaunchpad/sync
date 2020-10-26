@@ -6,10 +6,16 @@ export default (theme: any) =>
       textAlign: "center"
     },
     overlay: {
+      zIndex: -1,
+      position: "absolute",
       background: "#080D19",
       height: "100vh",
       width: "100vw",
-      opacity: "0.88"
+      opacity: "0.88",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0
     },
     navContainer: {
       height: "200px",
@@ -34,16 +40,18 @@ export default (theme: any) =>
     btn: {
       height: "340px",
       width: "250px",
-      background: "#000000",
+      background: "#00000080",
       fontSize: "18px",
       margin: "50px 80px",
       paddingTop: "20px",
       border: "1px solid #07101f",
-      boxShadow: "0px 0px 10px rgba(0, 0, 0)",
+      boxShadow: "0px 0px 15px 0px rgba(0, 0, 0, 0.75)",
       opacity: "1 !important",
       color: "white",
       transition: "transform 1s ease-in-out",
       "&:hover": {
+        background: "#00000010",
+        border: "1px solid #00000080",
         transform: "scale(1.05) translateY(-1vh);",
         color: "#F4F7FC"
       },
