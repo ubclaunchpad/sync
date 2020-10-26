@@ -62,8 +62,7 @@ class Create extends React.Component<Props, State> {
     if (match && match[2].length === 11) {
       const res = await axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:8080"}/api/rooms`, {
         currVideoId: match[2],
-        name: this.state.name,
-        videoQueue: []
+        name: this.state.name
       });
       this.setState({ id: res.data, redirect: true });
     } else {

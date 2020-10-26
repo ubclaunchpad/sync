@@ -2,6 +2,8 @@ import { Router, Request, Response } from "express";
 import Database from "./database";
 import uniqid from "uniqid";
 import axios from "axios";
+import qs from "querystring";
+import { PlayerState } from "../models/videoState";
 
 export default class API {
   public router: Router;
@@ -68,7 +70,21 @@ export default class API {
       while (ids.includes(roomId)) {
         roomId = uniqid();
       }
-      await this.db.setRoom(roomId, req.body);
+      const resp = await axios.get(`https://youtube.com/get_video_info?video_id=${req.body.currVideoId}`);
+      const videoInfo = qs.parse(resp.data);
+      const playerResponse = JSON.parse(videoInfo["player_response"] as string);
+      await this.db.setRoom(
+        roomId,
+        Object.assign(
+          {
+            currVideoTitle: playerResponse.videoDetails.title,
+            default: false,
+            videoQueue: [],
+            playerState: PlayerState.UNSTARTED
+          },
+          req.body
+        )
+      );
       res.send(roomId);
     } catch (err) {
       res.status(500).send("Error: Couldn't create room.");
