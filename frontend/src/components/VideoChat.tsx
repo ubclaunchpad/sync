@@ -4,11 +4,12 @@ import io from "socket.io-client";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
-import { List, ListItem, ListItemText, ListItemIcon, Divider, CardMedia } from "@material-ui/core";
+import { List, ListItem, ListItemText, ListItemIcon, Divider, CardMedia, createStyles } from "@material-ui/core";
 import { v1 as uuidv1 } from "uuid";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
-import Fade from "@material-ui/core/Fade";
+import Grow from "@material-ui/core/Grow";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CancelIcon from "@material-ui/icons/Cancel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVideo } from "@fortawesome/free-solid-svg-icons";
 import Container from "@material-ui/core/Container";
@@ -272,41 +273,41 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
   render() {
     const { classes, users } = this.props;
+    let content;
+    if (this.state.inVideoChat) {
+      content = (
+        <div className={classes.videoChat}>
+          <CardMedia className={classes.cardMedia}>
+            <video style={{ objectFit: "contain", width: "30vw" }} ref={this.peerVideoRef} autoPlay></video>
+          </CardMedia>
+          <Button onClick={() => this.stopMyVideoChat(true)} variant="contained" color="secondary">
+            Leave
+          </Button>
+        </div>
+      );
+    } else {
+      content = Object.entries(users).map((user, i) => {
+        if (user[1]) {
+          return (
+            <ListItem key={i} className={classes.listItem} divider>
+              <ListItemText primary={user[1]} />
+              <ListItemIcon className={classes.listItemIcon} onClick={() => this.sendInvite(user[0])}>
+                <FontAwesomeIcon icon={faVideo} />
+              </ListItemIcon>
+              <Divider className={classes.divider} light />
+            </ListItem>
+          );
+        }
+        return null;
+      });
+    }
+
     return (
-      <React.Fragment>
-        {!this.state.inVideoChat && (
-          <React.Fragment>
-            <List className={classes.list} component="nav">
-              <h1 className={classes.videoChatHeader}>VIDEO CHAT</h1>
-              {Object.entries(users).map((user, i) => {
-                if (user[1]) {
-                  return (
-                    <ListItem key={i} className={classes.listItem} divider>
-                      <ListItemText primary={user[1]} />
-                      <ListItemIcon className={classes.listItemIcon} onClick={() => this.sendInvite(user[0])}>
-                        <FontAwesomeIcon icon={faVideo} />
-                      </ListItemIcon>
-                      <Divider className={classes.divider} light />
-                    </ListItem>
-                  );
-                }
-                return null;
-              })}
-            </List>
-          </React.Fragment>
-        )}
-
-        {this.state.inVideoChat && (
-          <div className={classes.videoChat}>
-            <CardMedia className={classes.cardMedia}>
-              <video style={{ objectFit: "contain", width: "30vw" }} ref={this.peerVideoRef} autoPlay></video>
-            </CardMedia>
-            <Button onClick={() => this.stopMyVideoChat(true)} variant="contained" color="secondary">
-              Leave
-            </Button>
-          </div>
-        )}
-
+      <div className={classes.container}>
+        <List className={classes.list} component="nav">
+          <h1 className={classes.videoChatHeader}>VIDEO CHAT</h1>
+          {content}
+        </List>
         <Modal
           disableAutoFocus={true}
           aria-labelledby="transition-modal-title"
@@ -316,93 +317,96 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
           onClose={() => console.log("onClose modal")}
           closeAfterTransition
         >
-          <Fade in={this.state.openInviteModal}>
+          <Grow in={this.state.openInviteModal}>
             <div className={classes.paper}>
-              <Typography gutterBottom align="center" variant="h6">
-                Video chat invite from {this.state.inviteFromName}
+              <Typography gutterBottom align="center" variant="h5" style={{ fontFamily: "Libre Baskerville" }}>
+                <span style={{ color: "red" }}>{this.state.inviteFromName}</span> wants to video chat with you
               </Typography>
               <Container style={{ textAlign: "center" }}>
-                <Button className={classes.inviteButtons} onClick={this.acceptVideoChatInvite}>
+                <Button
+                  className={classes.inviteButtons}
+                  onClick={this.acceptVideoChatInvite}
+                  endIcon={<CheckCircleIcon />}
+                >
                   Accept
                 </Button>
-                <Button className={classes.inviteButtons} onClick={this.declineVideoChatInvite}>
+                <Button
+                  className={classes.inviteButtons}
+                  onClick={this.declineVideoChatInvite}
+                  endIcon={<CancelIcon />}
+                >
                   Decline
                 </Button>
               </Container>
             </div>
-          </Fade>
+          </Grow>
         </Modal>
-      </React.Fragment>
+      </div>
     );
   }
 }
 
-const materialUiStyles = {
-  root: {
-    background: "#000000",
-    height: "292px",
-    width: "212px",
-    marginRight: "50px",
-    marginLeft: "50px",
-    border: "2px solid #051633",
-    borderRadius: "10px",
-    opacity: "1 !important"
-  },
-  textPrimary: {
-    color: "white"
-  },
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  paper: {
-    background: "rgba(34,34,34,0.85)",
-    border: "1px solid #000",
-    padding: "3em",
-    borderRadius: "20px",
-    outline: "none",
-    color: "white"
-  },
-  list: {
-    background: "rgba(255, 255, 255, 0.05)",
-    marginBottom: "2em",
-    minHeight: "30vh"
-  },
-  listItem: {
-    color: "#ffffff"
-  },
-  listItemIcon: {
-    color: "#ffffff"
-  },
-  divider: {
-    backgroundColor: "#ffffff"
-  },
-  cardMedia: {
-    width: "300px"
-  },
-  videoChatHeader: {
-    fontFamily: "Roboto, sans-serif",
-    fontStyle: "normal",
-    fontWeight: 500,
-    fontSize: 24,
-    color: "rgba(255, 255, 255, 0.4)",
-    maxHeight: 15,
-    paddingLeft: "16px",
-    paddingRight: "16px"
-  },
-  videoChat: {
-    marginBottom: "2em"
-  },
-  inviteButtons: {
-    backgroundColor: "white",
-    color: "#001953",
-    "&:hover": {
-      backgroundColor: "#001953",
+const materialUiStyles = (theme: any) =>
+  createStyles({
+    container: {
+      padding: "14px 20px 0px",
+      [theme.breakpoints.down("sm")]: {
+        padding: "0px 20px"
+      }
+    },
+    modal: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    },
+    paper: {
+      background: "rgba(34, 34, 34, 0.95)",
+      border: "1px solid #000",
+      padding: "1.5em",
+      borderRadius: "20px",
+      outline: "none",
       color: "white"
     },
-    margin: "1em 1em"
-  }
-};
+    list: {
+      background: "rgba(255, 255, 255, 0.05)",
+      marginBottom: "2em",
+      minHeight: "30vh"
+    },
+    listItem: {
+      color: "#ffffff"
+    },
+    listItemIcon: {
+      color: "#ffffff"
+    },
+    divider: {
+      backgroundColor: "#ffffff"
+    },
+    cardMedia: {
+      width: "300px"
+    },
+    videoChatHeader: {
+      fontFamily: "Roboto, sans-serif",
+      fontStyle: "normal",
+      fontWeight: 500,
+      fontSize: 24,
+      color: "rgba(255, 255, 255, 0.4)",
+      maxHeight: 15,
+      paddingLeft: "16px",
+      paddingRight: "16px"
+    },
+    videoChat: {
+      marginBottom: "2em"
+    },
+    inviteButtons: {
+      backgroundColor: "white",
+      color: "#001953",
+      "&:hover": {
+        backgroundColor: "rgb(18 27 78 / 90%)",
+        color: "white"
+      },
+      padding: "0.5em 2em",
+      margin: "1em 1em"
+    }
+  });
 
 export default withStyles(materialUiStyles)(VideoChat);

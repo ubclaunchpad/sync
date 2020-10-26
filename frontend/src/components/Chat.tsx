@@ -101,7 +101,7 @@ class Chat extends React.Component<Props, State> {
     );
 
     return (
-      <div style={{ width: "100%", height: "100%" }}>
+      <div className={classes.container}>
         <Card className={classes.chatContainer}>
           <CardHeader
             classes={{
@@ -119,75 +119,78 @@ class Chat extends React.Component<Props, State> {
   }
 }
 
-const materialUiStyles = createStyles({
-  chatbox: {
-    color: "white"
-  },
-  textField: {
-    "& input + fieldset": {
-      "&::placeholder": {
-        color: "white"
+const materialUiStyles = (theme: any) =>
+  createStyles({
+    container: {
+      padding: "0px 20px"
+    },
+    chatbox: {
+      color: "white"
+    },
+    textField: {
+      "& input + fieldset": {
+        "&::placeholder": {
+          color: "white"
+        },
+        borderWidth: 2
       },
-      borderWidth: 2
+      color: "white"
     },
-    color: "white"
-  },
-  message: {
-    fontFamily: "Roboto, sans-serif",
-    fontStyle: "normal",
-    fontWeight: "normal",
-    fontSize: 20,
-    color: "rgba(255, 255, 255, 0.9)"
-  },
-  messages: {
-    overflowX: "auto",
-    overflowWrap: "break-word",
-    height: "60%",
-    "&::-webkit-scrollbar": {
-      width: "0.4em"
+    message: {
+      fontFamily: "Roboto, sans-serif",
+      fontStyle: "normal",
+      fontWeight: "normal",
+      fontSize: 20,
+      color: "rgba(255, 255, 255, 0.9)"
     },
-    "&::-webkit-scrollbar-thumb": {
-      backgroundColor: "rgba(255,255,255,.1)",
-      outline: "1px solid slategrey",
-      borderRadius: 3
+    messages: {
+      overflowX: "auto",
+      overflowWrap: "break-word",
+      height: "60%",
+      "&::-webkit-scrollbar": {
+        width: "0.4em"
+      },
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: "rgba(255,255,255,.1)",
+        outline: "1px solid slategrey",
+        borderRadius: 3
+      }
+    },
+    userMessageLabel: {
+      paddingRight: 10,
+      fontFamily: "Roboto, sans-serif",
+      fontStyle: "normal",
+      fontWeight: 500,
+      fontSize: 20,
+      color: "rgba(255, 255, 255, 0.8)"
+    },
+    footer: {
+      position: "absolute",
+      bottom: "0",
+      width: "100%"
+    },
+    userInputLabel: {
+      position: "relative",
+      fontFamily: "Roboto, sans-serif",
+      fontStyle: "normal",
+      fontWeight: 500,
+      fontSize: 20,
+      color: "rgba(98, 239, 249, 0.8)",
+      paddingRight: 15
+    },
+    chatContainer: {
+      position: "relative",
+      height: "45vh",
+      background: "rgba(255, 255, 255, 0.05)"
+    },
+    chatHeader: {
+      fontFamily: "Roboto, sans-serif",
+      fontStyle: "normal",
+      fontWeight: 500,
+      fontSize: "24px",
+      color: "rgba(255, 255, 255, 0.4)",
+      maxHeight: 15
     }
-  },
-  userMessageLabel: {
-    paddingRight: 10,
-    fontFamily: "Roboto, sans-serif",
-    fontStyle: "normal",
-    fontWeight: 500,
-    fontSize: 20,
-    color: "rgba(255, 255, 255, 0.8)"
-  },
-  footer: {
-    position: "absolute",
-    bottom: "0",
-    width: "100%"
-  },
-  userInputLabel: {
-    position: "relative",
-    fontFamily: "Roboto, sans-serif",
-    fontStyle: "normal",
-    fontWeight: 500,
-    fontSize: 20,
-    color: "rgba(98, 239, 249, 0.8)",
-    paddingRight: 15
-  },
-  chatContainer: {
-    position: "relative",
-    height: "42vh",
-    overflow: "auto",
-    background: "rgba(255, 255, 255, 0.05)"
-  },
-  chatHeader: {
-    fontFamily: "Roboto, sans-serif",
-    fontStyle: "normal",
-    fontWeight: 500,
-    fontSize: 24,
-    color: "rgba(255, 255, 255, 0.4)",
-    maxHeight: 15
-  }
-});
+  });
 
 export default withStyles(materialUiStyles)(Chat);

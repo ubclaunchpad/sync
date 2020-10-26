@@ -332,26 +332,8 @@ class Room extends React.Component<Props, State> {
       );
     }
 
-    const videoPlayer = (
-      <React.Fragment>
-        <Player
-          videoId={this.state.currVideoId}
-          events={{
-            onStateChange: this.handleOnStateChange,
-            onReady: this.handleOnReady
-          }}
-          playerVars={{
-            color: "white",
-            rel: 0,
-            modestbranding: 1
-          }}
-        />
-        <Queue videos={this.state.videoQueue} socket={this.socket} />
-      </React.Fragment>
-    );
-
     return (
-      <div className={classes.container}>
+      <React.Fragment>
         <Grid container>
           <Grid item xs={4}>
             <Link href="/">
@@ -365,24 +347,30 @@ class Room extends React.Component<Props, State> {
               {this.state.currVideoTitle}
             </p>
           </Grid>
-          <Grid item xs={4} className={classes.shareContainer} justify="flex-end">
+          <Grid item xs={4} className={classes.shareContainer}>
             <Share roomUrl={window.location.href} />
           </Grid>
         </Grid>
 
-        <Grid container spacing={3} justify="center">
+        <Grid container spacing={1} justify="center">
           <Grid item xs={12} md={8}>
-            {videoPlayer}
+            <Player
+              videoId={this.state.currVideoId}
+              events={{
+                onStateChange: this.handleOnStateChange,
+                onReady: this.handleOnReady
+              }}
+              playerVars={{
+                color: "white",
+                rel: 0,
+                modestbranding: 1
+              }}
+            />
+            <Queue videos={this.state.videoQueue} socket={this.socket} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <Container style={{ background: "#030B1E" }}>
-              {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
-              <Chat
-                username={this.state.username}
-                messages={this.state.messages}
-                sendMessage={this.handleSendMessage}
-              />
-            </Container>
+            {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
+            <Chat username={this.state.username} messages={this.state.messages} sendMessage={this.handleSendMessage} />
           </Grid>
         </Grid>
 
@@ -407,18 +395,20 @@ class Room extends React.Component<Props, State> {
             </div>
           </Grow>
         </Modal>
-      </div>
+      </React.Fragment>
     );
   }
 }
 
 const styles = (theme: any) =>
   createStyles({
-    container: {},
     logo: {
       height: "100px",
       paddingTop: "15px",
-      paddingLeft: "50px",
+      paddingLeft: "30px",
+      [theme.breakpoints.down("md")]: {
+        height: "80px"
+      },
       [theme.breakpoints.down("sm")]: {
         height: "60px",
         paddingLeft: "15px"
@@ -442,9 +432,10 @@ const styles = (theme: any) =>
         display: "none"
       }
     },
+    chatContainer: {},
     shareContainer: {
       textAlign: "right",
-      paddingRight: "40px",
+      paddingRight: "30px",
       paddingTop: "25px ",
       [theme.breakpoints.down("sm")]: {
         paddingRight: "5px"
