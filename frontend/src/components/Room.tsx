@@ -1,26 +1,31 @@
 import React from "react";
+import { RouteComponentProps } from "react-router-dom";
 import io from "socket.io-client";
 import axios, { AxiosResponse } from "axios";
 import Lottie from "react-lottie";
 import Event from "../sockets/event";
-import "../styles/Room.css";
-import loadingIndicator from "../lotties/loading.json";
 import Player from "./Player";
 import Chat from "./Chat";
 import Share from "./Share";
 import Queue from "./Queue";
-import Video from "../models/video";
-import RoomInfo from "../models/room";
-import { RouteComponentProps } from "react-router-dom";
-import Message from "../models/message";
-import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-generator";
-import RoomData from "../models/room";
-import VideoState, { PlayerState } from "../models/videoState";
-import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
-import { Modal, Backdrop, Fade, withStyles, Container, Grid, Link } from "@material-ui/core";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
-import playButton from "../assets/playButton.svg";
+import Video from "../models/video";
+import RoomInfo from "../models/room";
+import RoomData from "../models/room";
+import Message from "../models/message";
+import { VideoState, PlayerState } from "../models/videoState";
+import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
+import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-generator";
+import { withStyles, createStyles } from "@material-ui/core";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Grow from "@material-ui/core/Grow";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
+import Link from "@material-ui/core/Link";
+import loadingIndicator from "../lotties/loading.json";
+import logo from "../assets/logo.png";
 
 enum ModalType {
   NONE = 0,
@@ -91,7 +96,7 @@ class Room extends React.Component<Props, State> {
   //If initializing users, set all username values to null
   handleSetUsers(users: string[]) {
     if (Object.keys(this.state.users).length > 0) {
-      users.map((user) => {
+      users.forEach((user) => {
         if (!(user in this.state.users)) {
           const newState = this.state.users;
           newState[user] = null;
@@ -101,7 +106,7 @@ class Room extends React.Component<Props, State> {
       this.socket.emit(Event.GET_ALL_USERNAMES);
     } else {
       const userObj: any = {};
-      users.map((userId) => {
+      users.forEach((userId) => {
         userObj[userId] = null;
       });
       this.setState({ users: userObj });
@@ -162,7 +167,6 @@ class Room extends React.Component<Props, State> {
   };
 
   handleOnReady(event: { target: any }) {
-    console.log("Called handleOnready");
     const player = event.target;
 
     this.socket.on(Event.PLAY_VIDEO, (time: number) => {
@@ -187,7 +191,6 @@ class Room extends React.Component<Props, State> {
     });
 
     this.socket.on(Event.UPDATE_VIDEO_STATE, (videoState: VideoState) => {
-      console.log("Responding to an UPDATE_VIDEO_STATE with " + JSON.stringify(videoState));
       if (videoState.playerState === PlayerState.PAUSED) {
         console.log("Trying to pause video!");
         player.seekTo(videoState.secondsElapsed);
@@ -290,9 +293,6 @@ class Room extends React.Component<Props, State> {
           name: res.data.name,
           videoQueue: res.data.videoQueue
         });
-        axios.get(`${this.api}/api/videotitle/` + res.data.currVideoId).then((res) => {
-          this.setState({ currVideoTitle: res.data });
-        });
       } else {
         this.setState({
           isLoaded: true,
@@ -310,6 +310,7 @@ class Room extends React.Component<Props, State> {
   render() {
     const { classes } = this.props;
     const username = this.state.username;
+    const { id } = this.props.match.params;
     const defaultOptions = {
       loop: true,
       autoplay: true,
@@ -318,80 +319,63 @@ class Room extends React.Component<Props, State> {
         preserveAspectRatio: "xMidYMid slice"
       }
     };
-    const { id } = this.props.match.params;
-    const videoPlayer =
-      this.state.isLoaded && this.state.isValid ? (
-        <React.Fragment>
-          <Player
-            videoId={this.state.currVideoId}
-            events={{
-              onStateChange: this.handleOnStateChange,
-              onReady: this.handleOnReady
-            }}
-            playerVars={{
-              color: "white",
-              rel: 0,
-              modestbranding: 1
-            }}
-          />
-          <Queue videos={this.state.videoQueue} socket={this.socket} />
-        </React.Fragment>
-      ) : null;
 
-    const invalidRoomId =
-      this.state.isLoaded && !this.state.isValid ? <h1 style={{ color: "white" }}>Invalid room id :(</h1> : null;
+    if (!this.state.isLoaded) {
+      return <Lottie options={defaultOptions} height={400} width={400} />;
+    }
 
-    const showLoadingIndicator = !this.state.isLoaded ? (
-      <Lottie options={defaultOptions} height={400} width={400} />
-    ) : null;
+    if (this.state.isLoaded && !this.state.isValid) {
+      return (
+        <div className={classes.container} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <h1 style={{ color: "white", margin: "0px" }}>Room does not exist :-(</h1>
+        </div>
+      );
+    }
 
     return (
-      <div className="container">
-        <Grid container spacing={3}>
-          <Grid item xs>
+      <React.Fragment>
+        <Grid container>
+          <Grid item xs={4}>
             <Link href="/">
-              <h1 className="roomSyncTitle">
-                SYNC
-                <span>
-                  <img className="syncRoomLogo" src={playButton} alt="playbutton"></img>
-                </span>
-              </h1>
+              <img className={classes.logo} src={logo} alt="Logo"></img>
             </Link>
           </Grid>
-          <Grid item xs={5} style={{ textAlign: "center" }}>
-            <h3 className="roomTitle">{this.state.name || "Room" + id}</h3>
-            <h3 style={{ color: "white" }}>{this.state.currVideoTitle || "TITLE"}</h3>
+          <Grid item xs={4} style={{ textAlign: "center" }}>
+            <p className={classes.roomTitle}>{this.state.name || "Room" + id}</p>
+            <p className={classes.videoTitle}>
+              <span style={{ fontWeight: "bold" }}>PLAYING: </span>
+              {this.state.currVideoTitle}
+            </p>
           </Grid>
-          <Grid item xs className="shareContainer">
-            {/* empty here to keep spacing */}
-            <div className="shareDiv">
-              <Share roomUrl={window.location.href} />
-            </div>
+          <Grid item xs={4} className={classes.shareContainer}>
+            <Share roomUrl={window.location.href} />
           </Grid>
         </Grid>
 
-        <Grid container spacing={3} justify="center">
-          <Grid item xs={7}>
-            {videoPlayer}
+        <Grid container spacing={1} justify="center">
+          <Grid item xs={12} md={8}>
+            <Player
+              videoId={this.state.currVideoId}
+              events={{
+                onStateChange: this.handleOnStateChange,
+                onReady: this.handleOnReady
+              }}
+              playerVars={{
+                color: "white",
+                rel: 0,
+                modestbranding: 1
+              }}
+            />
+            <Queue videos={this.state.videoQueue} socket={this.socket} />
           </Grid>
-          <Grid item xs={4}>
-            <Container style={{ background: "#030B1E" }}>
-              {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
-              <Chat
-                username={this.state.username}
-                messages={this.state.messages}
-                sendMessage={this.handleSendMessage}
-              />
-            </Container>
+          <Grid item xs={12} md={4}>
+            {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
+            <Chat username={this.state.username} messages={this.state.messages} sendMessage={this.handleSendMessage} />
           </Grid>
         </Grid>
-        {invalidRoomId}
-        {showLoadingIndicator}
 
         <Modal
           disableAutoFocus={true}
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
           className={classes.modal}
           open={this.state.modal === ModalType.CREATE_USERNAME}
           onClose={() => {
@@ -405,44 +389,74 @@ class Room extends React.Component<Props, State> {
             timeout: 500
           }}
         >
-          <Fade in={this.state.modal === ModalType.CREATE_USERNAME}>
+          <Grow in={this.state.modal === ModalType.CREATE_USERNAME}>
             <div className={classes.paper}>
               <Username changeUsernameAndEmit={this.changeUsernameAndEmit} />
             </div>
-          </Fade>
+          </Grow>
         </Modal>
-      </div>
+      </React.Fragment>
     );
   }
 }
 
-const materialUiStyles = {
-  root: {
-    background: "#000000",
-    height: "292px",
-    width: "212px",
-    marginRight: "50px",
-    marginLeft: "50px",
-    border: "2px solid #051633",
-    borderRadius: "10px",
-    opacity: "1 !important"
-  },
-  textPrimary: {
-    color: "white"
-  },
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  paper: {
-    background: "rgba(34,34,34,0.99)",
-    border: "1px solid #000",
-    maxWidth: "700px",
-    borderRadius: "20px",
-    outline: "none",
-    padding: "2em"
-  }
-};
+const styles = (theme: any) =>
+  createStyles({
+    logo: {
+      height: "100px",
+      paddingTop: "15px",
+      paddingLeft: "30px",
+      [theme.breakpoints.down("md")]: {
+        height: "80px"
+      },
+      [theme.breakpoints.down("sm")]: {
+        height: "60px",
+        paddingLeft: "15px"
+      }
+    },
+    roomTitle: {
+      fontFamily: "Libre Baskerville",
+      color: "#FF6666",
+      fontWeight: "bold",
+      fontStyle: "italic",
+      fontSize: "24px",
+      [theme.breakpoints.down("sm")]: {
+        marginTop: "30px",
+        fontSize: "20px"
+      }
+    },
+    videoTitle: {
+      color: "#FFFFFF",
+      fontSize: "16px",
+      [theme.breakpoints.down("sm")]: {
+        display: "none"
+      }
+    },
+    chatContainer: {},
+    shareContainer: {
+      textAlign: "right",
+      paddingRight: "30px",
+      paddingTop: "25px ",
+      [theme.breakpoints.down("sm")]: {
+        paddingRight: "5px"
+      }
+    },
+    modal: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    },
+    paper: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "rgb(34, 34, 34)",
+      maxWidth: "700px",
+      outline: "none",
+      borderRadius: "10px",
+      padding: "2em",
+      boxShadow: "0px 0px 20px 20px rgb(10 10 10 / 30%)"
+    }
+  });
 
-export default withStyles(materialUiStyles)(Room);
+export default withStyles(styles)(Room);

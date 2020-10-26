@@ -1,4 +1,4 @@
-import VideoState from "./videoState";
+import { VideoState } from "./videoState";
 
 export default interface UpdateVideoStateRequest {
   videoState: VideoState;

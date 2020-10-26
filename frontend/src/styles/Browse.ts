@@ -2,10 +2,6 @@ import { createStyles } from "@material-ui/core";
 
 export default (theme: any) =>
   createStyles({
-    browse: {
-      // backgroundColor: "#080D19",
-      // height: "100vh",
-    },
     overlay: {
       background: "#080D19",
       height: "100vh",

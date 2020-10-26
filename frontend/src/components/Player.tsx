@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/Player.css";
 
 declare global {
   interface Window {
@@ -42,11 +43,13 @@ class Player extends React.Component<YT.PlayerOptions> {
 
   render() {
     return (
-      <div className="player-container">
-        <div id="player"></div>
+      <div style={{ padding: "14px 20px" }}>
+        <div className="player-container">
+          <div id="player"></div>
+        </div>
       </div>
     );
   }
 }
 
-export { Player as default };
+export default Player;

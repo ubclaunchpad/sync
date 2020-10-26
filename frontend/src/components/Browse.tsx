@@ -95,7 +95,7 @@ export class Browse extends React.Component<Props, State> {
     const twitterURL = `https://twitter.com/intent/tweet?text=${shareText + "%0D" + url}`;
 
     return (
-      <div className={classes.browse}>
+      <React.Fragment>
         <ParticlesBg type="circle" bg={true} />
         <div className={classes.overlay}>
           <div className={classes.navContainer}>
@@ -131,7 +131,7 @@ export class Browse extends React.Component<Props, State> {
             </GridList>
           </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }

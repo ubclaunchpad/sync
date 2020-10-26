@@ -7,12 +7,9 @@ import {
   IconButton,
   Typography,
   Divider,
-  SvgIcon,
   InputAdornment
 } from "@material-ui/core";
 import { createStyles, withStyles } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
-import RemoveIcon from "@material-ui/icons/Remove";
 import Video from "../models/video";
 import Event from "../sockets/event";
 import QueueAdd from "../assets/queue-add.svg";
@@ -84,14 +81,14 @@ class Queue extends React.Component<Props, State> {
 
     const error = this.state.error;
     return (
-      <div>
+      <div className={classes.container}>
         <Typography className={classes.listTitle} variant="h5">
           Queue
         </Typography>
         <List component="nav" className={classes.list}>
           {this.props.videos.map((video, i) => (
-            <>
-              <ListItem key={i}>
+            <React.Fragment key={i}>
+              <ListItem>
                 <Typography className={classes.listNumber}>{i + 1}</Typography>
                 <ListItemText
                   primary={<Typography className={classes.videoTitle}>{video.title}</Typography>}
@@ -107,12 +104,12 @@ class Queue extends React.Component<Props, State> {
                     aria-label="remove"
                     onClick={() => this.props.socket.emit(Event.REMOVE_FROM_QUEUE, video.id)}
                   >
-                    <img src={QueueDelete} />
+                    <img src={QueueDelete} alt="Delete" />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
               <Divider variant="fullWidth" component="li" className={classes.listDivider} />
-            </>
+            </React.Fragment>
           ))}
 
           <ListItem>
@@ -122,7 +119,7 @@ class Queue extends React.Component<Props, State> {
                 className: classes.textField,
                 startAdornment: (
                   <InputAdornment position="start">
-                    <img src={QueueTextBoxIcon} width="20px" height="16px" style={{ margin: "3px" }}></img>
+                    <img src={QueueTextBoxIcon} width="20px" height="16px" style={{ margin: "3px" }} alt="Input"></img>
                   </InputAdornment>
                 )
               }}
@@ -132,11 +129,11 @@ class Queue extends React.Component<Props, State> {
               onKeyDown={this.handleOnKeyDown}
               value={this.state.newVideoUrl}
               fullWidth
-              style={{ margin: "8px" }}
+              style={{ margin: "15px 0px" }}
             />
             <ListItemSecondaryAction>
               <IconButton edge="end" aria-label="add" onClick={this.requestAddToQueue}>
-                <img src={QueueAdd} />
+                <img src={QueueAdd} alt="Add" />
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
@@ -146,40 +143,57 @@ class Queue extends React.Component<Props, State> {
   }
 }
 
-const materialUiStyles = createStyles({
-  list: {
-    color: "white"
-  },
-  textField: {
-    color: "white",
-    background: "rgba(255, 255, 255, 0.08)"
-  },
-  listTitle: {
-    fontFamily: "Roboto, sans-serif",
-    fontStyle: "normal",
-    fontWeight: 500,
-    fontSize: 24,
-    color: "rgba(255, 255, 255, 0.4)",
-    maxHeight: 15,
-    "text-transform": "uppercase",
-    padding: "15px"
-  },
-  videoTitle: {
-    color: "white",
-    fontSize: 18
-  },
-  videoSubtitle: {
-    color: "white",
-    fontSize: 15
-  },
-  listDivider: {
-    "background-color": "rgba(255, 255, 255, 0.4)"
-  },
-  listNumber: {
-    color: "white",
-    fontSize: 26,
-    paddingRight: "25px"
-  }
-});
+const styles = (theme: any) =>
+  createStyles({
+    container: {
+      padding: "14px 20px",
+      [theme.breakpoints.down("sm")]: {
+        padding: "0px 20px"
+      }
+    },
+    list: {
+      color: "white"
+    },
+    textField: {
+      color: "white",
+      background: "rgba(255, 255, 255, 0.08)"
+    },
+    listTitle: {
+      fontFamily: "Roboto, sans-serif",
+      fontStyle: "normal",
+      fontWeight: 500,
+      fontSize: "24px",
+      color: "rgba(255, 255, 255, 0.4)",
+      maxHeight: 15,
+      textTransform: "uppercase",
+      marginLeft: "8px",
+      marginBottom: "8px"
+    },
+    videoTitle: {
+      color: "white",
+      fontSize: "18px",
+      [theme.breakpoints.down("sm")]: {
+        fontSize: "14px"
+      }
+    },
+    videoSubtitle: {
+      color: "white",
+      fontSize: "14px",
+      [theme.breakpoints.down("sm")]: {
+        display: "10px"
+      }
+    },
+    listDivider: {
+      "background-color": "rgba(255, 255, 255, 0.4)"
+    },
+    listNumber: {
+      color: "white",
+      fontSize: "22px",
+      paddingRight: "25px",
+      [theme.breakpoints.down("sm")]: {
+        fontSize: "16px"
+      }
+    }
+  });
 
-export default withStyles(materialUiStyles)(Queue);
+export default withStyles(styles)(Queue);
