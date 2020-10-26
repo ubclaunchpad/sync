@@ -45,7 +45,7 @@ class Share extends React.Component<Props, State> {
         </Tooltip>
         <Tooltip title="Copy Room URL">
           <IconButton size={size} onClick={() => copy(this.props.roomUrl)}>
-            <FileCopy style={{ color: "rgb(246, 246, 246)" }}></FileCopy>
+            <FileCopy style={{ color: "rgb(195, 195, 195)" }}></FileCopy>
           </IconButton>
         </Tooltip>
       </React.Fragment>

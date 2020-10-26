@@ -167,7 +167,6 @@ class Room extends React.Component<Props, State> {
   };
 
   handleOnReady(event: { target: any }) {
-    console.log("Called handleOnready");
     const player = event.target;
 
     this.socket.on(Event.PLAY_VIDEO, (time: number) => {
@@ -192,7 +191,6 @@ class Room extends React.Component<Props, State> {
     });
 
     this.socket.on(Event.UPDATE_VIDEO_STATE, (videoState: VideoState) => {
-      console.log("Responding to an UPDATE_VIDEO_STATE with " + JSON.stringify(videoState));
       if (videoState.playerState === PlayerState.PAUSED) {
         console.log("Trying to pause video!");
         player.seekTo(videoState.secondsElapsed);
@@ -295,9 +293,6 @@ class Room extends React.Component<Props, State> {
           name: res.data.name,
           videoQueue: res.data.videoQueue
         });
-        axios.get(`${this.api}/api/videotitle/` + res.data.currVideoId).then((res) => {
-          this.setState({ currVideoTitle: res.data });
-        });
       } else {
         this.setState({
           isLoaded: true,
@@ -376,10 +371,10 @@ class Room extends React.Component<Props, State> {
         </Grid>
 
         <Grid container spacing={3} justify="center">
-          <Grid item xs={7}>
+          <Grid item xs={12} md={8}>
             {videoPlayer}
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Container style={{ background: "#030B1E" }}>
               {username && <VideoChat username={username} users={this.state.users} socket={this.socket} />}
               <Chat
@@ -419,10 +414,7 @@ class Room extends React.Component<Props, State> {
 
 const styles = (theme: any) =>
   createStyles({
-    container: {
-      background: "#080D19",
-      height: "100vh"
-    },
+    container: {},
     logo: {
       height: "100px",
       paddingTop: "15px",

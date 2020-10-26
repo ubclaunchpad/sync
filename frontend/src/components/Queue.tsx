@@ -7,12 +7,9 @@ import {
   IconButton,
   Typography,
   Divider,
-  SvgIcon,
   InputAdornment
 } from "@material-ui/core";
 import { createStyles, withStyles } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
-import RemoveIcon from "@material-ui/icons/Remove";
 import Video from "../models/video";
 import Event from "../sockets/event";
 import QueueAdd from "../assets/queue-add.svg";
@@ -107,7 +104,7 @@ class Queue extends React.Component<Props, State> {
                     aria-label="remove"
                     onClick={() => this.props.socket.emit(Event.REMOVE_FROM_QUEUE, video.id)}
                   >
-                    <img src={QueueDelete} />
+                    <img src={QueueDelete} alt="Delete" />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
@@ -122,7 +119,7 @@ class Queue extends React.Component<Props, State> {
                 className: classes.textField,
                 startAdornment: (
                   <InputAdornment position="start">
-                    <img src={QueueTextBoxIcon} width="20px" height="16px" style={{ margin: "3px" }}></img>
+                    <img src={QueueTextBoxIcon} width="20px" height="16px" style={{ margin: "3px" }} alt="Input"></img>
                   </InputAdornment>
                 )
               }}
@@ -136,7 +133,7 @@ class Queue extends React.Component<Props, State> {
             />
             <ListItemSecondaryAction>
               <IconButton edge="end" aria-label="add" onClick={this.requestAddToQueue}>
-                <img src={QueueAdd} />
+                <img src={QueueAdd} alt="Add" />
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
