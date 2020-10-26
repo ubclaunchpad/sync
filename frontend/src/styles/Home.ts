@@ -40,7 +40,7 @@ export default (theme: any) =>
     btn: {
       height: "340px",
       width: "250px",
-      background: "#00000080",
+      background: "#00000030",
       fontSize: "18px",
       margin: "50px 80px",
       paddingTop: "20px",
@@ -50,7 +50,7 @@ export default (theme: any) =>
       color: "white",
       transition: "transform 1s ease-in-out",
       "&:hover": {
-        background: "#00000010",
+        background: "#0000008",
         border: "1px solid #00000080",
         transform: "scale(1.05) translateY(-1vh);",
         color: "#F4F7FC"
