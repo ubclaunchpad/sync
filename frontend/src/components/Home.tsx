@@ -41,85 +41,84 @@ class Home extends React.Component<Props, State> {
     return (
       <div className={classes.home}>
         <ParticlesBg type="circle" bg={true} />
-        <div className={classes.overlay}>
-          <div className={classes.navContainer}>
-            <Link href="/">
-              <img className={classes.logo} src={logo} alt="Logo"></img>
-            </Link>
-          </div>
-          <Button className={classes.btn} onClick={() => this.setState({ modal: ModalType.CREATE })} color="primary">
-            <div>
-              <img src={createIcon} alt="Create Icon"></img>
-              <div>Create Room</div>
-            </div>
-          </Button>
-          <Button className={classes.btn} onClick={() => this.setState({ modal: ModalType.JOIN })} color="primary">
-            <div>
-              <img src={joinIcon} alt="Join Icon"></img>
-              <div>Join Room</div>
-            </div>
-          </Button>
-          <Link href="/rooms" underline="none">
-            <Button className={classes.btn} color="primary">
-              <div>
-                <img src={browseIcon} alt="Browse Icon"></img>
-                <div>Browse Rooms</div>
-              </div>
-            </Button>
+        <div className={classes.navContainer}>
+          <Link href="/">
+            <img className={classes.logo} src={logo} alt="Logo"></img>
           </Link>
-
-          <Modal
-            disableAutoFocus={true}
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            className={classes.modal}
-            open={this.state.modal === ModalType.CREATE}
-            onClose={() => this.setState({ modal: ModalType.NONE })}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500
-            }}
-          >
-            <Grow in={this.state.modal === ModalType.CREATE}>
-              <div className={classes.paper}>
-                <Create />
-              </div>
-            </Grow>
-          </Modal>
-
-          <Modal
-            disableAutoFocus={true}
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            className={classes.modal}
-            open={this.state.modal === ModalType.JOIN}
-            onClose={() => this.setState({ modal: ModalType.NONE })}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500
-            }}
-          >
-            <Grow in={this.state.modal === ModalType.JOIN}>
-              <div className={classes.paper}>
-                <Join />
-              </div>
-            </Grow>
-          </Modal>
-          <div className={classes.footer}>
-            <p>
-              A{" "}
-              <a href="https://ubclaunchpad.com" target="_blank" rel="noopener noreferrer">
-                UBC Launch Pad
-              </a>{" "}
-              project. Powered by{" "}
-              <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
-                Netlify.
-              </a>
-            </p>
-          </div>
         </div>
+        <Button className={classes.btn} onClick={() => this.setState({ modal: ModalType.CREATE })} color="primary">
+          <div>
+            <img src={createIcon} alt="Create Icon"></img>
+            <div>Create Room</div>
+          </div>
+        </Button>
+        <Button className={classes.btn} onClick={() => this.setState({ modal: ModalType.JOIN })} color="primary">
+          <div>
+            <img src={joinIcon} alt="Join Icon"></img>
+            <div>Join Room</div>
+          </div>
+        </Button>
+        <Link href="/rooms" underline="none">
+          <Button className={classes.btn} color="primary">
+            <div>
+              <img src={browseIcon} alt="Browse Icon"></img>
+              <div>Browse Rooms</div>
+            </div>
+          </Button>
+        </Link>
+
+        <Modal
+          disableAutoFocus={true}
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={this.state.modal === ModalType.CREATE}
+          onClose={() => this.setState({ modal: ModalType.NONE })}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500
+          }}
+        >
+          <Grow in={this.state.modal === ModalType.CREATE}>
+            <div className={classes.paper}>
+              <Create />
+            </div>
+          </Grow>
+        </Modal>
+
+        <Modal
+          disableAutoFocus={true}
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={this.state.modal === ModalType.JOIN}
+          onClose={() => this.setState({ modal: ModalType.NONE })}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500
+          }}
+        >
+          <Grow in={this.state.modal === ModalType.JOIN}>
+            <div className={classes.paper}>
+              <Join />
+            </div>
+          </Grow>
+        </Modal>
+        <div className={classes.footer}>
+          <p>
+            A{" "}
+            <a href="https://ubclaunchpad.com" target="_blank" rel="noopener noreferrer">
+              UBC Launch Pad
+            </a>{" "}
+            project. Powered by{" "}
+            <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
+              Netlify.
+            </a>
+          </p>
+        </div>
+        <div className={classes.overlay}></div>
       </div>
     );
   }

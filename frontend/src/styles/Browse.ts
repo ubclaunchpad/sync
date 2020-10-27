@@ -3,10 +3,16 @@ import { createStyles } from "@material-ui/core";
 export default (theme: any) =>
   createStyles({
     overlay: {
+      zIndex: -1,
+      position: "absolute",
       background: "#080D19",
       height: "100vh",
       width: "100vw",
-      opacity: "0.88"
+      opacity: "0.88",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0
     },
     navContainer: {
       height: "200px",
@@ -59,12 +65,12 @@ export default (theme: any) =>
     tile: {
       cursor: "pointer",
       "& img": {
-        opacity: "0.8",
+        opacity: "0.75",
         transition: "0.3s"
       },
       "&:hover": {
         "& img": {
-          filter: "brightness(110%)",
+          filter: "brightness(120%)",
           opacity: "1"
         }
       }
