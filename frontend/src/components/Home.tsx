@@ -58,7 +58,7 @@ class Home extends React.Component<Props, State> {
             <div>Join Room</div>
           </div>
         </Button>
-        <Link href="/rooms" underline="none">
+        <Link href="/browse" underline="none">
           <Button className={classes.btn} color="primary">
             <div>
               <img src={browseIcon} alt="Browse Icon"></img>

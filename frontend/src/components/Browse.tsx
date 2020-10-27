@@ -69,7 +69,7 @@ export class Browse extends React.Component<Props, State> {
         <GridListTile
           className={classes.tile}
           key={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`}
-          onClick={(event) => (window.location.href = "/rooms/" + roomId)}
+          onClick={(event) => (window.location.href = "/" + roomId)}
         >
           <img src={`https://img.youtube.com/vi/${room.currVideoId}/hqdefault.jpg`} alt={room.name} />
           <GridListTileBar

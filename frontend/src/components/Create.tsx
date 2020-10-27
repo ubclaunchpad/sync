@@ -75,7 +75,7 @@ class Create extends React.Component<Props, State> {
       return (
         <Redirect
           to={{
-            pathname: "/rooms/" + this.state.id,
+            pathname: "/" + this.state.id,
             state: { username: this.state.username }
           }}
         />
