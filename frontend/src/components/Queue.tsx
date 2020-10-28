@@ -60,7 +60,7 @@ class Queue extends React.Component<Props, State> {
   }
 
   requestAddToQueue() {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
     const match = this.state.newVideoUrl.match(regExp);
     if (match && match[2].length === 11) {
       this.props.socket.emit(Event.REQUEST_ADD_TO_QUEUE, match[2]);

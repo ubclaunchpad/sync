@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import { withStyles, createStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import styles from "../styles/Modal";
 
 interface Props {

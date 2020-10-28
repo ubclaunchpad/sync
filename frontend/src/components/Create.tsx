@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -6,11 +7,9 @@ import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Switch from "@material-ui/core/Switch";
-import { Redirect } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import styles from "../styles/Modal";
 

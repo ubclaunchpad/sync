@@ -45,14 +45,6 @@ class Chat extends React.Component<Props, State> {
   renderMsgs = (classes: any) => {
     const msgs = [];
 
-    const setUser = (message: Message) => {
-      if (message.user) {
-        return message.user + ":";
-      } else {
-        return "";
-      }
-    };
-
     for (let i = 0; i < this.props.messages.length; i++) {
       msgs.push(
         <ListItemText
