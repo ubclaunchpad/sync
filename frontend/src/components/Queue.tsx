@@ -129,7 +129,7 @@ class Queue extends React.Component<Props, State> {
               onKeyDown={this.handleOnKeyDown}
               value={this.state.newVideoUrl}
               fullWidth
-              style={{ margin: "15px 0px" }}
+              style={{ margin: "15px 10px 15px 0px" }}
             />
             <ListItemSecondaryAction>
               <IconButton edge="end" aria-label="add" onClick={this.requestAddToQueue}>
