@@ -41,7 +41,7 @@ export class Browse extends React.Component<Props, State> {
 
   async componentDidMount() {
     try {
-      const res = await axios.get(`${this.api}/api/rooms`);
+      const res = await axios.get(`${this.api}/api/rooms?public`);
       for (const key in res.data) {
         axios.get(`${this.api}/api/videotitle/` + res.data[key].currVideoId).then((resp) => {
           this.setState((prevState) => {

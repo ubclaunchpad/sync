@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, query } from "express";
 import Database from "./database";
 import uniqid from "uniqid";
 import axios from "axios";
@@ -30,7 +30,12 @@ export default class API {
 
   private async getRoomList(req: Request, res: Response): Promise<void> {
     try {
-      const data = await this.db.getAllRooms();
+      let data;
+      if (req.query.public !== undefined) {
+        data = await this.db.getPublicRooms();
+      } else {
+        data = await this.db.getAllRooms();
+      }
       res.json(data);
     } catch (err) {
       if (err.includes("404")) {
