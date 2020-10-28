@@ -6,8 +6,7 @@
     "dev:docker": "ts-node-dev --poll --inspect -- src/index.ts",
     "start": "node build/index.js",
     "build": "tsc",
-    "lint": "eslint --ext ts .",
-    "deploy": "cd ../ && git subtree push --prefix backend heroku-thesyncapi master"
+    "lint": "eslint --ext ts ."
   },
   "dependencies": {
     "@types/body-parser": "^1.19.0",

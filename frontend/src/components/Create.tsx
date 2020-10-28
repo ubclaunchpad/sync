@@ -1,13 +1,16 @@
 import React from "react";
 import axios from "axios";
+import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Container from "@material-ui/core/Container";
+import Typography from "@material-ui/core/Typography";
+import Switch from "@material-ui/core/Switch";
 import { Redirect } from "react-router-dom";
-import { Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import styles from "../styles/Modal";
 
@@ -22,6 +25,7 @@ interface State {
   redirect: boolean;
   errorMsg: string;
   username: string;
+  private: boolean;
 }
 
 class Create extends React.Component<Props, State> {
@@ -33,7 +37,8 @@ class Create extends React.Component<Props, State> {
       url: "",
       redirect: false,
       errorMsg: "",
-      username: ""
+      username: "",
+      private: false
     };
     this.handleNameFieldChange = this.handleNameFieldChange.bind(this);
     this.handleUrlFieldChange = this.handleUrlFieldChange.bind(this);
@@ -41,6 +46,7 @@ class Create extends React.Component<Props, State> {
     this.redirectIfRoomCreated = this.redirectIfRoomCreated.bind(this);
     this.handleUsernameFieldChange = this.handleUsernameFieldChange.bind(this);
     this.handleEnterPressed = this.handleEnterPressed.bind(this);
+    this.handlePrivateSwitchChange = this.handlePrivateSwitchChange.bind(this);
   }
 
   handleNameFieldChange(e: any) {
@@ -55,6 +61,10 @@ class Create extends React.Component<Props, State> {
     this.setState({ username: e.target.value });
   }
 
+  handlePrivateSwitchChange(e: any) {
+    this.setState({ private: e.target.checked });
+  }
+
   async handleCreateRoom() {
     // check if state.url leads to a YouTube video
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
@@ -62,7 +72,8 @@ class Create extends React.Component<Props, State> {
     if (match && match[2].length === 11) {
       const res = await axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:8080"}/api/rooms`, {
         currVideoId: match[2],
-        name: this.state.name
+        name: this.state.name,
+        private: this.state.private
       });
       this.setState({ id: res.data, redirect: true });
     } else {
@@ -145,6 +156,29 @@ class Create extends React.Component<Props, State> {
               className: classes.input
             }}
           />
+          <div style={{ fontFamily: "Libre Baskerville" }}>
+            <Grid component="label" container alignItems="center" spacing={1}>
+              <Grid xs={5} item style={{ textAlign: "right" }}>
+                Public
+              </Grid>
+              <Grid xs={2} item>
+                <Switch
+                  checked={this.state.private}
+                  onChange={this.handlePrivateSwitchChange}
+                  disableRipple
+                  classes={{
+                    root: classes.switchRoot,
+                    switchBase: classes.switchBase,
+                    thumb: classes.switchThumb,
+                    track: classes.switchTrack
+                  }}
+                />
+              </Grid>
+              <Grid xs={5} item style={{ textAlign: "left" }}>
+                Private
+              </Grid>
+            </Grid>
+          </div>
         </div>
         <Button
           onClick={this.handleCreateRoom}
