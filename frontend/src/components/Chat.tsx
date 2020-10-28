@@ -1,12 +1,12 @@
-import React, { FunctionComponent, useState, useEffect, ChangeEvent } from "react";
+import React from "react";
 import List from "@material-ui/core/List";
 import ListItemText from "@material-ui/core/ListItemText";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
-import { createStyles, withStyles } from "@material-ui/core/styles";
 import Message from "../models/message";
 import ScrollableFeed from "react-scrollable-feed";
+import { createStyles, withStyles } from "@material-ui/core/styles";
 
 interface Props {
   classes: any;
@@ -25,11 +25,9 @@ class Chat extends React.Component<Props, State> {
     this.state = {
       message: ""
     };
-    this.onChange = this.onChange.bind(this);
-    this.enterPressed = this.enterPressed.bind(this);
   }
 
-  onChange = (event: ChangeEvent<HTMLInputElement>) => {
+  onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ message: event.currentTarget.value });
   };
 
@@ -44,9 +42,9 @@ class Chat extends React.Component<Props, State> {
     }
   };
 
-  renderChat = (classes: any) => {
-    const chat = [];
-    let count = 0;
+  renderMsgs = (classes: any) => {
+    const msgs = [];
+
     const setUser = (message: Message) => {
       if (message.user) {
         return message.user + ":";
@@ -55,25 +53,25 @@ class Chat extends React.Component<Props, State> {
       }
     };
 
-    for (const m of this.props.messages) {
-      chat.push(
+    for (let i = 0; i < this.props.messages.length; i++) {
+      msgs.push(
         <ListItemText
+          key={i}
           className={classes.message}
-          key={count}
           primary={
             <span>
-              <div style={{ paddingLeft: 16 }}>
-                <span className={classes.userMessageLabel}>{setUser(m)}</span>
-                {" " + m.message}
+              <div style={{ paddingLeft: "15px" }}>
+                <span className={classes.username}>{this.props.messages[i].user + ": "}</span>
+                {this.props.messages[i].message}
               </div>
             </span>
           }
         />
       );
-      count++;
     }
-    if (this.props.messages.length) {
-      return <List>{chat}</List>;
+
+    if (this.props.messages.length > 0) {
+      return <List>{msgs}</List>;
     } else {
       return "";
     }
@@ -81,116 +79,88 @@ class Chat extends React.Component<Props, State> {
 
   render() {
     const { classes } = this.props;
-    const chatField = (
-      <div className={classes.footer}>
-        <TextField
-          // className={classes.chatbox}
-          multiline
-          rowsMax="5"
-          fullWidth={true}
-          InputProps={{ className: classes.textField }}
-          InputLabelProps={{ className: `${classes.textField} ${classes.userInputLabel}` }}
-          label={this.props.username + ":"}
-          placeholder="Type your message..."
-          onChange={this.onChange}
-          onKeyUp={this.enterPressed}
-          value={this.state.message}
-          variant="filled"
-        />
-      </div>
-    );
 
     return (
-      <div className={classes.container}>
-        <Card className={classes.chatContainer}>
-          <CardHeader
-            classes={{
-              title: classes.chatHeader
-            }}
-            title="CHAT"
+      <Card className={classes.chatContainer}>
+        <CardHeader
+          classes={{
+            title: classes.chatHeader
+          }}
+          title="CHAT"
+        />
+        <ScrollableFeed forceScroll className={classes.messages}>
+          {this.renderMsgs(classes)}
+        </ScrollableFeed>
+        <div className={classes.textboxContainer}>
+          <TextField
+            fullWidth
+            InputProps={{ className: classes.textField, disableUnderline: true }}
+            InputLabelProps={{ className: classes.usernameLabel }}
+            label={this.props.username + ":"}
+            placeholder="Type your message..."
+            onChange={this.onChange}
+            onKeyUp={this.enterPressed}
+            value={this.state.message}
+            variant="filled"
           />
-          <ScrollableFeed forceScroll className={classes.messages}>
-            {this.renderChat(classes)}
-          </ScrollableFeed>
-          {chatField}
-        </Card>
-      </div>
+        </div>
+      </Card>
     );
   }
 }
 
-const materialUiStyles = (theme: any) =>
-  createStyles({
-    container: {
-      padding: "0px 20px"
-    },
-    chatbox: {
-      color: "white"
-    },
-    textField: {
-      "& input + fieldset": {
-        "&::placeholder": {
-          color: "white"
-        },
-        borderWidth: 2
-      },
-      color: "white"
-    },
-    message: {
-      fontFamily: "Roboto, sans-serif",
-      fontStyle: "normal",
-      fontWeight: "normal",
-      fontSize: 20,
-      color: "rgba(255, 255, 255, 0.9)"
-    },
-    messages: {
-      overflowX: "auto",
-      overflowWrap: "break-word",
-      height: "60%",
-      "&::-webkit-scrollbar": {
-        width: "0.4em"
-      },
-      "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "rgba(255,255,255,.1)",
-        outline: "1px solid slategrey",
-        borderRadius: 3
-      }
-    },
-    userMessageLabel: {
-      paddingRight: 10,
-      fontFamily: "Roboto, sans-serif",
-      fontStyle: "normal",
-      fontWeight: 500,
-      fontSize: 20,
-      color: "rgba(255, 255, 255, 0.8)"
-    },
-    footer: {
-      position: "absolute",
-      bottom: "0",
-      width: "100%"
-    },
-    userInputLabel: {
-      position: "relative",
-      fontFamily: "Roboto, sans-serif",
-      fontStyle: "normal",
-      fontWeight: 500,
-      fontSize: 20,
-      color: "rgba(98, 239, 249, 0.8)",
-      paddingRight: 15
-    },
-    chatContainer: {
-      position: "relative",
-      height: "45vh",
-      background: "rgba(255, 255, 255, 0.05)"
-    },
-    chatHeader: {
-      fontFamily: "Roboto, sans-serif",
-      fontStyle: "normal",
-      fontWeight: 500,
-      fontSize: "24px",
-      color: "rgba(255, 255, 255, 0.4)",
-      maxHeight: 15
+const styles = createStyles({
+  chatContainer: {
+    position: "relative",
+    height: "50vh",
+    background: "rgba(255, 255, 255, 0.05)",
+    margin: "0px 20px"
+  },
+  chatHeader: {
+    fontWeight: 500,
+    fontSize: "24px",
+    color: "rgba(255, 255, 255, 0.4)",
+    maxHeight: 15
+  },
+  textboxContainer: {
+    position: "absolute",
+    bottom: "0",
+    width: "100%"
+  },
+  textField: {
+    borderRadius: "0px",
+    color: "rgba(225, 225, 225, 0.8)",
+    backgroundColor: "rgba(0, 0, 0, 0.15)"
+  },
+  usernameLabel: {
+    fontSize: 18,
+    color: "rgba(98, 239, 249, 0.8)",
+    "&.Mui-focused": {
+      color: "rgba(0, 159, 255, 0.8)"
     }
-  });
+  },
+  username: {
+    color: "rgba(98, 239, 249, 0.8)",
+    paddingRight: 10,
+    fontWeight: 420,
+    fontSize: 18
+  },
+  message: {
+    fontSize: 18,
+    color: "rgba(225, 225, 225, 0.8)"
+  },
+  messages: {
+    overflowX: "auto",
+    overflowWrap: "break-word",
+    height: "80%",
+    "&::-webkit-scrollbar": {
+      width: "0.5em"
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      borderRadius: 1
+    }
+  }
+});
 
-export default withStyles(materialUiStyles)(Chat);
+export default withStyles(styles)(Chat);
