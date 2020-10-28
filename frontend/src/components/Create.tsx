@@ -110,7 +110,7 @@ class Create extends React.Component<Props, State> {
         <Typography style={{ fontFamily: "Libre Baskerville" }} align="center" variant="h4">
           Create A Room
         </Typography>
-        <div style={{ margin: "1.2em 0" }}>
+        <div style={{ margin: "0.6em 0" }}>
           <div style={{ fontFamily: "Libre Baskerville" }}>
             <Grid component="label" container alignItems="center" spacing={1}>
               <Grid xs={5} item style={{ textAlign: "right" }}>
