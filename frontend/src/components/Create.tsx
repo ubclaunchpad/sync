@@ -111,6 +111,29 @@ class Create extends React.Component<Props, State> {
           Create A Room
         </Typography>
         <div style={{ margin: "1.2em 0" }}>
+          <div style={{ fontFamily: "Libre Baskerville" }}>
+            <Grid component="label" container alignItems="center" spacing={1}>
+              <Grid xs={5} item style={{ textAlign: "right" }}>
+                Public
+              </Grid>
+              <Grid xs={2} item>
+                <Switch
+                  checked={this.state.private}
+                  onChange={this.handlePrivateSwitchChange}
+                  disableRipple
+                  classes={{
+                    root: classes.switchRoot,
+                    switchBase: classes.switchBase,
+                    thumb: classes.switchThumb,
+                    track: classes.switchTrack
+                  }}
+                />
+              </Grid>
+              <Grid xs={5} item style={{ textAlign: "left" }}>
+                Private
+              </Grid>
+            </Grid>
+          </div>
           <TextField
             fullWidth
             onChange={this.handleNameFieldChange}
@@ -156,29 +179,6 @@ class Create extends React.Component<Props, State> {
               className: classes.input
             }}
           />
-          <div style={{ fontFamily: "Libre Baskerville" }}>
-            <Grid component="label" container alignItems="center" spacing={1}>
-              <Grid xs={5} item style={{ textAlign: "right" }}>
-                Public
-              </Grid>
-              <Grid xs={2} item>
-                <Switch
-                  checked={this.state.private}
-                  onChange={this.handlePrivateSwitchChange}
-                  disableRipple
-                  classes={{
-                    root: classes.switchRoot,
-                    switchBase: classes.switchBase,
-                    thumb: classes.switchThumb,
-                    track: classes.switchTrack
-                  }}
-                />
-              </Grid>
-              <Grid xs={5} item style={{ textAlign: "left" }}>
-                Private
-              </Grid>
-            </Grid>
-          </div>
         </div>
         <Button
           onClick={this.handleCreateRoom}
