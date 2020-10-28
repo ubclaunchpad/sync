@@ -90,6 +90,22 @@ export default class Database {
     });
   }
 
+  public async getPublicRooms(): Promise<RoomList> {
+    return new Promise<RoomList>((resolve, reject) => {
+      logger.info("Get room list");
+      const rooms: RoomList = {};
+      this.client.keys("*", async (err, keys) => {
+        for (const key of keys) {
+          const room = await this.getRoom(key.split(":")[1]);
+          if (!room.private) {
+            rooms[key] = room;
+          }
+        }
+        resolve(rooms);
+      });
+    });
+  }
+
   private initListeners(): void {
     this.client.on("connect", () => {
       logger.info("Connected to Redis Server");
