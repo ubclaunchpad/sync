@@ -49,8 +49,9 @@ export default (theme: any) =>
       }
     },
     heading: {
+      fontFamily: "Libre Baskerville",
       color: "white",
-      letterSpacing: "3px"
+      letterSpacing: "2px"
     },
     shareBtns: {
       float: "right",
