@@ -1,19 +1,18 @@
 import React from "react";
 import Peer from "simple-peer";
-import io from "socket.io-client";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
-import { List, ListItem, ListItemText, ListItemIcon, Divider, CardMedia, createStyles } from "@material-ui/core";
+import { List, ListItem, ListItemText, Divider, createStyles } from "@material-ui/core";
 import { v1 as uuidv1 } from "uuid";
 import Modal from "@material-ui/core/Modal";
 import Grow from "@material-ui/core/Grow";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVideo } from "@fortawesome/free-solid-svg-icons";
+import { faVideo, faVideoSlash } from "@fortawesome/free-solid-svg-icons";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
 
 interface VideoChatProps {
   classes: any;
@@ -39,19 +38,9 @@ interface VideoChatState {
   inviteFromName: string;
 }
 
-interface PeerType {
-  init: "init";
-  notInit: "notInit";
-}
-
 enum PeerTypes {
   init = "init",
   notInit = "notInit"
-}
-
-interface Client {
-  gotAnswer: any;
-  peer: any;
 }
 
 class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
@@ -203,7 +192,6 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
 
   //Used to initialize a peer, define a new peer and return it
   init = (type: PeerTypes): Peer.Instance => {
-    const socket = this.socket;
     const peer = new Peer({
       initiator: type === PeerTypes.init ? true : false,
       stream: this.state.stream && this.state.stream,
@@ -276,13 +264,8 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     let content;
     if (this.state.inVideoChat) {
       content = (
-        <div className={classes.videoChat}>
-          <CardMedia className={classes.cardMedia}>
-            <video style={{ objectFit: "contain", width: "30vw" }} ref={this.peerVideoRef} autoPlay></video>
-          </CardMedia>
-          <Button onClick={() => this.stopMyVideoChat(true)} variant="contained" color="secondary">
-            Leave
-          </Button>
+        <div className={classes.videoContainer}>
+          <video className={classes.video} ref={this.peerVideoRef} autoPlay></video>
         </div>
       );
     } else {
@@ -290,11 +273,11 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
         if (user[1]) {
           return (
             <ListItem key={i} className={classes.listItem} divider>
-              <ListItemText primary={user[1]} />
-              <ListItemIcon className={classes.listItemIcon} onClick={() => this.sendInvite(user[0])}>
+              <ListItemText style={{ marginLeft: "5px " }} primary={user[1]} />
+              <IconButton className={classes.listItemIcon} onClick={() => this.sendInvite(user[0])}>
                 <FontAwesomeIcon icon={faVideo} />
-              </ListItemIcon>
-              <Divider className={classes.divider} light />
+              </IconButton>
+              <Divider style={{ backgroundColor: "#ffffff" }} light />
             </ListItem>
           );
         }
@@ -305,7 +288,14 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
     return (
       <div className={classes.container}>
         <List className={classes.list} component="nav">
-          <h1 className={classes.videoChatHeader}>VIDEO CHAT</h1>
+          <div style={{ display: "flex" }}>
+            <h1 className={classes.header}>VIDEO CHAT</h1>
+            {this.state.inVideoChat ? (
+              <IconButton style={{ color: "#7f0303", paddingTop: "20px" }} onClick={() => this.stopMyVideoChat(true)}>
+                <FontAwesomeIcon icon={faVideoSlash} />
+              </IconButton>
+            ) : null}
+          </div>
           {content}
         </List>
         <Modal
@@ -346,13 +336,42 @@ class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   }
 }
 
-const materialUiStyles = (theme: any) =>
+const styles = (theme: any) =>
   createStyles({
     container: {
+      position: "relative",
       padding: "14px 20px 0px",
       [theme.breakpoints.down("sm")]: {
         padding: "0px 20px"
       }
+    },
+    list: {
+      background: "rgba(255, 255, 255, 0.05)",
+      marginBottom: "2em",
+      minHeight: "30vh",
+      paddingBottom: "0px"
+    },
+    listItem: {
+      color: "#ffffff"
+    },
+    listItemIcon: {
+      color: "#ffffff"
+    },
+    header: {
+      left: "0",
+      fontWeight: 500,
+      fontSize: 24,
+      color: "rgba(255, 255, 255, 0.4)",
+      maxHeight: "16px",
+      paddingLeft: "16px"
+    },
+    videoContainer: {
+      overflow: "hidden",
+      textAlign: "center"
+    },
+    video: {
+      objectFit: "contain",
+      width: "30vh"
     },
     modal: {
       display: "flex",
@@ -367,36 +386,6 @@ const materialUiStyles = (theme: any) =>
       outline: "none",
       color: "white"
     },
-    list: {
-      background: "rgba(255, 255, 255, 0.05)",
-      marginBottom: "2em",
-      minHeight: "30vh"
-    },
-    listItem: {
-      color: "#ffffff"
-    },
-    listItemIcon: {
-      color: "#ffffff"
-    },
-    divider: {
-      backgroundColor: "#ffffff"
-    },
-    cardMedia: {
-      width: "300px"
-    },
-    videoChatHeader: {
-      fontFamily: "Roboto, sans-serif",
-      fontStyle: "normal",
-      fontWeight: 500,
-      fontSize: 24,
-      color: "rgba(255, 255, 255, 0.4)",
-      maxHeight: 15,
-      paddingLeft: "16px",
-      paddingRight: "16px"
-    },
-    videoChat: {
-      marginBottom: "2em"
-    },
     inviteButtons: {
       backgroundColor: "white",
       color: "#001953",
@@ -409,4 +398,4 @@ const materialUiStyles = (theme: any) =>
     }
   });
 
-export default withStyles(materialUiStyles)(VideoChat);
+export default withStyles(styles)(VideoChat);

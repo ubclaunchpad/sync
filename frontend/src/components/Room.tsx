@@ -128,7 +128,6 @@ class Room extends React.Component<Props, State> {
   }
 
   handleOnStateChange(event: { target: any; data: number }) {
-    console.log("State has changed with data = " + event.data);
     switch (event.data) {
       case PlayerState.ENDED:
         this.handleOnEnd(event);
@@ -178,7 +177,6 @@ class Room extends React.Component<Props, State> {
       player.pauseVideo();
     });
     this.socket.on(Event.MESSAGE, (dataFromServer: Message) => {
-      console.log(JSON.stringify(dataFromServer));
       this.addMessage(dataFromServer);
     });
     this.socket.on(Event.UPDATE_ROOM, (room: RoomInfo) => {
@@ -191,11 +189,9 @@ class Room extends React.Component<Props, State> {
 
     this.socket.on(Event.UPDATE_VIDEO_STATE, (videoState: VideoState) => {
       if (videoState.playerState === PlayerState.PAUSED) {
-        console.log("Trying to pause video!");
         player.seekTo(videoState.secondsElapsed);
         player.pauseVideo();
       } else if (videoState.playerState === PlayerState.PLAYING) {
-        console.log("Trying to play video!");
         player.seekTo(videoState.secondsElapsed);
         player.playVideo();
       }
