@@ -13,6 +13,7 @@ import createIcon from "../assets/icon-create.svg";
 import browseIcon from "../assets/icon-browse.svg";
 import joinIcon from "../assets/icon-join.svg";
 import styles from "../styles/Home";
+import "../styles/Home.css";
 
 enum ModalType {
   NONE = 0,
@@ -66,6 +67,7 @@ class Home extends React.Component<Props, State> {
             </div>
           </Button>
         </Link>
+        <h2 className="title">Interactive, Synchronized YouTube Streaming</h2>
 
         <Modal
           disableAutoFocus={true}

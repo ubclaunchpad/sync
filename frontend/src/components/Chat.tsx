@@ -53,7 +53,9 @@ class Chat extends React.Component<Props, State> {
           primary={
             <span>
               <div style={{ paddingLeft: "15px" }}>
-                <span className={classes.username}>{this.props.messages[i].user + ": "}</span>
+                <span className={classes.username}>
+                  {this.props.messages[i].user ? this.props.messages[i].user + ": " : ""}
+                </span>
                 {this.props.messages[i].message}
               </div>
             </span>

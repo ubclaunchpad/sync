@@ -58,7 +58,7 @@ export class Browse extends React.Component<Props, State> {
         this.setState({ width: window.innerWidth, height: window.innerHeight });
       });
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
