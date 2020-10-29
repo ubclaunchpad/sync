@@ -3,6 +3,7 @@ import { RouteComponentProps } from "react-router-dom";
 import io from "socket.io-client";
 import axios, { AxiosResponse } from "axios";
 import Lottie from "react-lottie";
+import Confetti from "react-confetti";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Grow from "@material-ui/core/Grow";
@@ -54,6 +55,7 @@ interface State {
   playerState: PlayerState;
   modal: ModalType;
   users: any;
+  keyPressed: boolean;
 }
 
 class Room extends React.Component<Props, State> {
@@ -75,7 +77,8 @@ class Room extends React.Component<Props, State> {
       videoQueue: [],
       playerState: PlayerState.UNSTARTED,
       users: {},
-      modal: ModalType.NONE
+      modal: ModalType.NONE,
+      keyPressed: false
     };
     this.handleOnPause = this.handleOnPause.bind(this);
     this.handleOnPlay = this.handleOnPlay.bind(this);
@@ -300,6 +303,20 @@ class Room extends React.Component<Props, State> {
         isValid: false
       });
     }
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.keyCode === 27) {
+          this.setState((prevState) => {
+            return {
+              keyPressed: !prevState.keyPressed
+            };
+          });
+        }
+      },
+      false
+    );
   }
 
   render() {
@@ -346,7 +363,6 @@ class Room extends React.Component<Props, State> {
             <Share roomUrl={window.location.href} />
           </Grid>
         </Grid>
-
         <Grid container spacing={1} justify="center">
           <Grid item xs={12} md={8}>
             <Player
@@ -368,7 +384,6 @@ class Room extends React.Component<Props, State> {
             <Chat username={this.state.username} messages={this.state.messages} sendMessage={this.handleSendMessage} />
           </Grid>
         </Grid>
-
         <Modal
           disableAutoFocus={true}
           className={classes.modal}
@@ -390,6 +405,7 @@ class Room extends React.Component<Props, State> {
             </div>
           </Grow>
         </Modal>
+        {this.state.keyPressed ? <Confetti run={true} /> : null}
       </React.Fragment>
     );
   }
