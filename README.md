@@ -1,6 +1,10 @@
 <h1 align="center">Sync</h1>
 
 <p align="center">
+  <a href="https://www.producthunt.com/posts/sync-4?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-sync-4" target="_blank">
+    <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=272894&theme=light" alt="Sync | Product Hunt" style="width: 190px; height: 44px;" width="190" height="44" />
+  </a>
+  <br>
   <a href="https://github.com/ubclaunchpad/sync/actions?workflow=Checks">
     <img src="https://github.com/ubclaunchpad/sync/workflows/Checks/badge.svg"
       alt="Checks Status" />
