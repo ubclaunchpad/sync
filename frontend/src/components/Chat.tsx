@@ -135,7 +135,6 @@ const styles = createStyles({
   },
   username: {
     color: "rgba(98, 239, 249, 0.8)",
-    paddingRight: 10,
     fontWeight: 420,
     fontSize: 18
   },
