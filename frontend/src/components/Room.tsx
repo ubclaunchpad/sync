@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router-dom";
 import io from "socket.io-client";
 import axios, { AxiosResponse } from "axios";
 import Lottie from "react-lottie";
-import Confetti from "react-confetti";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Grow from "@material-ui/core/Grow";
@@ -400,7 +399,6 @@ class Room extends React.Component<Props, State> {
             </div>
           </Grow>
         </Modal>
-        {this.state.keyPressed ? <Confetti run={true} /> : null}
       </React.Fragment>
     );
   }
