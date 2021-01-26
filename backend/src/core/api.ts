@@ -75,7 +75,7 @@ export default class API {
       while (ids.includes(roomId)) {
         roomId = uniqid();
       }
-      const resp = await axios.get(`https://youtube.com/get_video_info?video_id=${req.body.currVideoId}`);
+      const resp = await axios.get(`https://youtube.com/get_video_info?video_id=${req.body.videoId}`);
       const videoInfo = qs.parse(resp.data);
       const playerResponse = JSON.parse(videoInfo["player_response"] as string);
       await this.db.setRoom(

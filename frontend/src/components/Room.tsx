@@ -178,8 +178,8 @@ class Room extends React.Component<Props, State> {
     });
     this.socket.on(Event.UPDATE_ROOM, (room: RoomInfo) => {
       this.setState({
-        currVideoId: room.currVideoId,
-        currVideoTitle: room.currVideoTitle,
+        currVideoId: room.videoId,
+        currVideoTitle: room.videoTitle,
         videoQueue: room.videoQueue
       });
     });
@@ -278,8 +278,8 @@ class Room extends React.Component<Props, State> {
       const res: AxiosResponse<RoomInfo> = await axios.get(`${this.api}/api/rooms/` + id);
       if (res && res.status === 200) {
         this.setState({
-          currVideoId: res.data.currVideoId,
-          currVideoTitle: res.data.currVideoTitle,
+          currVideoId: res.data.videoId,
+          currVideoTitle: res.data.videoTitle,
           isLoaded: true,
           isValid: true,
           name: res.data.name,

@@ -43,10 +43,10 @@ export class Browse extends React.Component<Props, State> {
     try {
       const res = await axios.get(`${this.api}/api/rooms?public`);
       for (const key in res.data) {
-        axios.get(`${this.api}/api/videotitle/` + res.data[key].currVideoId).then((resp) => {
+        axios.get(`${this.api}/api/videotitle/` + res.data[key].videoId).then((resp) => {
           this.setState((prevState) => {
             const vidTitle = Object.assign({}, prevState.vidTitle);
-            vidTitle[res.data[key].currVideoId] = resp.data;
+            vidTitle[res.data[key].videoId] = resp.data;
             return { vidTitle };
           });
         });
@@ -68,15 +68,15 @@ export class Browse extends React.Component<Props, State> {
       <Grow in={true} timeout="auto" key={key}>
         <GridListTile
           className={classes.tile}
-          key={`https://img.youtube.com/vi/${room.currVideoId}/default.jpg`}
+          key={`https://img.youtube.com/vi/${room.videoId}/default.jpg`}
           onClick={(event) => (window.location.href = "/" + roomId)}
         >
-          <img src={`https://img.youtube.com/vi/${room.currVideoId}/hqdefault.jpg`} alt={room.name} />
+          <img src={`https://img.youtube.com/vi/${room.videoId}/hqdefault.jpg`} alt={room.name} />
           <GridListTileBar
             style={{ fontWeight: "bold" }}
             subtitle={
-              this.state.vidTitle[room.currVideoId] !== undefined
-                ? "Playing: " + this.state.vidTitle[room.currVideoId]
+              this.state.vidTitle[room.videoId] !== undefined
+                ? "Playing: " + this.state.vidTitle[room.videoId]
                 : "Retrieving Title ... "
             }
             title={room.name}

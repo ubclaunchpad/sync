@@ -1,7 +1,7 @@
 export interface RoomInfo {
   name: string;
-  currVideoTitle: string;
-  currVideoId: string;
+  videoTitle: string;
+  videoId: string;
   videoQueue: Video[];
 }
 
