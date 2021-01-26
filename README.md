@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://www.producthunt.com/posts/sync-4?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-sync-4" target="_blank">
-    <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=272894&theme=light" alt="Sync | Product Hunt" style="width: 190px; height: 44px;" width="190" height="44" />
+    <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=272894&theme=dark" alt="Sync | Product Hunt" style="width: 190px; height: 44px;" width="190" height="44" />
   </a>
   <br>
   <a href="https://github.com/ubclaunchpad/sync/actions?workflow=Checks">
@@ -15,7 +15,9 @@
   </a>
 </p>
 <p align="center">
-  <img width="50%" src="https://raw.githubusercontent.com/ubclaunchpad/sync/master/.static/banner.png" />
+  <a href="https://youtu.be/Y143tZxDp2A">
+    <img width="50%" src="https://raw.githubusercontent.com/ubclaunchpad/sync/master/.static/banner.png" />
+  </a>
 </p>
 
 Sync is a synchronous YouTube streaming app for you to watch, share, and talk about videos with your friends. Create stream rooms with your friends. Chat and video call your friends and create endless playlists to watch videos together.
