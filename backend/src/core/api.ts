@@ -1,9 +1,9 @@
-import { Router, Request, Response, query } from "express";
+import { Router, Request, Response } from "express";
 import Database from "./database";
 import uniqid from "uniqid";
 import axios from "axios";
 import qs from "querystring";
-import { PlayerState } from "../models/videoState";
+import { PlayerState } from "../models";
 
 export default class API {
   public router: Router;
@@ -75,7 +75,7 @@ export default class API {
       while (ids.includes(roomId)) {
         roomId = uniqid();
       }
-      const resp = await axios.get(`https://youtube.com/get_video_info?video_id=${req.body.currVideoId}`);
+      const resp = await axios.get(`https://youtube.com/get_video_info?video_id=${req.body.videoId}`);
       const videoInfo = qs.parse(resp.data);
       const playerResponse = JSON.parse(videoInfo["player_response"] as string);
       await this.db.setRoom(

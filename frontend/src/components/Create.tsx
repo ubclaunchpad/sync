@@ -70,7 +70,7 @@ class Create extends React.Component<Props, State> {
     const match = this.state.url.match(regExp);
     if (match && match[2].length === 11) {
       const res = await axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:8080"}/api/rooms`, {
-        currVideoId: match[2],
+        videoId: match[2],
         name: this.state.name,
         private: this.state.private
       });

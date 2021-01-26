@@ -1,16 +1,11 @@
-import { Server } from "socket.io";
+import socketIo from "socket.io";
 import Event from "./event";
 import axios from "axios";
 import logger from "../config/logger";
 import qs from "querystring";
-import Video from "../models/video";
 import uniqid from "uniqid";
 import Database from "../core/database";
-import Message from "../models/message";
-import ExtendedSocket from "../models/extendedSocket";
-import VideoState, { PlayerState } from "../models/videoState";
-import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
-import Room from "../models/room";
+import { Room, RoomSocket, Video, Message, VideoState, PlayerState, VideoStateUpdate } from "../models";
 
 type EventHandler = {
   [event in Event]?: (args: any) => Promise<void>;
@@ -18,11 +13,11 @@ type EventHandler = {
 
 class RoomSocketHandler {
   private database: Database;
-  private io: Server;
-  private socket: ExtendedSocket;
+  private io: socketIo.Server;
+  private socket: RoomSocket;
   private roomId: string;
 
-  constructor(database: Database, io: Server, socket: ExtendedSocket, roomId: string) {
+  constructor(database: Database, io: socketIo.Server, socket: RoomSocket, roomId: string) {
     this.database = database;
     this.io = io;
     this.socket = socket;
@@ -67,7 +62,7 @@ class RoomSocketHandler {
       [Event.REMOVE_FROM_QUEUE]: (id: string): Promise<void> => this.removeFromQueue(id),
       [Event.REQUEST_ADD_TO_QUEUE]: (videoUrl: string): Promise<void> => this.tryAddToQueue(videoUrl),
       [Event.REQUEST_VIDEO_STATE]: (): Promise<void> => this.getVideoState(),
-      [Event.UPDATE_VIDEO_STATE]: (request: UpdateVideoStateRequest): Promise<void> => this.updateVideoState(request),
+      [Event.UPDATE_VIDEO_STATE]: (request: VideoStateUpdate): Promise<void> => this.updateVideoState(request),
       [Event.VIDEO_ENDED]: (): Promise<void> => this.handleVideoEnded(),
       [Event.CREATE_USERNAME]: (username: string): Promise<void> => this.createUsername(username),
       [Event.GET_ALL_USERNAMES]: (): Promise<void> => this.getAllUsernames(),
@@ -143,11 +138,11 @@ class RoomSocketHandler {
       };
 
       const room = await this.database.getRoom(this.roomId);
-      console.log(room.currVideoTitle);
+      console.log(room.videoTitle);
 
       if (room.playerState === PlayerState.ENDED) {
-        room.currVideoId = video.youtubeId;
-        room.currVideoTitle = video.title;
+        room.videoId = video.youtubeId;
+        room.videoTitle = video.title;
       } else {
         room.videoQueue.push(video);
       }
@@ -196,8 +191,8 @@ class RoomSocketHandler {
     return Promise.resolve();
   }
 
-  private updateVideoState(updateVideoStateRequest: UpdateVideoStateRequest): Promise<void> {
-    this.io.to(updateVideoStateRequest.socketId).emit(Event.UPDATE_VIDEO_STATE, updateVideoStateRequest.videoState);
+  private updateVideoState(videoStateUpdate: VideoStateUpdate): Promise<void> {
+    this.io.to(videoStateUpdate.socketId).emit(Event.UPDATE_VIDEO_STATE, videoStateUpdate.videoState);
     return Promise.resolve();
   }
 
@@ -205,8 +200,8 @@ class RoomSocketHandler {
     const room: Room = await this.database.getRoom(this.roomId);
     room.playerState = PlayerState.ENDED;
     if (room.videoQueue.length > 0) {
-      room.currVideoId = room.videoQueue[0].youtubeId;
-      room.currVideoTitle = room.videoQueue[0].title;
+      room.videoId = room.videoQueue[0].youtubeId;
+      room.videoTitle = room.videoQueue[0].title;
       room.videoQueue.shift();
     }
     await this.database.setRoom(this.roomId, room);
