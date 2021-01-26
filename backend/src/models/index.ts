@@ -14,6 +14,11 @@ export interface Room {
   videoQueue: Video[];
 }
 
+export interface EventTimestamp {
+  secondsElapsed: number;
+  timestamp: number;
+}
+
 export interface VideoState {
   secondsElapsed: number;
   playerState: PlayerState;

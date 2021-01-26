@@ -5,7 +5,7 @@ import logger from "../config/logger";
 import qs from "querystring";
 import uniqid from "uniqid";
 import Database from "../core/database";
-import { Room, RoomSocket, Video, Message, VideoState, PlayerState, VideoStateUpdate } from "../models";
+import { Room, RoomSocket, EventTimestamp, Video, Message, VideoState, PlayerState, VideoStateUpdate } from "../models";
 
 type EventHandler = {
   [event in Event]?: (args: any) => Promise<void>;
@@ -57,8 +57,8 @@ class RoomSocketHandler {
     return {
       [Event.CREATE_USERNAME]: (username: string): Promise<void> => this.createUsername(username),
       [Event.MESSAGE]: (message: Message): Promise<void> => this.sendMessage(message),
-      [Event.PLAY_VIDEO]: (time: number): Promise<void> => this.playVideo(time),
-      [Event.PAUSE_VIDEO]: (time: number): Promise<void> => this.pauseVideo(time),
+      [Event.PLAY_VIDEO]: (ts: EventTimestamp): Promise<void> => this.playVideo(ts),
+      [Event.PAUSE_VIDEO]: (ts: EventTimestamp): Promise<void> => this.pauseVideo(ts),
       [Event.REMOVE_FROM_QUEUE]: (id: string): Promise<void> => this.removeFromQueue(id),
       [Event.REQUEST_ADD_TO_QUEUE]: (videoUrl: string): Promise<void> => this.tryAddToQueue(videoUrl),
       [Event.REQUEST_VIDEO_STATE]: (): Promise<void> => this.getVideoState(),
@@ -101,19 +101,19 @@ class RoomSocketHandler {
     return Promise.resolve();
   }
 
-  private async playVideo(time: number): Promise<void> {
+  private async playVideo(ts: EventTimestamp): Promise<void> {
     const room: Room = await this.database.getRoom(this.roomId);
     if (room.playerState !== PlayerState.PLAYING) {
-      this.socket.to(this.roomId).emit(Event.PLAY_VIDEO, time);
+      this.socket.to(this.roomId).emit(Event.PLAY_VIDEO, ts);
       room.playerState = PlayerState.PLAYING;
       await this.database.setRoom(this.roomId, room);
     }
   }
 
-  private async pauseVideo(time: number): Promise<void> {
+  private async pauseVideo(ts: EventTimestamp): Promise<void> {
     const room: Room = await this.database.getRoom(this.roomId);
     if (room.playerState !== PlayerState.PAUSED) {
-      this.socket.to(this.roomId).emit(Event.PAUSE_VIDEO, time);
+      this.socket.to(this.roomId).emit(Event.PAUSE_VIDEO, ts);
       room.playerState = PlayerState.PAUSED;
       await this.database.setRoom(this.roomId, room);
     }
