@@ -10,7 +10,7 @@ import {
   InputAdornment
 } from "@material-ui/core";
 import { createStyles, withStyles } from "@material-ui/core/styles";
-import Video from "../models/video";
+import { Video } from "../models";
 import Event from "../sockets/event";
 import QueueAdd from "../assets/queue-add.svg";
 import QueueDelete from "../assets/queue-delete.svg";

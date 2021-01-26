@@ -4,7 +4,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
-import Message from "../models/message";
+import { Message } from "../models";
 import ScrollableFeed from "react-scrollable-feed";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 

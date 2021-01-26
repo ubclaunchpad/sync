@@ -16,12 +16,7 @@ import Share from "./Share";
 import Queue from "./Queue";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
-import Video from "../models/video";
-import RoomInfo from "../models/room";
-import RoomData from "../models/room";
-import Message from "../models/message";
-import { VideoState, PlayerState } from "../models/videoState";
-import UpdateVideoStateRequest from "../models/updateVideoStateRequest";
+import { RoomInfo, Message, Video, VideoState, PlayerState, VideoStateUpdate } from "../models";
 import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-generator";
 import { withStyles, createStyles } from "@material-ui/core";
 import loadingIndicator from "../lotties/loading.json";
@@ -201,7 +196,7 @@ class Room extends React.Component<Props, State> {
     });
 
     this.socket.on(Event.REQUEST_VIDEO_STATE, (socketId: string) => {
-      const updateVideoStateRequest: UpdateVideoStateRequest = {
+      const updateVideoStateRequest: VideoStateUpdate = {
         socketId,
         videoState: { secondsElapsed: player.getCurrentTime(), playerState: this.state.playerState }
       };
@@ -281,7 +276,7 @@ class Room extends React.Component<Props, State> {
     this.setModalState();
 
     try {
-      const res: AxiosResponse<RoomData> = await axios.get(`${this.api}/api/rooms/` + id);
+      const res: AxiosResponse<RoomInfo> = await axios.get(`${this.api}/api/rooms/` + id);
       if (res && res.status === 200) {
         this.setState({
           currVideoId: res.data.currVideoId,
