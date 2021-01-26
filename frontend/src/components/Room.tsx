@@ -15,7 +15,7 @@ import Share from "./Share";
 import Queue from "./Queue";
 import Username from "./Username";
 import VideoChat from "./VideoChat";
-import { RoomInfo, Message, Video, VideoState, PlayerState, VideoStateUpdate } from "../models";
+import { RoomInfo, Message, Video, VideoState, PlayerState, VideoStateUpdate, EventTimestamp } from "../models";
 import { uniqueNamesGenerator, Config, colors, animals } from "unique-names-generator";
 import { withStyles, createStyles } from "@material-ui/core";
 import loadingIndicator from "../lotties/loading.json";
@@ -112,12 +112,12 @@ class Room extends React.Component<Props, State> {
 
   handleOnPause(event: { target: any; data: number }) {
     const player = event.target;
-    this.socket.emit(Event.PAUSE_VIDEO, player.getCurrentTime());
+    this.socket.emit(Event.PAUSE_VIDEO, { secondsElapsed: player.getCurrentTime(), timestamp: Date.now() });
   }
 
   handleOnPlay(event: { target: any; data: number }) {
     const player = event.target;
-    this.socket.emit(Event.PLAY_VIDEO, player.getCurrentTime());
+    this.socket.emit(Event.PLAY_VIDEO, { secondsElapsed: player.getCurrentTime(), timestamp: Date.now() });
   }
 
   handleOnEnd(event: { target: any; data: number }) {
@@ -164,13 +164,14 @@ class Room extends React.Component<Props, State> {
   handleOnReady(event: { target: any }) {
     const player = event.target;
 
-    this.socket.on(Event.PLAY_VIDEO, (time: number) => {
-      if (time && Math.abs(time - player.getCurrentTime()) > 0.5) {
+    this.socket.on(Event.PLAY_VIDEO, (ts: EventTimestamp) => {
+      const time = ts.secondsElapsed + Math.ceil((Date.now() - ts.timestamp) / 1000);
+      if (Math.abs(time - player.getCurrentTime()) > 0.5) {
         player.seekTo(time);
       }
       player.playVideo();
     });
-    this.socket.on(Event.PAUSE_VIDEO, (time: number) => {
+    this.socket.on(Event.PAUSE_VIDEO, (ts: EventTimestamp) => {
       player.pauseVideo();
     });
     this.socket.on(Event.MESSAGE, (dataFromServer: Message) => {

@@ -5,6 +5,11 @@ export interface RoomInfo {
   videoQueue: Video[];
 }
 
+export interface EventTimestamp {
+  secondsElapsed: number;
+  timestamp: number;
+}
+
 export interface Video {
   id: string;
   title: string;
