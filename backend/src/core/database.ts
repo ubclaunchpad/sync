@@ -1,7 +1,6 @@
 import redis from "redis";
 import logger from "../config/logger";
-import Room from "../models/room";
-import RoomList from "../models/roomlist";
+import { Room, RoomList } from "../models";
 
 export default class Database {
   private client: redis.RedisClient;
@@ -40,8 +39,9 @@ export default class Database {
         if (!res) {
           logger.error(`Room ${id} not found`);
           reject(`404: Room ${id} not found`);
+        } else {
+          resolve(JSON.parse(res));
         }
-        resolve(JSON.parse(res));
       });
     });
   }

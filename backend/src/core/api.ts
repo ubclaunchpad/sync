@@ -1,9 +1,9 @@
-import { Router, Request, Response, query } from "express";
+import { Router, Request, Response } from "express";
 import Database from "./database";
 import uniqid from "uniqid";
 import axios from "axios";
 import qs from "querystring";
-import { PlayerState } from "../models/videoState";
+import { PlayerState } from "../models";
 
 export default class API {
   public router: Router;
