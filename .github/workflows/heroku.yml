@@ -5,7 +5,7 @@ on:
     paths:
       - "backend/**"
     branches:
-      - master
+      - main
 
 jobs:
   build:
