@@ -82,7 +82,7 @@ export default class API {
         roomId,
         Object.assign(
           {
-            currVideoTitle: playerResponse.videoDetails.title,
+            videoTitle: playerResponse.videoDetails.title,
             default: false,
             videoQueue: [],
             playerState: PlayerState.UNSTARTED
