@@ -1,6 +1,6 @@
 import redis from "redis";
 import logger from "../config/logger";
-import { Room, RoomList } from "../models";
+import { RoomInfo, RoomList } from "../models";
 
 export default class Database {
   private client: redis.RedisClient;
@@ -15,7 +15,7 @@ export default class Database {
     this.initListeners();
   }
 
-  public async setRoom(id: string, room: Room): Promise<void> {
+  public async setRoom(id: string, room: RoomInfo): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       logger.info(`Set room ${id}`);
       this.client.set(`room:${id}`, JSON.stringify(room), (err, res) => {
@@ -28,8 +28,8 @@ export default class Database {
     });
   }
 
-  public async getRoom(id: string): Promise<Room> {
-    return new Promise<Room>((resolve, reject) => {
+  public async getRoom(id: string): Promise<RoomInfo> {
+    return new Promise<RoomInfo>((resolve, reject) => {
       logger.info(`Get room ${id}`);
       this.client.get(`room:${id}`, (err, res) => {
         if (err) {
@@ -83,7 +83,8 @@ export default class Database {
       const rooms: RoomList = {};
       this.client.keys("*", async (err, keys) => {
         for (const key of keys) {
-          rooms[key] = await this.getRoom(key.split(":")[1]);
+          const id = key.split(":")[1];
+          rooms[id] = await this.getRoom(key.split(":")[1]);
         }
         resolve(rooms);
       });
@@ -96,9 +97,10 @@ export default class Database {
       const rooms: RoomList = {};
       this.client.keys("*", async (err, keys) => {
         for (const key of keys) {
-          const room = await this.getRoom(key.split(":")[1]);
+          const id = key.split(":")[1];
+          const room = await this.getRoom(id);
           if (!room.private) {
-            rooms[key] = room;
+            rooms[id] = room;
           }
         }
         resolve(rooms);

@@ -5,7 +5,16 @@ import logger from "../config/logger";
 import qs from "querystring";
 import uniqid from "uniqid";
 import Database from "../core/database";
-import { Room, RoomSocket, EventTimestamp, Video, Message, VideoState, PlayerState, VideoStateUpdate } from "../models";
+import {
+  RoomInfo,
+  RoomSocket,
+  EventTimestamp,
+  Video,
+  Message,
+  VideoState,
+  PlayerState,
+  VideoStateUpdate
+} from "../models";
 
 type EventHandler = {
   [event in Event]?: (args: any) => Promise<void>;
@@ -102,7 +111,7 @@ class RoomSocketHandler {
   }
 
   private async playVideo(ts: EventTimestamp): Promise<void> {
-    const room: Room = await this.database.getRoom(this.roomId);
+    const room: RoomInfo = await this.database.getRoom(this.roomId);
     if (room.playerState !== PlayerState.PLAYING) {
       this.socket.to(this.roomId).emit(Event.PLAY_VIDEO, ts);
       room.playerState = PlayerState.PLAYING;
@@ -111,7 +120,7 @@ class RoomSocketHandler {
   }
 
   private async pauseVideo(ts: EventTimestamp): Promise<void> {
-    const room: Room = await this.database.getRoom(this.roomId);
+    const room: RoomInfo = await this.database.getRoom(this.roomId);
     if (room.playerState !== PlayerState.PAUSED) {
       this.socket.to(this.roomId).emit(Event.PAUSE_VIDEO, ts);
       room.playerState = PlayerState.PAUSED;
@@ -158,7 +167,7 @@ class RoomSocketHandler {
   }
 
   private async removeFromQueue(id: string): Promise<void> {
-    const room: Room = await this.database.getRoom(this.roomId);
+    const room: RoomInfo = await this.database.getRoom(this.roomId);
     room.videoQueue = room.videoQueue.filter((video) => video.id !== id);
 
     await this.database.setRoom(this.roomId, room);
@@ -197,7 +206,7 @@ class RoomSocketHandler {
   }
 
   private async handleVideoEnded(): Promise<void> {
-    const room: Room = await this.database.getRoom(this.roomId);
+    const room: RoomInfo = await this.database.getRoom(this.roomId);
     room.playerState = PlayerState.ENDED;
     if (room.videoQueue.length > 0) {
       room.videoId = room.videoQueue[0].youtubeId;
