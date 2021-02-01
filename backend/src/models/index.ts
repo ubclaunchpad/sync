@@ -1,10 +1,10 @@
 import socketIo from "socket.io";
 
 export interface RoomList {
-  [key: string]: Room;
+  [key: string]: RoomInfo;
 }
 
-export interface Room {
+export interface RoomInfo {
   name: string;
   default: boolean;
   private: boolean;

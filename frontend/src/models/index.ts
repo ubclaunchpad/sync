@@ -1,7 +1,14 @@
+export interface RoomList {
+  [key: string]: RoomInfo;
+}
+
 export interface RoomInfo {
   name: string;
+  default: boolean;
+  private: boolean;
   videoTitle: string;
   videoId: string;
+  playerState: PlayerState;
   videoQueue: Video[];
 }
 

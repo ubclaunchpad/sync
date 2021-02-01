@@ -9,90 +9,65 @@ import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
 import { Facebook, Reddit, Twitter } from "@material-ui/icons";
-import { withStyles } from "@material-ui/core";
+import { WithStyles, withStyles } from "@material-ui/core";
+import { ClassNameMap } from "@material-ui/core/styles/withStyles";
 import logo from "../assets/logo.png";
 import styles from "../styles/Browse";
+import { RoomInfo, RoomList } from "../models";
 
-interface Props {
-  classes: any;
+interface Props extends WithStyles {
+  classes: ClassNameMap;
 }
 
 interface State {
-  roomList: any;
-  vidTitle: any;
-  width: any;
-  height: any;
+  roomList: RoomList;
+  width: number;
+  height: number;
 }
 
 export class Browse extends React.Component<Props, State> {
   private api: string;
+  private SOCIAL_MSG = "Come+watch+videos+together+in+Sync!";
+  private REDDIT_SHARE_URL = `https://www.reddit.com/submit?url=${window.location.href}&title=${this.SOCIAL_MSG}`;
+  private FACEBOOK_SHARE_URL = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`;
+  private TWITTER_SHARE_URL = `https://twitter.com/intent/tweet?text=${this.SOCIAL_MSG + "%0D" + window.location.href}`;
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      roomList: [],
-      vidTitle: {},
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
+      roomList: {}
     };
-    this.mediaCard = this.mediaCard.bind(this);
     this.api = process.env.REACT_APP_API_URL || "http://localhost:8080";
   }
 
-  async componentDidMount() {
+  componentDidMount = async () => {
+    window.addEventListener("resize", () => {
+      this.setState({ width: window.innerWidth, height: window.innerHeight });
+    });
     try {
-      const res = await axios.get(`${this.api}/api/rooms?public`);
-      for (const key in res.data) {
-        axios.get(`${this.api}/api/videotitle/` + res.data[key].videoId).then((resp) => {
-          this.setState((prevState) => {
-            const vidTitle = Object.assign({}, prevState.vidTitle);
-            vidTitle[res.data[key].videoId] = resp.data;
-            return { vidTitle };
-          });
-        });
-      }
       this.setState({
-        roomList: res.data
-      });
-      window.addEventListener("resize", () => {
-        this.setState({ width: window.innerWidth, height: window.innerHeight });
+        roomList: (await axios.get(`${this.api}/api/rooms?public`)).data
       });
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
-  mediaCard(room: any, key: any, classes: any) {
-    const roomId = key.split(":")[1];
+  getRoomCard = (roomId: string, room: RoomInfo, classes: ClassNameMap) => {
     return (
-      <Grow in={true} timeout="auto" key={key}>
-        <GridListTile
-          className={classes.tile}
-          key={`https://img.youtube.com/vi/${room.videoId}/default.jpg`}
-          onClick={(event) => (window.location.href = "/" + roomId)}
-        >
+      <Grow in={true} timeout="auto" key={roomId}>
+        <GridListTile className={classes.tile} key={roomId} onClick={(event) => (window.location.href = "/" + roomId)}>
           <img src={`https://img.youtube.com/vi/${room.videoId}/hqdefault.jpg`} alt={room.name} />
-          <GridListTileBar
-            style={{ fontWeight: "bold" }}
-            subtitle={
-              this.state.vidTitle[room.videoId] !== undefined
-                ? "Playing: " + this.state.vidTitle[room.videoId]
-                : "Retrieving Title ... "
-            }
-            title={room.name}
-          />
+          <GridListTileBar style={{ fontWeight: "bold" }} subtitle={room.videoTitle} title={room.name} />
         </GridListTile>
       </Grow>
     );
-  }
+  };
 
-  render() {
+  render = () => {
     const { classes } = this.props;
-    const url = window.location.href;
-    const shareText = "Come+watch+videos+together+in+Sync!";
-    const redditURL = `https://www.reddit.com/submit?url=${url}&title=${shareText}`;
-    const facebookURL = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-    const twitterURL = `https://twitter.com/intent/tweet?text=${shareText + "%0D" + url}`;
 
     return (
       <React.Fragment>
@@ -105,17 +80,17 @@ export class Browse extends React.Component<Props, State> {
             <h2 className={classes.heading}>DISCOVER ROOMS</h2>
             <div className={classes.shareBtns}>
               <Tooltip title="Share to Facebook">
-                <IconButton target="_blank" href={facebookURL}>
+                <IconButton target="_blank" href={this.FACEBOOK_SHARE_URL}>
                   <Facebook style={{ color: "rgb(33, 120, 232)" }}></Facebook>
                 </IconButton>
               </Tooltip>
               <Tooltip title="Share to Twitter">
-                <IconButton target="_blank" href={twitterURL}>
+                <IconButton target="_blank" href={this.TWITTER_SHARE_URL}>
                   <Twitter style={{ color: "rgb(41, 159, 232)" }}></Twitter>
                 </IconButton>
               </Tooltip>
               <Tooltip title="Share to Reddit">
-                <IconButton target="_blank" href={redditURL}>
+                <IconButton target="_blank" href={this.REDDIT_SHARE_URL}>
                   <Reddit style={{ color: "rgb(246, 69, 29)" }}></Reddit>
                 </IconButton>
               </Tooltip>
@@ -124,15 +99,15 @@ export class Browse extends React.Component<Props, State> {
         </div>
         <div className={classes.roomList}>
           <GridList cols={Math.ceil(this.state.width / 400)} spacing={30}>
-            {Object.keys(this.state.roomList).map((key) => {
-              return this.mediaCard(this.state.roomList[key], key, classes);
+            {Object.keys(this.state.roomList).map((id) => {
+              return this.getRoomCard(id, this.state.roomList[id], classes);
             })}
           </GridList>
         </div>
         <div className={classes.overlay}></div>
       </React.Fragment>
     );
-  }
+  };
 }
 
 export default withStyles(styles)(Browse);
