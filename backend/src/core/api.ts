@@ -21,7 +21,6 @@ export default class API {
     this.router.get("/rooms/:id", this.getRoom.bind(this));
     this.router.delete("/rooms/:id", this.deleteRoom.bind(this));
     this.router.post("/rooms", this.createRoom.bind(this));
-    this.router.get("/videotitle/:id", this.getVideoTitle.bind(this));
   }
 
   private getStatus(req: Request, res: Response): void {
@@ -93,17 +92,6 @@ export default class API {
       res.send(roomId);
     } catch (err) {
       res.status(500).send("Error: Couldn't create room.");
-    }
-  }
-
-  private async getVideoTitle(req: Request, res: Response): Promise<void> {
-    try {
-      const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${req.params.id}&format=json`;
-      const resp = await axios.get(url);
-      res.send(resp.data.title);
-    } catch (err) {
-      console.error(err);
-      res.status(404).send(`Error: Youtube video not found with id ${req.params.id}.`);
     }
   }
 }
