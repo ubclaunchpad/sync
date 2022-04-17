@@ -20,6 +20,8 @@
   </a>
 </p>
 
+___NOTE: This project is no longer actively maintained.___
+
 Sync is a synchronous YouTube streaming app for you to watch, share, and talk about videos with your friends. Create stream rooms with your friends. Chat and video call your friends and create endless playlists to watch videos together.
 
 ## Contributing
